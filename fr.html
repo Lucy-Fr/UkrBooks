@@ -5,10 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voix de l’Ukraine dans la littérature contemporaine</title>
 
+    <!-- главный стиль сайта -->
     <link rel="stylesheet" href="/UkrBooks/style.css?v=4">
 
     <style>
-        /* ===== Макет главной страницы ===== */
+        /* Главная использует ту же разметку layout + sidebar, что и страницы автора */
 
         .layout {
             display: flex;
@@ -16,11 +17,12 @@
             gap: 35px;
             max-width: 1200px;
             margin: 0 auto;
+            padding: 0 20px;
         }
 
         main.content {
             flex: 1;
-            max-width: 820px;
+            max-width: var(--max-width);
         }
 
         .sidebar-authors {
@@ -39,7 +41,7 @@
         .sidebar-authors h3 {
             font-size: 1.05rem;
             margin-bottom: 16px;
-            color: #003366;
+            color: var(--dark-blue);
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
@@ -56,7 +58,7 @@
 
         .sidebar-authors a {
             text-decoration: none;
-            color: #005bbb;
+            color: var(--blue);
             font-weight: 600;
             font-size: 0.98rem;
         }
@@ -65,6 +67,7 @@
             text-decoration: underline;
         }
 
+        /* мобильный режим */
         @media (max-width: 900px) {
             .layout {
                 flex-direction: column;
@@ -92,7 +95,7 @@
 
 <div class="layout">
 
-    <!-- RIGHT SIDEBAR -->
+    <!-- САЙДБАР СПРАВА — ТАКОЙ ЖЕ КАК У АВТОРА -->
     <aside class="sidebar-authors">
         <h3>Auteurs</h3>
         <ul>
@@ -100,34 +103,32 @@
         </ul>
     </aside>
 
-    <!-- MAIN CONTENT -->
+    <!-- ОСНОВНОЙ БЕЛЫЙ БЛОК — ТОЧНО КАК У АВТОРА -->
     <main class="content">
 
         <h1 class="page-title">Voix de l’Ukraine dans la littérature contemporaine</h1>
 
         <p>
-            Après l’invasion à grande échelle de 2022, la littérature ukrainienne est entrée dans une phase nouvelle et intense,
+            Après l’invasion à grande échelle de 2022, la littérature ukrainienne est entrée dans une phase nouvelle et intense
             marquée par l’écriture documentaire, l’urgence éthique et la redéfinition du rôle de l’écrivain. Les auteurs se tournent
-            de plus en plus vers les journaux, les notes de première ligne, les témoignages et la non-fiction pour enregistrer la
-            réalité de la guerre et préserver la mémoire collective.
+            vers les journaux, les notes de première ligne, les témoignages et la non-fiction pour enregistrer la réalité de la guerre.
         </p>
 
         <p>
-            La poésie gagne une importance particulière comme forme de réaction rapide, capturant le traumatisme, la résistance,
-            la vulnérabilité et la solidarité. La prose devient plus fragmentée et ancrée dans l’expérience vécue : déplacements,
-            perte du foyer, fragilité du corps et redéfinition de l’identité dominent les récits contemporains.
+            La poésie devient un moyen de réaction rapide, capturant le traumatisme, la résistance, la vulnérabilité et la solidarité.
+            La prose contemporaine reflète les déplacements, la perte du foyer, la fragilité du corps et les transformations identitaires.
         </p>
 
         <p>
-            La satire de guerre, les paroles musicales et les formes numériques hybrides créent un nouveau paysage culturel où
-            l’humour et le grotesque coexistent avec la douleur. La littérature de la diaspora explore l’exil, l’adaptation
-            linguistique et la vie « ailleurs » pendant la guerre.
+            La satire de guerre, les paroles musicales et les formes numériques hybrides créent un paysage culturel où l’humour
+            et le grotesque coexistent avec la douleur. La littérature de la diaspora aborde l’exil, l’adaptation linguistique et
+            l’expérience de vivre « ailleurs » pendant la guerre.
         </p>
 
         <p>
-            Ce site présente les nouvelles œuvres de la littérature ukrainienne contemporaine, met en avant les auteurs et leurs
-            textes, et informe les lecteurs sur les événements littéraires et culturels en Ukraine. Il offre une porte d’entrée
-            multilingue au développement de la voix culturelle ukrainienne en temps de guerre.
+            Ce site présente les œuvres de la littérature ukrainienne contemporaine, met en lumière les auteurs et leur écriture,
+            et informe sur les actualités culturelles en Ukraine. Il propose une porte d’entrée multilingue vers l’évolution de
+            la voix culturelle ukrainienne en temps de guerre.
         </p>
 
     </main>
@@ -137,6 +138,8 @@
 <footer>
     <p>© Ukrainian Books</p>
 </footer>
+
+<script type="module" src="/UkrBooks/script.js"></script>
 
 </body>
 </html>
