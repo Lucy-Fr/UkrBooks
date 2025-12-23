@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title> Ievheniia Kuznetsova</title>
+    <link rel="stylesheet" href="/UkrBooks/style.css?v=4">
+</head>
+
+<body>
+
+<header class="top-nav">
+    <a href="/UkrBooks/index.html">
+        <img src="/UkrBooks/logo.png" class="logo" alt="Ukrainian Books">
+    </a>
+
+    <nav class="language-switch">
+        <a href="https://lucy-fr.github.io/UkrBooks/authors/kuznetsova/">EN</a> |
+        <a href="/UkrBooks/fr.html">FR</a> |
+        <a href="/UkrBooks/authors/kuznetsova/ua/">UA</a>
+    </nav>
+</header>
+
+
+<main class="content">
+
+    <h1 class="page-title"> Ievheniia Kuznetsova</h1>
+
+    <!-- Фото автора -->
+    <img 
+      src="https://raw.githubusercontent.com/Lucy-Fr/UkrBooks/main/authors/kuznetsova/KuwnetsovaEvgeniia.jpg"
+      alt=" Ievheniia Kuznetsova"
+      class="author-photo">
+
+    <h2>Біографія</h2>
+
+    <p>
+        Ievheniia Kuznetsova (née le 30 juin 1987 à Kryvyï Rih) est une écrivaine, traductrice et chercheuse ukrainienne spécialisée dans les études médiatiques. Elle a passé son enfance à Khomutyntsi, dans la région de Vinnytsia. Elle a fait ses études à l’Institut des relations internationales de l’Université nationale Taras-Chevtchenko de Kyiv, puis à l’Université de Deusto (Espagne), où elle a obtenu en 2015 un doctorat en études internationales et interculturelles.
+    </p>
+
+    <p>
+Elle a travaillé comme journaliste, enseigné les études postcoloniales et a été consultante pour des organisations internationales telles que l’ONU et l’OSCE. Elle a également participé à des recherches portant sur l’espace médiatique ukrainien. Ses domaines d’intérêt comprennent l’analyse linguistique des médias, l’anthropologie de l’internet, le rôle des médias dans la société et l’étude des systèmes médiatiques. Sa collaboration avec Vox Ukraine, consacrée à l’analyse des tendances comportementales des médias ukrainiens dans les réseaux sociaux, a été largement reconnue.
+    </p>
+
+    <p>
+Kuznetsova a fait ses débuts littéraires avec le livre culinaire humoristique « Cuisiner dans la tristesse » (2020). Elle s’est faite connaître du grand public avec son premier ouvrage de fiction, « Demandez à Mietchka » (2021), finaliste du prix BBC Livre de l’année. Ses ouvrages suivants — « L’Échelle », le livre de vulgarisation « La langue — une épée », ainsi que son nouveau roman « Les Moutons intacts », paru en 2025 — ont confirmé son statut de l’une des autrices ukrainiennes contemporaines les plus marquantes. Son style se distingue par la chaleur, l’humour, une attention minutieuse aux détails du quotidien et une profonde réflexion sur la langue, la mémoire et l’identité.
+    </p>
+
+    <p>
+En tant que traductrice, Kuznetsova travaille aussi bien avec la fiction qu’avec la non-fiction. Parmi ses traductions figurent la biographie de Lincoln par Doris Goodwin, l’essai de Thomas Nichols « La mort de l’expertise », ainsi que les romans populaires « Un baiser à Paris » et « Un baiser à New York ».
+    </p>
+
+    <p>
+Elle souligne que l’ukrainien a toujours été sa langue maternelle, bien qu’il y ait eu une période où elle passait facilement au russe. Un tournant décisif s’est produit lors d’un voyage à l’étranger en 2009, lorsqu’elle a pris conscience de l’importance de l’identité linguistique et a fait un choix ferme en faveur de l’ukrainien.
+    </p>
+
+    <p>
+Elle partage aujourd’hui sa vie entre l’Ukraine et l’Espagne, élève deux enfants et poursuit son travail littéraire, traductologique et scientifique. Ses écrits se concentrent sur les thèmes du foyer, de la langue, de la vulnérabilité humaine et de la force intérieure.
+    </p>
+
+
+    <h2>Interviews / interventions disponibles sur YouTube :</h2>
+
+    <p>
+        <a href="https://www.youtube.com/watch?v=C94iXSwttTw" target="_blank">
+        « Demandez à Mietchka » — Ievheniia Kuznetsova. Attention : à ne pas écouter l’estomac vide !
+        </a>
+    </p>
+
+    <p>
+        <a href="https://www.youtube.com/watch?v=PMqJEKdOEF4" target="_blank">
+        C’est en russe, et nous ne regardons pas cela ! — Ievheniia Kuznetsova. Faut-il élever les enfants en ukrainien ?
+        </a>
+    </p>
+
+    <p>
+        <a href="https://www.youtube.com/watch?v=qaDf5mwq6ds" target="_blank">
+        Une vie en grand écart. Entre deux pays. L’ukrainien à l’étranger | Ievheniia kuznetsova
+        </a>
+    </p>
+
+    <p>
+        <a href="https://www.youtube.com/watch?v=C94iXSwttTw" target="_blank">
+        Ievheniia Kuznetsova : comment vit l’une des écrivaines ukrainiennes les plus connues aujourd’hui ?
+        </a>
+    </p>
+
+
+    <hr>
+
+    <!-- Коментарі -->
+    <section class="comments">
+        <h2>Коментарі</h2>
+
+        <form id="comment-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="comment-form">
+
+            <label for="name">Ваше ім’я</label>
+            <input type="text" id="name" name="name" required>
+
+            <!-- Прихований email -->
+            <input type="email" id="email" name="email" required style="display:none;">
+
+            <label for="comment">Ваш коментар</label>
+            <textarea id="comment" name="comment" rows="5" required></textarea>
+
+            <label for="captcha">Скільки буде 2 + 3?</label>
+            <input type="text" id="captcha" name="captcha" required>
+
+            <!-- Honeypot -->
+            <input type="text" name="_gotcha" style="display:none">
+
+            <button type="submit">Надіслати</button>
+
+            <p id="success-message" style="display:none; color:#008000; margin-top:15px;">
+                ✔ Коментар надіслано успішно.
+            </p>
+
+            <p id="error-message" style="display:none; color:#cc0000; margin-top:15px;">
+                ✖ Помилка надсилання. Спробуйте пізніше.
+            </p>
+        </form>
+    </section>
+
+    <p><a href="/UkrBooks/index.html">← Назад на головну</a></p>
+
+</main>
+
+<footer>
+    <p>© Ukrainian Books</p>
+</footer>
+
+
+<!-- COMMENT SCRIPT -->
+<script>
+document.getElementById("comment-form").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    const captcha = document.getElementById("captcha").value.trim();
+    if (captcha !== "5") {
+        document.getElementById("error-message").innerText = "✖ Неправильна відповідь.";
+        document.getElementById("error-message").style.display = "block";
+        return;
+    }
+
+    const form = event.target;
+    const successMsg = document.getElementById("success-message");
+    const errorMsg = document.getElementById("error-message");
+    let data = new FormData(form);
+
+    try {
+        let response = await fetch(form.action, {
+            method: "POST",
+            body: data,
+            headers: { "Accept": "application/json" }
+        });
+
+        if (response.ok) {
+            successMsg.style.display = "block";
+            errorMsg.style.display = "none";
+            form.reset();
+        } else {
+            throw new Error("Network error");
+        }
+
+    } catch (err) {
+        successMsg.style.display = "none";
+        errorMsg.style.display = "block";
+    }
+});
+</script>
+
+</body>
+</html>
