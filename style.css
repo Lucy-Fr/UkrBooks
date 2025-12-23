@@ -25,12 +25,14 @@ body {
 }
 
 /* ======================================
-   LAYOUT — CONTENT + SIDEBAR
+   LAYOUT — CONTENT LEFT + SIDEBAR RIGHT
    ====================================== */
 
 .layout {
     display: flex;
+    flex-direction: row;        /* ← фиксируем порядок: main слева, sidebar справа */
     justify-content: center;
+    align-items: flex-start;    /* ← sidebar теперь всегда сверху справа */
     gap: 35px;
     max-width: 1300px;
     margin: 0 auto;
