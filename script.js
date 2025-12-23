@@ -120,3 +120,42 @@ function loadComments() {
         }
     });
 }
+
+
+
+// ======================================================
+//   RIGHT SIDEBAR — ALWAYS ONE NAME (LANG DETECTED)
+// ======================================================
+
+// Язык страницы = <html lang="...">
+const pageLang = document.documentElement.lang || "en";
+
+// Один автор — на языке страницы
+const authorsSidebar = {
+    en: [
+        { name: "Yevhenia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovaen.html" }
+    ],
+    fr: [
+        { name: "Ievheniia Kuznetsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovafr.html" }
+    ],
+    uk: [
+        { name: "Євгенія Кузнєцова", url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html" }
+    ]
+};
+
+function injectAuthorSidebar() {
+    const list = document.getElementById("authors-list");
+    if (!list) return;
+
+    list.innerHTML = ""; // чистим
+
+    const items = authorsSidebar[pageLang] || authorsSidebar.en;
+
+    items.forEach(a => {
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="${a.url}">${a.name}</a>`;
+        list.appendChild(li);
+    });
+}
+
+injectAuthorSidebar();
