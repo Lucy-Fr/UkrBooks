@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Ievheniia Kuznetsova</title>
-    <link rel="stylesheet" href="/UkrBooks/style.css?v=4">
+    <link rel="stylesheet" href="/UkrBooks/style.css?v=5">
 </head>
 
 <body>
@@ -14,12 +14,13 @@
     </a>
 
     <nav class="language-switch">
-        <a href="/UkrBooks/authors/kuznetsova/kuznetsovaen">EN</a> |
+        <a href="/UkrBooks/authors/kuznetsova/kuznetsovaen.html">EN</a> |
         <a href="/UkrBooks/authors/kuznetsova/kuznetsovafr.html">FR</a> |
         <a href="/UkrBooks/authors/kuznetsova/kuznetsovaua.html">UA</a>
     </nav>
 </header>
 
+<div class="layout">
 
 <main class="content">
 
@@ -62,7 +63,7 @@
     <p>
         Elle souligne que l’ukrainien a toujours été sa langue maternelle, bien qu’il y ait eu une période où elle passait facilement 
         au russe. Un tournant décisif s’est produit lors d’un voyage à l’étranger en 2009, lorsqu’elle a pris conscience de 
-        l’importance de l’identité linguistique et a fait un choix définitif en faveur de l’ukrainien.
+        l’importance de l’identité linguistique.
     </p>
 
     <p>
@@ -70,13 +71,12 @@
         littéraire, traductologique et scientifique.
     </p>
 
-
     <h2>Interviews / vidéos</h2>
 
     <p><a href="https://www.youtube.com/watch?v=C94iXSwttTw" target="_blank">« Demandez à Mietchka » — entretien</a></p>
     <p><a href="https://www.youtube.com/watch?v=PMqJEKdOEF4" target="_blank">Faut-il élever les enfants en ukrainien ?</a></p>
     <p><a href="https://www.youtube.com/watch?v=qaDf5mwq6ds" target="_blank">Entre deux pays — Ievheniia Kuznetsova</a></p>
-    <p><a href="https://www.youtube.com/watch?v=C94iXSwttTw" target="_blank">Comment vit l’une des écrivaines ukrainiennes les plus connues aujourd’hui ?</a></p>
+    <p><a href="https://www.youtube.com/watch?v=C94iXSwttTw" target="_blank">Comment vit l’une des écrivaines ukrainiennes les plus connues ?</a></p>
 
     <hr>
 
@@ -87,22 +87,20 @@
     <section class="comments">
         <h2>Commentaires</h2>
 
-        <!-- Admin auth -->
         <div id="admin-controls" style="margin-bottom: 20px;">
-            <button id="loginBtn" 
-                    style="padding:10px 20px; border-radius:8px; border:none; cursor:pointer; background:#005bbb; color:#fff; font-size:16px;">
+            <button id="loginBtn"
+                style="padding:10px 20px;border-radius:8px;border:none;cursor:pointer;background:#005bbb;color:#fff;">
                 Se connecter (admin)
             </button>
 
-            <button id="logoutBtn" 
-                    style="padding:10px 20px; border-radius:8px; border:none; cursor:pointer; background:#777; color:#fff; font-size:16px; display:none;">
+            <button id="logoutBtn"
+                style="padding:10px 20px;border-radius:8px;border:none;cursor:pointer;background:#777;color:#fff;display:none;">
                 Se déconnecter
             </button>
 
-            <span id="adminStatus" style="margin-left:10px; font-size:0.95rem; color:#555;"></span>
+            <span id="adminStatus" style="margin-left:10px;font-size:0.95rem;color:#555;"></span>
         </div>
 
-        <!-- Public comment form -->
         <form id="commentForm" class="comment-form">
             <label for="name">Votre nom</label>
             <input type="text" id="name" required>
@@ -113,194 +111,27 @@
             <button type="submit">Envoyer</button>
         </form>
 
-        <!-- Comment list -->
         <div id="commentsList" style="margin-top:30px;"></div>
-
     </section>
 
     <p><a href="/UkrBooks/fr.html">← Retour à l’accueil</a></p>
 
 </main>
 
+<!-- =========== SIDEBAR =========== -->
+
+<aside class="sidebar-authors">
+    <h3>Auteurs</h3>
+    <ul id="authors-list"></ul>
+</aside>
+
+</div>
 
 <footer>
     <p>© Ukrainian Books</p>
 </footer>
 
-
-<!-- ========================= -->
-<!--    FIREBASE COMMENTAIRE   -->
-<!-- ========================= -->
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc,
-  serverTimestamp,
-  query,
-  where
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-import {
-  getAuth,
-  onAuthStateChanged,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-/* Firebase config */
-const firebaseConfig = {
-  apiKey: "AIzaSyBi3kVG2G0RTXKV2EIhs4fQXEkaJ7X6HXU",
-  authDomain: "ucontemporarylit.firebaseapp.com",
-  projectId: "ucontemporarylit",
-  storageBucket: "ucontemporarylit.firebasestorage.app",
-  messagingSenderId: "828332585690",
-  appId: "1:828332585690:web:dbdb5a5edf7b5329d4ebe3",
-  measurementId: "G-7493F35CVD"
-};
-
-/* Init */
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
-
-/* Admin email */
-const ADMIN_EMAIL = "garmash110@gmail.com";
-let currentUserEmail = null;
-
-/* Page ID */
-const PAGE_ID = "kuznetsova_fr";
-
-/* UI elements */
-const loginBtn = document.getElementById("loginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-const adminStatus = document.getElementById("adminStatus");
-const form = document.getElementById("commentForm");
-const list = document.getElementById("commentsList");
-
-/* Authentication */
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    currentUserEmail = user.email;
-    loginBtn.style.display = "none";
-    logoutBtn.style.display = "inline-block";
-    adminStatus.textContent =
-      currentUserEmail === ADMIN_EMAIL ? "Mode admin activé" : "Connecté";
-  } else {
-    currentUserEmail = null;
-    logoutBtn.style.display = "none";
-    loginBtn.style.display = "inline-block";
-    adminStatus.textContent = "";
-  }
-
-  loadComments();
-});
-
-loginBtn.onclick = async () => {
-  try {
-    await signInWithPopup(auth, provider);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-logoutBtn.onclick = async () => {
-  try {
-    await signOut(auth);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-/* Load comments */
-async function loadComments() {
-  list.innerHTML = "";
-
-  try {
-    const q = query(collection(db, "comments"), where("page", "==", PAGE_ID));
-    const snapshot = await getDocs(q);
-
-    const items = [];
-    snapshot.forEach((docSnap) => {
-      items.push({ id: docSnap.id, ...docSnap.data() });
-    });
-
-    items.sort((a, b) => {
-      const ta = a.created?.seconds || 0;
-      const tb = b.created?.seconds || 0;
-      return tb - ta;
-    });
-
-    items.forEach((c) => {
-      const div = document.createElement("div");
-      div.style.padding = "12px 0";
-      div.style.borderBottom = "1px solid #ddd";
-
-      let html =
-        `<strong>${c.name}</strong><br>${c.text}<br>` +
-        `<span style="font-size:0.85rem; color:#666;">${c.created?.toDate().toLocaleString() || ""}</span>`;
-
-      if (currentUserEmail === ADMIN_EMAIL) {
-        html += `
-          <br><button data-id="${c.id}" class="delete-btn"
-            style="margin-top:8px; background:#b30000; color:white;
-                   border:none; padding:6px 12px; border-radius:6px; cursor:pointer;">
-            Supprimer
-          </button>`;
-      }
-
-      div.innerHTML = html;
-      list.appendChild(div);
-    });
-
-    if (currentUserEmail === ADMIN_EMAIL) {
-      document.querySelectorAll(".delete-btn").forEach((btn) => {
-        btn.onclick = async () => {
-          await deleteDoc(doc(db, "comments", btn.dataset.id));
-          loadComments();
-        };
-      });
-    }
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-/* Save comment */
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const name = document.getElementById("name").value.trim();
-  const text = document.getElementById("text").value.trim();
-
-  if (!name || !text) return;
-
-  try {
-    await addDoc(collection(db, "comments"), {
-      page: PAGE_ID,
-      name,
-      text,
-      created: serverTimestamp()
-    });
-
-    form.reset();
-    loadComments();
-  } catch (err) {
-    console.error(err);
-  }
-});
-
-loadComments();
-</script>
 <script type="module" src="/UkrBooks/script.js"></script>
-
 
 </body>
 </html>
