@@ -60,10 +60,80 @@
             margin-bottom: 18px;
             font-size: 1.05rem;
         }
+
+        /* ===============================
+           FIXED RIGHT SIDEBAR
+        =============================== */
+        .right-sidebar {
+            position: fixed;
+            right: 0;
+            top: 120px;
+            width: 220px;
+            background: #ffffff;
+            border-left: 1px solid #e5e5e5;
+            padding: 20px;
+            height: calc(100% - 120px);
+            overflow-y: auto;
+            box-shadow: -4px 0 12px rgba(0,0,0,0.06);
+        }
+
+        .right-sidebar h3 {
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            color: #003366;
+        }
+
+        .right-sidebar ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .right-sidebar li {
+            margin-bottom: 10px;
+        }
+
+        .right-sidebar a {
+            color: #005bbb;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .right-sidebar a:hover {
+            text-decoration: underline;
+        }
+
+        /* чтобы основной текст не заходил под меню */
+        .container {
+            margin-right: 260px;
+        }
+
+        /* Mobile — sidebar hides automatically */
+        @media (max-width: 900px) {
+            .right-sidebar {
+                display: none;
+            }
+            .container {
+                margin-right: 0;
+            }
+        }
     </style>
 </head>
 
 <body>
+
+<!-- FIXED RIGHT SIDEBAR -->
+<aside class="right-sidebar">
+    <h3>Auteurs</h3>
+    <ul>
+        <li>
+            <a href="authors/kuznetsova/kuznetsovafr.html">
+                Ievheniia Kuznetsova
+            </a>
+        </li>
+        <!-- здесь потом добавишь других авторов -->
+    </ul>
+</aside>
 
 <div class="container">
 
@@ -72,7 +142,6 @@
 
         <h1>Voix de l’Ukraine dans la littérature contemporaine</h1>
 
-        <!-- Переключатель языков -->
         <div class="lang-switch">
             <a href="index.html">English</a> |
             <span>Français</span> |
@@ -96,13 +165,6 @@
         <p>
             Ce site présente les nouvelles œuvres de la littérature ukrainienne contemporaine, met en avant les auteurs et leurs textes, et informe les lecteurs sur les événements littéraires et culturels en Ukraine. Il offre une porte d’entrée multilingue au développement de la voix culturelle ukrainienne en temps de guerre.
         </p>
-        <h2>Auteurs</h2>
-
-<ul>
-    <li>
-        <a href="authors/kuznetsova/kuznetsovafr">Ievheniia kuznetsova</a>
-    </li>
-</ul>
     </main>
 
 </div>
