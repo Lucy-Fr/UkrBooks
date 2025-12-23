@@ -39,7 +39,7 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // Автоматичний логін адміністратора (щоб не вводити пароль на сайті)
-signInWithEmailAndPassword(auth, "garmash110@gmail.com", "yourAdminPasswordHere").catch(()=>{});
+signInWithEmailAndPassword(auth, "garmash110@gmail.com", "410edfuf_G").catch(()=>{});
 
 // ================================
 // Визначення автора зі сторінки
