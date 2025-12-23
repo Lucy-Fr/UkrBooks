@@ -283,3 +283,15 @@ footer {
         display: block;
     }
 }
+
+/* === FIX SPACING ABOVE PAGE TITLE === */
+
+.top-nav {
+    padding-top: 10px;
+    padding-bottom: 5px;
+}
+
+.language-switch {
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
