@@ -5,116 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voix de l’Ukraine dans la littérature contemporaine</title>
 
+    <link rel="stylesheet" href="/UkrBooks/style.css?v=4">
+
     <style>
-        body {
-            font-family: system-ui, -apple-system, Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background: #ffffff;
-            color: #222;
-            line-height: 1.6;
-        }
+        /* ===== Макет главной страницы ===== */
 
-        .container {
-            max-width: 820px;
+        .layout {
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+            max-width: 1200px;
             margin: 0 auto;
-            padding: 40px 20px;
         }
 
-        header {
-            text-align: center;
-            margin-bottom: 30px;
+        main.content {
+            flex: 1;
+            max-width: 820px;
         }
 
-        img.logo {
-            width: 160px;
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            font-size: 2.2rem;
-            text-align: center;
-            margin-bottom: 20px;
-            color: #003366;
-        }
-
-        .lang-switch {
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 1.1rem;
-        }
-
-        .lang-switch a {
-            text-decoration: none;
-            color: #005bbb;
-            font-weight: 600;
-            margin: 0 8px;
-        }
-
-        .lang-switch span {
-            font-weight: 700;
-            color: #111;
-        }
-
-        p {
-            margin-bottom: 18px;
-            font-size: 1.05rem;
-        }
-
-        /* ===============================
-           FIXED RIGHT SIDEBAR
-        =============================== */
-        .right-sidebar {
-            position: fixed;
-            right: 0;
-            top: 120px;
-            width: 220px;
+        .sidebar-authors {
+            width: 240px;
             background: #ffffff;
-            border-left: 1px solid #e5e5e5;
-            padding: 20px;
-            height: calc(100% - 120px);
-            overflow-y: auto;
-            box-shadow: -4px 0 12px rgba(0,0,0,0.06);
+            border: 1px solid #DDE7F5;
+            border-radius: 12px;
+            padding: 20px 22px;
+            height: fit-content;
+            position: sticky;
+            top: 40px;
+            box-shadow: 0px 3px 10px rgba(0,0,0,0.07);
+            flex-shrink: 0;
         }
 
-        .right-sidebar h3 {
-            font-size: 1.2rem;
-            margin-bottom: 12px;
+        .sidebar-authors h3 {
+            font-size: 1.05rem;
+            margin-bottom: 16px;
             color: #003366;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .right-sidebar ul {
+        .sidebar-authors ul {
             list-style: none;
             padding: 0;
             margin: 0;
         }
 
-        .right-sidebar li {
-            margin-bottom: 10px;
+        .sidebar-authors li {
+            margin-bottom: 12px;
         }
 
-        .right-sidebar a {
-            color: #005bbb;
+        .sidebar-authors a {
             text-decoration: none;
-            font-weight: 500;
+            color: #005bbb;
+            font-weight: 600;
+            font-size: 0.98rem;
         }
 
-        .right-sidebar a:hover {
+        .sidebar-authors a:hover {
             text-decoration: underline;
         }
 
-        /* чтобы основной текст не заходил под меню */
-        .container {
-            margin-right: 260px;
-        }
-
-        /* Mobile — sidebar hides automatically */
         @media (max-width: 900px) {
-            .right-sidebar {
-                display: none;
+            .layout {
+                flex-direction: column;
             }
-            .container {
-                margin-right: 0;
+            .sidebar-authors {
+                display: none;
             }
         }
     </style>
@@ -122,52 +78,65 @@
 
 <body>
 
-<!-- FIXED RIGHT SIDEBAR -->
-<aside class="right-sidebar">
-    <h3>Auteurs</h3>
-    <ul>
-        <li>
-            <a href="authors/kuznetsova/kuznetsovafr.html">
-                Ievheniia Kuznetsova
-            </a>
-        </li>
-        <!-- здесь потом добавишь других авторов -->
-    </ul>
-</aside>
+<header class="top-nav">
+    <a href="/UkrBooks/index.html">
+        <img src="/UkrBooks/logo.png" class="logo" alt="Ukrainian Books">
+    </a>
 
-<div class="container">
+    <nav class="language-switch">
+        <a href="/UkrBooks/index.html">EN</a> |
+        <span>FR</span> |
+        <a href="/UkrBooks/ua.html">UA</a>
+    </nav>
+</header>
 
-    <header>
-        <img src="logo.png" alt="Logo" class="logo">
+<div class="layout">
 
-        <h1>Voix de l’Ukraine dans la littérature contemporaine</h1>
+    <!-- RIGHT SIDEBAR -->
+    <aside class="sidebar-authors">
+        <h3>Auteurs</h3>
+        <ul>
+            <li><a href="/UkrBooks/authors/kuznetsova/kuznetsovafr.html">Ievheniia Kuznetsova</a></li>
+        </ul>
+    </aside>
 
-        <div class="lang-switch">
-            <a href="index.html">English</a> |
-            <span>Français</span> |
-            <a href="ua.html">Українською</a>
-        </div>
-    </header>
+    <!-- MAIN CONTENT -->
+    <main class="content">
 
-    <main>
+        <h1 class="page-title">Voix de l’Ukraine dans la littérature contemporaine</h1>
+
         <p>
-            Après l’invasion à grande échelle de 2022, la littérature ukrainienne est entrée dans une phase nouvelle et intense marquée par l’écriture documentaire, l’urgence éthique et la redéfinition du rôle de l’écrivain. Les auteurs se tournent de plus en plus vers les journaux, les notes de première ligne, les témoignages et la non-fiction pour enregistrer la réalité de la guerre et préserver la mémoire collective.
+            Après l’invasion à grande échelle de 2022, la littérature ukrainienne est entrée dans une phase nouvelle et intense,
+            marquée par l’écriture documentaire, l’urgence éthique et la redéfinition du rôle de l’écrivain. Les auteurs se tournent
+            de plus en plus vers les journaux, les notes de première ligne, les témoignages et la non-fiction pour enregistrer la
+            réalité de la guerre et préserver la mémoire collective.
         </p>
 
         <p>
-            La poésie gagne une importance particulière comme forme de réaction rapide, capturant le traumatisme, la résistance, la vulnérabilité et la solidarité. La prose devient plus fragmentée et ancrée dans l’expérience vécue : déplacements, perte du foyer, fragilité du corps et redéfinition de l’identité dominent les récits contemporains.
+            La poésie gagne une importance particulière comme forme de réaction rapide, capturant le traumatisme, la résistance,
+            la vulnérabilité et la solidarité. La prose devient plus fragmentée et ancrée dans l’expérience vécue : déplacements,
+            perte du foyer, fragilité du corps et redéfinition de l’identité dominent les récits contemporains.
         </p>
 
         <p>
-            La satire de guerre, les paroles musicales et les formes numériques hybrides créent un nouveau paysage culturel où l’humour et le grotesque coexistent avec la douleur. La littérature de la diaspora explore l’exil, l’adaptation linguistique et la vie « ailleurs » pendant la guerre.
+            La satire de guerre, les paroles musicales et les formes numériques hybrides créent un nouveau paysage culturel où
+            l’humour et le grotesque coexistent avec la douleur. La littérature de la diaspora explore l’exil, l’adaptation
+            linguistique et la vie « ailleurs » pendant la guerre.
         </p>
 
         <p>
-            Ce site présente les nouvelles œuvres de la littérature ukrainienne contemporaine, met en avant les auteurs et leurs textes, et informe les lecteurs sur les événements littéraires et culturels en Ukraine. Il offre une porte d’entrée multilingue au développement de la voix culturelle ukrainienne en temps de guerre.
+            Ce site présente les nouvelles œuvres de la littérature ukrainienne contemporaine, met en avant les auteurs et leurs
+            textes, et informe les lecteurs sur les événements littéraires et culturels en Ukraine. Il offre une porte d’entrée
+            multilingue au développement de la voix culturelle ukrainienne en temps de guerre.
         </p>
+
     </main>
 
 </div>
+
+<footer>
+    <p>© Ukrainian Books</p>
+</footer>
 
 </body>
 </html>
