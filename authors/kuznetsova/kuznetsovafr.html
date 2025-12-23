@@ -86,58 +86,60 @@ Elle partage aujourd’hui sa vie entre l’Ukraine et l’Espagne, élève deux
     </p>
 
 
-    <hr>
+     <hr>
 
-    <!-- Коментарі -->
+    <!-- COMMENTAIRES -->
     <section class="comments">
-        <h2>Коментарі</h2>
+        <h2>Commentaires</h2>
 
         <form id="comment-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="comment-form">
 
-            <label for="name">Ваше ім’я</label>
+            <label for="name">Votre nom</label>
             <input type="text" id="name" name="name" required>
 
-            <!-- Прихований email -->
+            <!-- adresse e-mail invisible mais obligatoire -->
             <input type="email" id="email" name="email" required style="display:none;">
 
-            <label for="comment">Ваш коментар</label>
+            <label for="comment">Votre commentaire</label>
             <textarea id="comment" name="comment" rows="5" required></textarea>
 
-            <label for="captcha">Скільки буде 2 + 3?</label>
+            <label for="captcha">Combien font 2 + 3 ?</label>
             <input type="text" id="captcha" name="captcha" required>
 
-            <!-- Honeypot -->
+            <!-- anti-spam -->
             <input type="text" name="_gotcha" style="display:none">
 
-            <button type="submit">Надіслати</button>
+            <button type="submit">Envoyer</button>
 
             <p id="success-message" style="display:none; color:#008000; margin-top:15px;">
-                ✔ Коментар надіслано успішно.
+                ✔ Votre commentaire a été envoyé avec succès.
             </p>
 
             <p id="error-message" style="display:none; color:#cc0000; margin-top:15px;">
-                ✖ Помилка надсилання. Спробуйте пізніше.
+                ✖ Erreur lors de l’envoi. Veuillez réessayer plus tard.
             </p>
+
         </form>
     </section>
 
-    <p><a href="/UkrBooks/index.html">← Назад на головну</a></p>
+    <p><a href="/UkrBooks/fr.html">← Retour à l’accueil</a></p>
 
 </main>
+
 
 <footer>
     <p>© Ukrainian Books</p>
 </footer>
 
 
-<!-- COMMENT SCRIPT -->
+<!-- Script pour les commentaires -->
 <script>
 document.getElementById("comment-form").addEventListener("submit", async function(event) {
     event.preventDefault();
 
     const captcha = document.getElementById("captcha").value.trim();
     if (captcha !== "5") {
-        document.getElementById("error-message").innerText = "✖ Неправильна відповідь.";
+        document.getElementById("error-message").innerText = "✖ Réponse incorrecte.";
         document.getElementById("error-message").style.display = "block";
         return;
     }
