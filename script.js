@@ -1,9 +1,11 @@
-// ================================
-// Firebase INIT
-// ================================
+// ======================================================
+//  Firebase universal comments — works with your HTML
+// ======================================================
+
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import { 
-    getFirestore, collection, addDoc, deleteDoc, doc, query, orderBy, onSnapshot 
+    getFirestore, collection, addDoc, deleteDoc, doc,
+    query, orderBy, onSnapshot 
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import {
     getAuth, onAuthStateChanged, signInWithEmailAndPassword
@@ -24,7 +26,13 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 // ================================
-// Авторизація адміністратора
+// Identify author from URL
+// ================================
+let urlParts = window.location.pathname.split("/");
+let authorId = urlParts[3] || "unknown";
+
+// ================================
+// Admin auto-login
 // ================================
 let isAdmin = false;
 
@@ -38,20 +46,11 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// Автоматичний логін адміністратора (щоб не вводити пароль на сайті)
-signInWithEmailAndPassword(auth, "garmash110@gmail.com", "410edfuf_G").catch(()=>{});
+signInWithEmailAndPassword(auth, "garmash110@gmail.com", "410edfuf_G")
+    .catch(()=>{});
 
 // ================================
-// Визначення автора зі сторінки
-// URL виду: /authors/kuznetsova/kuznetsovaen.html
-// Автор = другий сегмент
-// ================================
-let path = window.location.pathname.split("/");
-let authorId = path[3] || "unknown";
-
-
-// ================================
-// Додавання коментаря
+// Submit comment
 // ================================
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("comment-form");
@@ -63,18 +62,18 @@ document.addEventListener("DOMContentLoaded", () => {
         e.preventDefault();
 
         const name = form.name.value.trim();
-        const comment = form.comment.value.trim();
+        const text = form.comment.value.trim();
         const captcha = form.captcha.value.trim();
 
         if (captcha !== "5") {
-            alert("❌ Неправильна відповідь на CAPTCHA.");
+            alert("Wrong CAPTCHA.");
             return;
         }
 
         await addDoc(collection(db, "comments"), {
             author: authorId,
-            name: name,
-            text: comment,
+            name,
+            text,
             timestamp: Date.now()
         });
 
@@ -83,7 +82,45 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ================================
-// Завантаження коментарів
+// Load comments in real time
 // ================================
 function loadComments() {
-    const list = document.getElementBy
+    const list = document.getElementById("comments-list");
+    if (!list) return;
+
+    const q = query(
+        collection(db, "comments"),
+        orderBy("timestamp", "desc")
+    );
+
+    onSnapshot(q, (snapshot) => {
+        list.innerHTML = "";
+
+        snapshot.forEach((docSnap) => {
+            const c = docSnap.data();
+            if (c.author !== authorId) return;
+
+            const item = document.createElement("div");
+            item.className = "comment-item";
+
+            item.innerHTML = `
+                <p><strong>${c.name}</strong></p>
+                <p>${c.text}</p>
+                <small>${new Date(c.timestamp).toLocaleString()}</small>
+                ${isAdmin ? 
+                   `<button class="delete-comment" data-id="${docSnap.id}">Delete</button>`
+                : ""}
+                <hr>
+            `;
+
+            list.appendChild(item);
+        });
+
+        // Deletion for admin
+        document.querySelectorAll(".delete-comment").forEach(btn => {
+            btn.onclick = async () => {
+                await deleteDoc(doc(db, "comments", btn.dataset.id));
+            };
+        });
+    });
+}
