@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en"> <!-- en / fr / uk -->
+<head>
+    <meta charset="UTF-8">
+    <title>AUTHOR NAME</title>
+
+    <link rel="stylesheet" href="/UkrBooks/style.css?v=5">
+</head>
+
+<body>
+
+<header class="top-nav">
+    <a href="/UkrBooks/index.html">   
+        <img src="/UkrBooks/logo.png" class="logo" alt="Ukrainian Books">
+    </a>
+
+    <nav class="language-switch">
+        <a href="PAGE-en.html">EN</a> |
+        <a href="PAGE-fr.html">FR</a> |
+        <a href="PAGE-uk.html">UA</a>
+    </nav>
+</header>
+
+<div class="layout">
+
+<main class="content">
+
+    <!-- ======= ЗАГОЛОВОК СТОРІНКИ ======= -->
+    <h1 class="page-title">AUTHOR NAME</h1>
+
+    <!-- ======= ФОТО АВТОРА ======= -->
+    <img 
+      src="PHOTO_URL.jpg"
+      alt="AUTHOR NAME"
+      class="author-photo">
+
+    <!-- ======= БІОГРАФІЯ ======= -->
+    <h2>Biography</h2>
+
+    <p>Текст…</p>
+    <p>Текст…</p>
+    <p>Текст…</p>
+
+    <!-- ======= КНИГИ ======= -->
+    <h2>Books</h2>
+
+    <p><a href="..." target="_blank">Book 1</a></p>
+    <p><a href="..." target="_blank">Book 2</a></p>
+    <p><a href="..." target="_blank">Book 3</a></p>
+
+    <!-- ======= ВІДЕО ======= -->
+    <h2>Video</h2>
+
+    <p><a href="..." target="_blank">Video 1</a></p>
+    <p><a href="..." target="_blank">Video 2</a></p>
+    <p><a href="..." target="_blank">Video 3</a></p>
+
+    <hr>
+
+    <!-- ========================= -->
+    <!--       COMMENTS            -->
+    <!-- ========================= -->
+
+    <section class="comments">
+        <h2>Comments</h2>
+
+        <form id="commentForm" class="comment-form">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" required>
+
+            <label for="text">Your Comment</label>
+            <textarea id="text" rows="5" required></textarea>
+
+            <button type="submit">Send Comment</button>
+        </form>
+
+        <div id="commentsList"></div>
+    </section>
+
+    <p><a href="/UkrBooks/index.html">← Back to Home</a></p>
+
+</main>
+
+<!-- ======== SIDEBAR – НЕ ЧІПАТИ! ========= -->
+<aside class="sidebar-authors">
+    <h3>Authors</h3>
+    <ul id="authors-list"></ul>
+</aside>
+
+</div>
+
+<footer>
+    <p>© Ukrainian Books</p>
+</footer>
+
+<script type="module" src="/UkrBooks/script.js"></script>
+
+</body>
+</html>
