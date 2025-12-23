@@ -288,3 +288,17 @@ footer {
         display: block;
     }
 }
+/* Світло-сірий фон для всієї сторінки */
+body {
+    background-color: #F2F2F2; /* як на KSE */
+}
+
+/* Білий "картон" для контенту */
+main.content {
+    background: #FFFFFF;
+    padding: 40px 35px;
+    border-radius: 14px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    max-width: 900px;
+    margin: 40px auto; /* відступи зверху і знизу */
+}
