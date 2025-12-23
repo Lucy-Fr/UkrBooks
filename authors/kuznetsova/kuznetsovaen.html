@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Yevhenia Kuznietsova</title>
 
-    <!-- Correct CSS path -->
+    <!-- Main site styles -->
     <link rel="stylesheet" href="/UkrBooks/style.css?v=4">
 </head>
 
@@ -79,38 +79,43 @@
     <p><a href="https://www.youtube.com/watch?v=qaDf5mwq6ds" target="_blank">Life in a Split — Yevheniia Kuznetsova</a></p>
     <p><a href="https://www.youtube.com/watch?v=C94iXSwttTw" target="_blank">How one of the most prominent Ukrainian writers lives</a></p>
 
-
     <hr>
 
-    <!-- COMMENTS -->
+    <!-- ========================= -->
+    <!--        COMMENTS           -->
+    <!-- ========================= -->
+
     <section class="comments">
-        <h2 id="comments-title"></h2>
+        <h2>Comments</h2>
 
-        <form id="comment-form"
-              action="https://formspree.io/f/xeejnzbz"
-              method="POST"
-              class="comment-form">
+        <!-- Admin auth controls -->
+        <div id="admin-controls" style="margin-bottom: 20px;">
+            <button id="loginBtn" 
+                    style="padding:10px 20px; border-radius:8px; border:none; cursor:pointer; background:#005bbb; color:#fff; font-size:16px;">
+                Sign in as Admin
+            </button>
 
-            <label id="label-name" for="name"></label>
-            <input type="text" id="name" name="name" required>
+            <button id="logoutBtn" 
+                    style="padding:10px 20px; border-radius:8px; border:none; cursor:pointer; background:#777; color:#fff; font-size:16px; display:none;">
+                Sign out
+            </button>
 
-            <!-- Hidden required email -->
-            <input type="email" id="email" name="email" required style="display:none;">
+            <span id="adminStatus" style="margin-left:10px; font-size:0.95rem; color:#555;"></span>
+        </div>
 
-            <label id="label-comment" for="comment"></label>
-            <textarea id="comment" name="comment" rows="5" required></textarea>
+        <!-- Public comment form -->
+        <form id="commentForm" class="comment-form">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" required>
 
-            <label id="label-captcha" for="captcha"></label>
-            <input type="text" id="captcha" name="captcha" required>
+            <label for="text">Your Comment</label>
+            <textarea id="text" rows="5" required></textarea>
 
-            <!-- honeypot -->
-            <input type="text" name="_gotcha" style="display:none">
-
-            <button id="btn-submit" type="submit"></button>
-
-            <p id="success-message" style="display:none; margin-top:15px;"></p>
-            <p id="error-message" style="display:none; margin-top:15px;"></p>
+            <button type="submit">Send Comment</button>
         </form>
+
+        <!-- Comment list -->
+        <div id="commentsList" style="margin-top:30px;"></div>
     </section>
 
     <p><a href="/UkrBooks/index.html">← Back to Home</a></p>
@@ -122,68 +127,197 @@
 </footer>
 
 
-<!-- UNIVERSAL COMMENT FORM SCRIPT -->
-<script>
-const lang = document.documentElement.lang || "en";
+<!-- ========================= -->
+<!--   FIREBASE COMMENT CODE   -->
+<!-- ========================= -->
 
-const translations = {
-    en: {
-        commentsTitle: "Comments",
-        name: "Your Name",
-        comment: "Your Comment",
-        captcha: "What is 2 + 3?",
-        submit: "Send Comment",
-        success: "✔ Your comment has been sent successfully.",
-        error: "✖ Error sending comment. Please try again later.",
-        captchaError: "✖ Wrong CAPTCHA answer."
-    }
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  serverTimestamp,
+  query,
+  where
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+import {
+  getAuth,
+  onAuthStateChanged,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+/* Firebase config (your project) */
+const firebaseConfig = {
+  apiKey: "AIzaSyBi3kVG2G0RTXKV2EIhs4fQXEkaJ7X6HXU",
+  authDomain: "ucontemporarylit.firebaseapp.com",
+  projectId: "ucontemporarylit",
+  storageBucket: "ucontemporarylit.firebasestorage.app",
+  messagingSenderId: "828332585690",
+  appId: "1:828332585690:web:dbdb5a5edf7b5329d4ebe3",
+  measurementId: "G-7493F35CVD"
 };
 
-const t = translations[lang];
+/* Init */
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+const provider = new GoogleAuthProvider();
 
-document.getElementById("comments-title").innerText = t.commentsTitle;
-document.getElementById("label-name").innerText = t.name;
-document.getElementById("label-comment").innerText = t.comment;
-document.getElementById("label-captcha").innerText = t.captcha;
-document.getElementById("btn-submit").innerText = t.submit;
+/* Admin email (only you) */
+const ADMIN_EMAIL = "garmash110@gmail.com";
+let currentUserEmail = null;
 
-document.getElementById("comment-form").addEventListener("submit", async function(event) {
-    event.preventDefault();
+/* Elements */
+const loginBtn = document.getElementById("loginBtn");
+const logoutBtn = document.getElementById("logoutBtn");
+const adminStatus = document.getElementById("adminStatus");
+const form = document.getElementById("commentForm");
+const list = document.getElementById("commentsList");
 
-    const captcha = document.getElementById("captcha").value.trim();
-    if (captcha !== "5") {
-        document.getElementById("error-message").innerText = t.captchaError;
-        document.getElementById("error-message").style.display = "block";
-        return;
-    }
+/* Page ID so all authors use one collection but разные записи */
+const PAGE_ID = "kuznetsova_en";
 
-    const form = event.target;
-    const successMsg = document.getElementById("success-message");
-    const errorMsg = document.getElementById("error-message");
-    let data = new FormData(form);
+/* Auth state */
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    currentUserEmail = user.email || null;
+    loginBtn.style.display = "none";
+    logoutBtn.style.display = "inline-block";
+    adminStatus.textContent = currentUserEmail === ADMIN_EMAIL
+      ? "Admin mode: ON"
+      : "Signed in (not admin)";
+  } else {
+    currentUserEmail = null;
+    loginBtn.style.display = "inline-block";
+    logoutBtn.style.display = "none";
+    adminStatus.textContent = "";
+  }
 
-    try {
-        let response = await fetch(form.action, {
-            method: "POST",
-            body: data,
-            headers: { "Accept": "application/json" }
-        });
-
-        if (response.ok) {
-            successMsg.innerText = t.success;
-            successMsg.style.display = "block";
-            errorMsg.style.display = "none";
-            form.reset();
-        } else {
-            throw new Error("Network error");
-        }
-
-    } catch (err) {
-        successMsg.style.display = "none";
-        errorMsg.innerText = t.error;
-        errorMsg.style.display = "block";
-    }
+  loadComments();
 });
+
+/* Login / logout */
+loginBtn.addEventListener("click", async () => {
+  try {
+    await signInWithPopup(auth, provider);
+  } catch (err) {
+    console.error("Login error", err);
+  }
+});
+
+logoutBtn.addEventListener("click", async () => {
+  try {
+    await signOut(auth);
+  } catch (err) {
+    console.error("Logout error", err);
+  }
+});
+
+/* Load comments (sorted by date, newest first) */
+async function loadComments() {
+  list.innerHTML = "";
+
+  try {
+    const q = query(
+      collection(db, "comments"),
+      where("page", "==", PAGE_ID)
+    );
+    const snapshot = await getDocs(q);
+
+    const items = [];
+    snapshot.forEach((docSnap) => {
+      const data = docSnap.data();
+      items.push({
+        id: docSnap.id,
+        ...data
+      });
+    });
+
+    items.sort((a, b) => {
+      const ta = a.created && a.created.seconds ? a.created.seconds : 0;
+      const tb = b.created && b.created.seconds ? b.created.seconds : 0;
+      return tb - ta; // newest first
+    });
+
+    items.forEach((c) => {
+      const div = document.createElement("div");
+      div.style.padding = "12px 0";
+      div.style.borderBottom = "1px solid #ddd";
+
+      let html = `<strong>${c.name || "Anonymous"}</strong><br>${c.text || ""}`;
+
+      if (c.created && c.created.toDate) {
+        const d = c.created.toDate();
+        const dateStr = d.toLocaleString();
+        html += `<br><span style="font-size:0.85rem; color:#666;">${dateStr}</span>`;
+      }
+
+      if (currentUserEmail === ADMIN_EMAIL) {
+        html += `
+          <br>
+          <button data-id="${c.id}" class="delete-btn"
+                  style="margin-top:8px; background:#b30000; color:white;
+                         border:none; padding:6px 12px; border-radius:6px; cursor:pointer;">
+              Delete
+          </button>
+        `;
+      }
+
+      div.innerHTML = html;
+      list.appendChild(div);
+    });
+
+    if (currentUserEmail === ADMIN_EMAIL) {
+      document.querySelectorAll(".delete-btn").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const id = btn.getAttribute("data-id");
+          try {
+            await deleteDoc(doc(db, "comments", id));
+            loadComments();
+          } catch (err) {
+            console.error("Delete error", err);
+          }
+        });
+      });
+    }
+  } catch (err) {
+    console.error("Load comments error", err);
+  }
+}
+
+/* Save new comment */
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("name").value.trim();
+  const text = document.getElementById("text").value.trim();
+
+  if (!name || !text) return;
+
+  try {
+    await addDoc(collection(db, "comments"), {
+      page: PAGE_ID,
+      name,
+      text,
+      created: serverTimestamp()
+    });
+
+    form.reset();
+    loadComments();
+  } catch (err) {
+    console.error("Add comment error", err);
+  }
+});
+
+/* Initial load */
+loadComments();
 </script>
 
 </body>
