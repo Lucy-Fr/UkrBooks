@@ -5,7 +5,7 @@
     <title>Yevhenia Kuznietsova</title>
 
     <!-- Correct CSS path -->
-    <link rel="stylesheet" href="/UkrBooks/style.css?v=3">
+    <link rel="stylesheet" href="/UkrBooks/style.css?v=4">
 </head>
 
 <body>
@@ -15,17 +15,16 @@
         <img src="/UkrBooks/logo.png" class="logo" alt="Ukrainian Books">
     </a>
 
-<nav class="language-switch">
-    <a href="/UkrBooks/authors/kuznetsova/kuznetsovaen">EN</a> |
-    <a href="/UkrBooks/authors/kuznetsova/kuznetsovafr.html">FR</a> |
-    <a href="/UkrBooks/authors/kuznetsova/kuznetsovaua.html">UA</a>
-</nav>
+    <nav class="language-switch">
+        <a href="/UkrBooks/authors/kuznetsova/kuznetsovaen">EN</a> |
+        <a href="/UkrBooks/authors/kuznetsova/kuznetsovafr.html">FR</a> |
+        <a href="/UkrBooks/authors/kuznetsova/kuznetsovaua.html">UA</a>
+    </nav>
 </header>
 
 
 <main class="content">
 
-    <!-- HEADER WITH PHOTO -->
     <h1 class="page-title">Yevhenia Kuznietsova</h1>
 
     <img 
@@ -36,19 +35,40 @@
     <h2>Biography</h2>
 
     <p>
-        Yevheniia Kuznetsova (born 30 June 1987 in Kryvyi Rih) is a Ukrainian writer, translator, and media researcher. She spent her childhood in Khomutyntsi in the Vinnytsia region. She studied at the Institute of International Relations of Taras Shevchenko National University of Kyiv and later at the University of Deusto (Spain), where she received her PhD in International and Intercultural Studies in 2015.</p>
+        Yevheniia Kuznetsova (born 30 June 1987 in Kryvyi Rih) is a Ukrainian writer, translator, and media researcher. 
+        She spent her childhood in Khomutyntsi in the Vinnytsia region. She studied at the Institute of International Relations 
+        of Taras Shevchenko National University of Kyiv and later at the University of Deusto (Spain), where she received her PhD 
+        in International and Intercultural Studies in 2015.
+    </p>
 
-    <p>SShe has worked as a journalist, taught postcolonial studies, and served as a consultant for international organisations, including the UN and the OSCE. She has also taken part in research projects on Ukrainian media space. Her academic interests include media language analysis, internet anthropology, the role of media in society, and media systems research. Her collaborative project with Vox Ukraine, which analysed behavioural trends of Ukrainian media on social networks, gained professional recognition.</p>
+    <p>
+        She has worked as a journalist, taught postcolonial studies, and served as a consultant for international organisations, 
+        including the UN and the OSCE. She has also taken part in research projects on Ukrainian media space. 
+        Her academic interests include media language analysis, internet anthropology, the role of media in society, 
+        and media systems research. Her collaborative project with Vox Ukraine, which analysed behavioural trends of Ukrainian media on social networks, gained professional recognition.
+    </p>
 
-    <p>Kuznetsova debuted with the humorous culinary book "Cooking in Sorrow" (2020). She gained wide recognition with her first work of fiction, "Ask Miechka" (2021), which was shortlisted for the BBC Book of the Year Award. Her subsequent books — "The Ladder", the popular science work "Language is a Sword", and her new novel "The Sheep Intact", published in 2025 — have confirmed her status as one of the most notable contemporary Ukrainian authors. Her writing combines warmth, humour, attention to everyday details, and deep reflection on language, memory, and identity.</p>
+    <p>
+        Kuznetsova debuted with the humorous culinary book “Cooking in Sorrow” (2020). She gained wide recognition with her first work 
+        of fiction, “Ask Miechka” (2021), which was shortlisted for the BBC Book of the Year Award. Her subsequent books — “The Ladder”, 
+        the popular science work “Language is a Sword”, and her new novel “The Sheep Intact”, published in 2025 — have confirmed her status 
+        as one of the most notable contemporary Ukrainian authors. Her writing combines warmth, humour, attention to everyday details, 
+        and deep reflection on language, memory, and identity.
+    </p>
 
-    <p>As a translator, Kuznetsova works with both fiction and non-fiction. Her translations include Doris Goodwin’s biography of Lincoln, Thomas Nichols’s non-fiction book "The Death of Expertise", and the popular novels "A Kiss in Paris" and "A Kiss in New York".
-</p>
+    <p>
+        As a translator, Kuznetsova works with both fiction and non-fiction. Her translations include Doris Goodwin’s biography of Lincoln, 
+        Thomas Nichols’s “The Death of Expertise”, and the popular novels “A Kiss in Paris” and “A Kiss in New York”.
+    </p>
 
-    <p>Kuznetsova notes that Ukrainian has always been her native language, although there was a period when she switched to Russian with ease. A turning point came during a trip abroad in 2009, when she realised the importance of linguistic identity and made a conscious choice in favour of Ukrainian.</p>
+    <p>
+        Kuznetsova notes that Ukrainian has always been her native language, although there was a period when she switched easily to Russian. 
+        A turning point came during a trip abroad in 2009 when she realised the importance of linguistic identity and consciously chose Ukrainian.
+    </p>
 
-    <p>She lives between Ukraine and Spain, raises two children, and continues to combine literary work, translation, and research. Her writing centres on themes of home, language, human vulnerability, and resilience.
-
+    <p>
+        She lives between Ukraine and Spain, raises two children, and continues to combine literary work, translation, and research. 
+        Her writing centres on themes of home, language, human vulnerability, and resilience.
     </p>
 
 
@@ -64,34 +84,32 @@
 
     <!-- COMMENTS -->
     <section class="comments">
-        <h2>Comments</h2>
+        <h2 id="comments-title"></h2>
 
-        <form id="comment-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="comment-form">
+        <form id="comment-form"
+              action="https://formspree.io/f/xeejnzbz"
+              method="POST"
+              class="comment-form">
 
-            <label for="name">Your Name</label>
+            <label id="label-name" for="name"></label>
             <input type="text" id="name" name="name" required>
 
-            <!-- hidden email (required by Formspree) -->
+            <!-- Hidden required email -->
             <input type="email" id="email" name="email" required style="display:none;">
 
-            <label for="comment">Your Comment</label>
+            <label id="label-comment" for="comment"></label>
             <textarea id="comment" name="comment" rows="5" required></textarea>
 
-            <label for="captcha">What is 2 + 3?</label>
+            <label id="label-captcha" for="captcha"></label>
             <input type="text" id="captcha" name="captcha" required>
 
-            <!-- Anti-spam honeypot -->
+            <!-- honeypot -->
             <input type="text" name="_gotcha" style="display:none">
 
-            <button type="submit">Send Comment</button>
+            <button id="btn-submit" type="submit"></button>
 
-            <p id="success-message" style="display:none; margin-top:15px;">
-                ✔ Your comment has been sent successfully.
-            </p>
-
-            <p id="error-message" style="display:none; margin-top:15px;">
-                ✖ Error sending comment. Please try again later.
-            </p>
+            <p id="success-message" style="display:none; margin-top:15px;"></p>
+            <p id="error-message" style="display:none; margin-top:15px;"></p>
         </form>
     </section>
 
@@ -104,15 +122,37 @@
 </footer>
 
 
-<!-- COMMENT FORM SCRIPT -->
+<!-- UNIVERSAL COMMENT FORM SCRIPT -->
 <script>
+const lang = document.documentElement.lang || "en";
+
+const translations = {
+    en: {
+        commentsTitle: "Comments",
+        name: "Your Name",
+        comment: "Your Comment",
+        captcha: "What is 2 + 3?",
+        submit: "Send Comment",
+        success: "✔ Your comment has been sent successfully.",
+        error: "✖ Error sending comment. Please try again later.",
+        captchaError: "✖ Wrong CAPTCHA answer."
+    }
+};
+
+const t = translations[lang];
+
+document.getElementById("comments-title").innerText = t.commentsTitle;
+document.getElementById("label-name").innerText = t.name;
+document.getElementById("label-comment").innerText = t.comment;
+document.getElementById("label-captcha").innerText = t.captcha;
+document.getElementById("btn-submit").innerText = t.submit;
+
 document.getElementById("comment-form").addEventListener("submit", async function(event) {
     event.preventDefault();
 
-    // CAPTCHA
     const captcha = document.getElementById("captcha").value.trim();
     if (captcha !== "5") {
-        document.getElementById("error-message").innerText = "✖ Wrong CAPTCHA answer.";
+        document.getElementById("error-message").innerText = t.captchaError;
         document.getElementById("error-message").style.display = "block";
         return;
     }
@@ -130,6 +170,7 @@ document.getElementById("comment-form").addEventListener("submit", async functio
         });
 
         if (response.ok) {
+            successMsg.innerText = t.success;
             successMsg.style.display = "block";
             errorMsg.style.display = "none";
             form.reset();
@@ -139,6 +180,7 @@ document.getElementById("comment-form").addEventListener("submit", async functio
 
     } catch (err) {
         successMsg.style.display = "none";
+        errorMsg.innerText = t.error;
         errorMsg.style.display = "block";
     }
 });
