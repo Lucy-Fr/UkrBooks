@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <title>Yevhenia Kuznietsova</title>
 
-    <!-- FIXED: correct CSS path -->
-    <link rel="stylesheet" href="/UkrBooks/style.css?v=2">
+    <!-- Correct CSS path -->
+    <link rel="stylesheet" href="/UkrBooks/style.css?v=3">
 </head>
 
 <body>
 
 <header class="top-nav">
-    <a href="/UkrBooks/index.html"><img src="/UkrBooks/logo.png" class="logo"></a>
+    <a href="/UkrBooks/index.html">
+        <img src="/UkrBooks/logo.png" class="logo" alt="Ukrainian Books">
+    </a>
 
     <nav class="language-switch">
         <a href="/UkrBooks/index.html">EN</a> |
@@ -24,45 +26,39 @@
 <main class="content">
 
     <!-- HEADER WITH PHOTO -->
-    <div class="author-header">
+    <h1 class="page-title">Yevhenia Kuznietsova</h1>
 
-        <h1 class="page-title">Yevhenia Kuznietsova</h1>
+    <img 
+      src="https://raw.githubusercontent.com/Lucy-Fr/UkrBooks/main/authors/kuznetsova/KuwnetsovaEvgeniia.jpg"
+      alt="Yevhenia Kuznietsova"
+      class="author-photo">
 
-        <img 
-          src="https://raw.githubusercontent.com/Lucy-Fr/UkrBooks/main/authors/kuznetsova/KuwnetsovaEvgeniia.jpg"
-          alt="Yevhenia Kuznietsova"
-          class="author-photo">
+    <h2>Biography</h2>
 
-    </div>
+    <p>
+        Yevheniia Kuznetsova (born 30 June 1987 in Kryvyi Rih) is a Ukrainian writer, translator, and media researcher. She spent her childhood in Khomutyntsi in the Vinnytsia region. She studied at the Institute of International Relations of Taras Shevchenko National University of Kyiv and later at the University of Deusto (Spain), where she received her PhD in International and Intercultural Studies in 2015.</p>
 
+    <p>SShe has worked as a journalist, taught postcolonial studies, and served as a consultant for international organisations, including the UN and the OSCE. She has also taken part in research projects on Ukrainian media space. Her academic interests include media language analysis, internet anthropology, the role of media in society, and media systems research. Her collaborative project with Vox Ukraine, which analysed behavioural trends of Ukrainian media on social networks, gained professional recognition.</p>
 
-    <section class="author-card">
+    <p>Kuznetsova debuted with the humorous culinary book "Cooking in Sorrow" (2020). She gained wide recognition with her first work of fiction, "Ask Miechka" (2021), which was shortlisted for the BBC Book of the Year Award. Her subsequent books — "The Ladder", the popular science work "Language is a Sword", and her new novel "The Sheep Intact", published in 2025 — have confirmed her status as one of the most notable contemporary Ukrainian authors. Her writing combines warmth, humour, attention to everyday details, and deep reflection on language, memory, and identity.</p>
 
-        <div class="author-info">
-            <h2>Biography</h2>
+    <p>As a translator, Kuznetsova works with both fiction and non-fiction. Her translations include Doris Goodwin’s biography of Lincoln, Thomas Nichols’s non-fiction book "The Death of Expertise", and the popular novels "A Kiss in Paris" and "A Kiss in New York".
+</p>
 
-            <p>Yevheniia Kuznetsova (born 30 June 1987 in Kryvyi Rih) is a Ukrainian writer, translator, and media researcher...</p>
+    <p>Kuznetsova notes that Ukrainian has always been her native language, although there was a period when she switched to Russian with ease. A turning point came during a trip abroad in 2009, when she realised the importance of linguistic identity and made a conscious choice in favour of Ukrainian.</p>
 
-            <p>She has worked as a journalist, taught postcolonial studies, and served as a consultant...</p>
+    <p>She lives between Ukraine and Spain, raises two children, and continues to combine literary work, translation, and research. Her writing centres on themes of home, language, human vulnerability, and resilience.
 
-            <p>Kuznetsova debuted with the humorous culinary book "Cooking in Sorrow" (2020)...</p>
-
-            <p>As a translator, Kuznetsova works with both fiction and non-fiction...</p>
-
-            <p>Kuznetsova notes that Ukrainian has always been her native language...</p>
-
-            <p>She lives between Ukraine and Spain, raises two children...</p>
+    </p>
 
 
-            <h2>Video</h2>
+    <h2>Video</h2>
 
-            <p><a href="https://www.youtube.com/watch?v=C94iXSwttTw" target="_blank">“Ask Miechka” — Interview</a></p>
-            <p><a href="https://www.youtube.com/watch?v=PMqJEKdOEF4" target="_blank">Should children be raised as Ukrainian speakers?</a></p>
-            <p><a href="https://www.youtube.com/watch?v=qaDf5mwq6ds" target="_blank">Life in a Split — Yevheniia Kuznetsova</a></p>
-            <p><a href="https://www.youtube.com/watch?v=C94iXSwttTw" target="_blank">How one of the most prominent Ukrainian writers lives</a></p>
+    <p><a href="https://www.youtube.com/watch?v=C94iXSwttTw" target="_blank">“Ask Miechka” — Interview</a></p>
+    <p><a href="https://www.youtube.com/watch?v=PMqJEKdOEF4" target="_blank">Should children be raised as Ukrainian speakers?</a></p>
+    <p><a href="https://www.youtube.com/watch?v=qaDf5mwq6ds" target="_blank">Life in a Split — Yevheniia Kuznetsova</a></p>
+    <p><a href="https://www.youtube.com/watch?v=C94iXSwttTw" target="_blank">How one of the most prominent Ukrainian writers lives</a></p>
 
-        </div>
-    </section>
 
     <hr>
 
@@ -75,7 +71,7 @@
             <label for="name">Your Name</label>
             <input type="text" id="name" name="name" required>
 
-            <!-- hidden email (required) -->
+            <!-- hidden email (required by Formspree) -->
             <input type="email" id="email" name="email" required style="display:none;">
 
             <label for="comment">Your Comment</label>
@@ -89,11 +85,11 @@
 
             <button type="submit">Send Comment</button>
 
-            <p id="success-message" style="display:none; color:#008000; margin-top:15px;">
+            <p id="success-message" style="display:none; margin-top:15px;">
                 ✔ Your comment has been sent successfully.
             </p>
 
-            <p id="error-message" style="display:none; color:#cc0000; margin-top:15px;">
+            <p id="error-message" style="display:none; margin-top:15px;">
                 ✖ Error sending comment. Please try again later.
             </p>
         </form>
@@ -147,7 +143,6 @@ document.getElementById("comment-form").addEventListener("submit", async functio
     }
 });
 </script>
-
 
 </body>
 </html>
