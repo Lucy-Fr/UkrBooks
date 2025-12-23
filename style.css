@@ -25,26 +25,31 @@ body {
 main.content {
     max-width: var(--max-width);
     margin: 0 auto;
-    padding: 40px 20px;
+    padding: 35px 20px;
 }
 
 /* ======================================
-   HEADER + LANGUAGE SWITCH
+   HEADER + LANGUAGE SWITCH (FIXED SPACING)
    ====================================== */
 
 header {
     text-align: center;
-    padding-top: 20px;
-    margin-bottom: 40px;
+    padding-top: 15px;
+    margin-bottom: 14px; /* уменьшено */
 }
 
 .logo {
     width: 150px;
-    margin-bottom: 20px;
+    margin-bottom: 6px; /* уменьшено */
+}
+
+.language-switch {
+    margin-top: 4px;
+    margin-bottom: 8px; /* расстояние до заголовка */
 }
 
 .language-switch a {
-    margin: 0 12px;
+    margin: 0 10px;
     text-decoration: none;
     font-weight: 600;
     color: var(--blue);
@@ -63,7 +68,7 @@ header {
     font-weight: 700;
     color: var(--dark-blue);
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 28px;
 }
 
 h2 {
@@ -99,7 +104,7 @@ a:hover {
 }
 
 /* ======================================
-   AUTHOR PHOTO (універсальний)
+   AUTHOR PHOTO (универсальный)
    ====================================== */
 
 .author-photo {
@@ -179,7 +184,7 @@ a:hover {
     color: #666;
 }
 
-/* Чітке очищення для обтікання */
+/* чітке очищення */
 .book::after {
     content: "";
     display: block;
@@ -282,16 +287,4 @@ footer {
         margin: 0 auto 20px;
         display: block;
     }
-}
-
-/* === FIX SPACING ABOVE PAGE TITLE === */
-
-.top-nav {
-    padding-top: 10px;
-    padding-bottom: 5px;
-}
-
-.language-switch {
-    margin-top: 5px;
-    margin-bottom: 5px;
 }
