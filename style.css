@@ -10,12 +10,13 @@
     --max-width: 820px;
 }
 
-/* ---------------------------
-   СВІТЛО-СІРИЙ ФОН ЯК НА KSE
-   --------------------------- */
+/* ======================================
+   PAGE BACKGROUND (KSE STYLE)
+   ====================================== */
+
 body {
     font-family: "Inter", -apple-system, BlinkMacSystemFont, Arial, sans-serif;
-    background: #EDEDED; /* поле навколо */
+    background-color: #F5F5F5; /* світло-сірий фон */
     color: var(--text);
     margin: 0;
     padding: 0;
@@ -23,24 +24,18 @@ body {
     font-size: 19px;
 }
 
-/* Центрована "книжкова" колонка */
-.container,
+/* ======================================
+   MAIN CONTENT CARD (KSE STYLE)
+   ====================================== */
+
 main.content {
     max-width: var(--max-width);
-    margin: 0 auto;
-    padding: 35px 20px;
-}
-
-/* ---------------------------
-   БІЛИЙ КАРТОН ДЛЯ КОНТЕНТУ
-   --------------------------- */
-main.content {
-    background: #FFFFFF;              /* білий контентний блок */
+    margin: 40px auto;
     padding: 40px 35px;
+    background: #FFFFFF;
     border-radius: 14px;
+    border: 1px solid #DDE7F5; /* ніжна синьо-сіра рамка */
     box-shadow: 0 3px 14px rgba(0,0,0,0.08);
-    margin-top: 40px;
-    margin-bottom: 40px;
 }
 
 /* ======================================
@@ -75,7 +70,7 @@ header {
 }
 
 /* ======================================
-   HEADINGS
+   HEADINGS (+ KSE BLUE LINE)
    ====================================== */
 
 .page-title {
@@ -86,12 +81,25 @@ header {
     margin-bottom: 28px;
 }
 
-h2 {
+main.content h2 {
     margin-top: 45px;
-    margin-bottom: 15px;
+    margin-bottom: 18px;
     font-size: 1.7rem;
     color: var(--dark-blue);
     font-weight: 600;
+    padding-bottom: 8px;
+    position: relative;
+}
+
+main.content h2::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 60px;
+    height: 3px;
+    border-radius: 2px;
+    background: var(--blue);
 }
 
 h3 {
@@ -265,14 +273,6 @@ a:hover {
     opacity: 0.9;
 }
 
-#success-message {
-    color: #008000;
-}
-
-#error-message {
-    color: #cc0000;
-}
-
 /* ======================================
    FOOTER
    ====================================== */
@@ -283,7 +283,6 @@ footer {
     margin-top: 50px;
     font-size: 0.95rem;
     color: #666;
-    background: transparent;
 }
 
 /* ======================================
@@ -302,32 +301,4 @@ footer {
         margin: 0 auto 20px;
         display: block;
     }
-}
-main.content {
-    background: #FFFFFF;
-    padding: 40px 35px;
-    border-radius: 14px;
-    box-shadow: 0 3px 14px rgba(0,0,0,0.08);
-    border: 1px solid #DDE7F5; /* дуже ніжна синьо-сіра рамка, як у KSE */
-    margin: 40px auto;
-}
-h2 {
-    margin-top: 45px;
-    margin-bottom: 20px;
-    font-size: 1.7rem;
-    color: var(--dark-blue);
-    font-weight: 600;
-    position: relative;
-    padding-bottom: 8px;
-}
-
-h2::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    bottom: 0px;
-    width: 60px;
-    height: 3px;
-    background-color: var(--blue); /* синя лінія */
-    border-radius: 2px;
 }
