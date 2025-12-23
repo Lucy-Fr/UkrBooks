@@ -136,6 +136,10 @@ const authorSidebarNames = {
     "ua": {
         name: "Євгенія Кузнєцова",
         url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html"
+    },
+    "uk": {   // ← добавлено ДЛЯ УКРАИНСКОЙ СТРАНИЦЫ
+        name: "Євгенія Кузнєцова",
+        url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html"
     }
 };
 
@@ -143,7 +147,7 @@ function injectAuthorSidebar() {
     const list = document.getElementById("authors-list");
     if (!list) return;
 
-    const lang = document.documentElement.lang.toLowerCase();
+    let lang = document.documentElement.lang.toLowerCase();
 
     if (authorSidebarNames[lang]) {
         const li = document.createElement("li");
