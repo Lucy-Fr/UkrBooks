@@ -33,12 +33,13 @@ header {
     margin-bottom: 15px;
 }
 
-.lang-switch {
+.lang-switch, .language-switch {
     margin-top: 10px;
     font-size: 1.05rem;
 }
 
-.lang-switch a {
+.lang-switch a,
+.language-switch a {
     font-weight: 600;
     color: #005bbb;
     margin: 0 10px;
@@ -59,54 +60,37 @@ header {
     font-weight: 700;
     color: #003366;
     text-align: left;
-    margin-bottom: 40px;
+    margin-bottom: 25px;
     line-height: 1.2;
+}
 
-    /* <<< ДОБАВЛЕНО: место для фото справа >>> */
+/* =========================
+   AUTHOR HEADER (TITLE + PHOTO)
+   ========================= */
+
+.author-header {
     position: relative;
+    min-height: 260px;
+    margin-bottom: 35px;
+}
+
+.author-header .page-title {
     padding-right: 280px;
 }
 
-h2 {
-    margin-top: 50px;
-    margin-bottom: 15px;
-    font-size: 1.7rem;
-    color: #003366;
-    font-weight: 600;
-}
-
-h3 {
-    margin-top: 10px;
-    margin-bottom: 10px;
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: #003366;
-}
-
-/* =========================
-   HERO BLOCK (TEXT + PHOTO)
-   ========================= */
-
-.hero-block {
-    display: flex;
-    gap: 35px;
-    align-items: flex-start;
-    margin-bottom: 40px;
-}
-
-.hero-block img {
-    width: 330px;
-    border-radius: 8px;
+.author-header .author-photo {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 250px;
+    border-radius: 14px;
     object-fit: cover;
-    box-shadow: 0 0 10px rgba(0,0,0,0.12);
-}
-
-.hero-text {
-    flex: 1;
+    border: 2px solid #e6edf5;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.12);
 }
 
 /* =========================
-   AUTHOR CARD FOR LISTS
+   AUTHOR CARD FOR LIST PAGES
    ========================= */
 
 .author-card {
@@ -117,37 +101,11 @@ h3 {
     flex-wrap: wrap;
 }
 
-/* <<< НОВЫЙ БЛОК: фото рядом с заголовком >>> */
-
-.page-title + .author-card {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 250px;
-}
-
-.page-title + .author-card .author-photo {
-    width: 250px;
-    height: auto;
-    border-radius: 14px;
-    object-fit: cover;
-
-    /* эстетично */
-    border: 2px solid #e6edf5;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.12);
-}
-
-/* стандартный стиль для списка авторов */
 .author-photo {
     width: 230px;
     border-radius: 10px;
     object-fit: cover;
     box-shadow: 0 0 8px rgba(0,0,0,0.1);
-}
-
-.author-bio {
-    flex: 1;
-    min-width: 250px;
 }
 
 /* =========================
@@ -201,87 +159,7 @@ h3 {
 }
 
 /* =========================
-   FORMS (COMMENTS)
-   ========================= */
-
-form input,
-form textarea {
-    width: 100%;
-    padding: 12px;
-    font-size: 1rem;
-    border: 1px solid #aaa;
-    border-radius: 6px;
-    margin-top: 6px;
-}
-
-form button {
-    background: #005bbb;
-    color: white;
-    border: none;
-    padding: 12px 25px;
-    font-size: 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    margin-top: 10px;
-}
-
-form button:hover {
-    opacity: 0.85;
-}
-
-/* =========================
-   LINKS
-   ========================= */
-
-a {
-    color: #005bbb;
-    text-decoration: none;
-}
-
-a:hover {
-    opacity: 0.75;
-}
-
-/* =========================
-   RESPONSIVE (SMARTPHONES)
-   ========================= */
-
-@media (max-width: 820px) {
-
-    .page-title {
-        font-size: 2.2rem;
-        text-align: center;
-        padding-right: 0;
-    }
-
-    /* фото автора переходит вниз */
-    .page-title + .author-card {
-        position: static;
-        width: 100%;
-        margin-bottom: 20px;
-        text-align: center;
-        order: 1;
-    }
-
-    .page-title + .author-card .author-photo {
-        width: 100%;
-        max-width: 260px;
-        margin: 0 auto;
-    }
-
-    .author-card {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .author-photo {
-        width: 100%;
-        max-width: 260px;
-        margin: 0 auto;
-    }
-}
-/* =========================
-   COMMENT FORM (ENGLISH, WITH MESSAGES)
+   COMMENT FORM
    ========================= */
 
 .comment-form {
@@ -326,4 +204,56 @@ a:hover {
 
 .comment-form button:hover {
     opacity: 0.85;
+}
+
+/* =========================
+   LINKS
+   ========================= */
+
+a {
+    color: #005bbb;
+    text-decoration: none;
+}
+
+a:hover {
+    opacity: 0.75;
+}
+
+/* =========================
+   RESPONSIVE (SMARTPHONES)
+   ========================= */
+
+@media (max-width: 820px) {
+
+    .page-title {
+        font-size: 2.2rem;
+        text-align: center;
+        padding-right: 0;
+    }
+
+    .author-header {
+        text-align: center;
+        min-height: auto;
+    }
+
+    .author-header .author-photo {
+        position: static;
+        width: 100%;
+        max-width: 260px;
+        margin: 0 auto 20px;
+    }
+
+    .author-header .page-title {
+        padding-right: 0;
+    }
+
+    .author-card {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .author-photo {
+        width: 100%;
+        max-width: 260px;
+    }
 }
