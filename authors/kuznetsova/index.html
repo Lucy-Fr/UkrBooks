@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Yevhenia Kuznietsova </title>
+    <title>Yevhenia Kuznietsova</title>
     <link rel="stylesheet" href="../../style.css">
 </head>
+
 <body>
 
 <header class="top-nav">
@@ -20,77 +21,131 @@
 
 <main class="content">
 
-    <!-- ВСТАВЛЕНО: заголовок + фото справа -->
+    <!-- HEADER WITH PHOTO -->
     <div class="author-header">
 
         <h1 class="page-title">Yevhenia Kuznietsova</h1>
 
         <img 
-          src="https://raw.githubusercontent.com/Lucy-Fr/UkrBooks/main/authors/kuznetsova/KuwnetsovaEvgeniia.jpg" 
-          alt="Yevhenia Kuznietsova" 
+          src="https://raw.githubusercontent.com/Lucy-Fr/UkrBooks/main/authors/kuznetsova/KuwnetsovaEvgeniia.jpg"
+          alt="Yevhenia Kuznietsova"
           class="author-photo">
+
     </div>
+
 
     <section class="author-card">
 
         <div class="author-info">
             <h2>Biography</h2>
 
-             <p>
+            <p>Yevheniia Kuznetsova (born 30 June 1987 in Kryvyi Rih) is a Ukrainian writer, translator, and media researcher...</p>
 
-    Yevheniia Kuznetsova (born 30 June 1987 in Kryvyi Rih) is a Ukrainian writer, translator, and media researcher. She spent her childhood in Khomutyntsi in the Vinnytsia region. She studied at the Institute of International Relations of Taras Shevchenko National University of Kyiv and later at the University of Deusto (Spain), where she received her PhD in International and Intercultural Studies in 2015.</p>
+            <p>She has worked as a journalist, taught postcolonial studies, and served as a consultant...</p>
 
- <p>She has worked as a journalist, taught postcolonial studies, and served as a consultant for international organisations, including the UN and the OSCE. She has also taken part in research projects on Ukrainian media space. Her academic interests include media language analysis, internet anthropology, the role of media in society, and media systems research. Her collaborative project with Vox Ukraine, which analysed behavioural trends of Ukrainian media on social networks, gained professional recognition.</p>
+            <p>Kuznetsova debuted with the humorous culinary book "Cooking in Sorrow" (2020)...</p>
 
- <p>Kuznetsova debuted with the humorous culinary book "Cooking in Sorrow" (2020). She gained wide recognition with her first work of fiction, "Ask Miechka" (2021), which was shortlisted for the BBC Book of the Year Award. Her subsequent books — "The Ladder", the popular science work "Language is a Sword", and her new novel "The Sheep Intact", published in 2025 — have confirmed her status as one of the most notable contemporary Ukrainian authors. Her writing combines warmth, humour, attention to everyday details, and deep reflection on language, memory, and identity.</p>
+            <p>As a translator, Kuznetsova works with both fiction and non-fiction...</p>
 
- <p>As a translator, Kuznetsova works with both fiction and non-fiction. Her translations include Doris Goodwin’s biography of Lincoln, Thomas Nichols’s non-fiction book "The Death of Expertise", and the popular novels "A Kiss in Paris" and "A Kiss in New York".</p>
+            <p>Kuznetsova notes that Ukrainian has always been her native language...</p>
 
- <p>Kuznetsova notes that Ukrainian has always been her native language, although there was a period when she switched to Russian with ease. A turning point came during a trip abroad in 2009, when she realised the importance of linguistic identity and made a conscious choice in favour of Ukrainian.</p>
-
- <p>She lives between Ukraine and Spain, raises two children, and continues to combine literary work, translation, and research. Her writing centres on themes of home, language, human vulnerability, and resilience.
-
-                
-            </p>
+            <p>She lives between Ukraine and Spain, raises two children...</p>
 
 
-            <h2>Відео</h2>
-            <p>Interviews / Talks available on YouTube:</p>
-            <p>
-                <a href="https://www.youtube.com/watch?v=C94iXSwttTw" target="_blank">“Ask Miechka” — Yevheniia Kuznetsova. Warning: don’t listen on an empty stomach!</a>
-            </p>
-<p>
-                <a href="hhttps://www.youtube.com/watch?v=PMqJEKdOEF4" target="_blank">
-                    This is Russian, and we don’t watch it! — Yevheniia Kuznetsova. Should children be raised as Ukrainian speakers?</a>
-            </p>
-            <p>
-                <a href="https://www.youtube.com/watch?v=qaDf5mwq6ds" target="_blank">
-                    Life in a Split. Living between Two Countries. The Ukrainian Abroad | Yevheniia Kuznetsova</a>
-            </p>
-            <p>
-                <a href="https://www.youtube.com/watch?v=C94iXSwttTw" target="_blank">
-                    Yevheniia Kuznetsova: how does one of the most prominent contemporary Ukrainian writers live?</a>
-            </p>
-            
+            <h2>Video</h2>
+
+            <p><a href="https://www.youtube.com/watch?v=C94iXSwttTw" target="_blank">“Ask Miechka” — Interview</a></p>
+            <p><a href="https://www.youtube.com/watch?v=PMqJEKdOEF4" target="_blank">Should children be raised as Ukrainian speakers?</a></p>
+            <p><a href="https://www.youtube.com/watch?v=qaDf5mwq6ds" target="_blank">Life in a Split — Yevheniia Kuznetsova</a></p>
+            <p><a href="https://www.youtube.com/watch?v=C94iXSwttTw" target="_blank">How one of the most prominent Ukrainian writers lives</a></p>
+
         </div>
     </section>
 
     <hr>
 
-    <!-- Комментарии -->
+    <!-- COMMENTS -->
     <section class="comments">
         <h2>Comments</h2>
-        <p><i>Here will be a place for comments in the future.</i></p>
+
+        <form id="comment-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST" class="comment-form">
+
+            <label for="name">Your Name</label>
+            <input type="text" id="name" name="name" required>
+
+            <!-- hidden email (required) -->
+            <input type="email" id="email" name="email" required style="display:none;">
+
+            <label for="comment">Your Comment</label>
+            <textarea id="comment" name="comment" rows="5" required></textarea>
+
+            <label for="captcha">What is 2 + 3?</label>
+            <input type="text" id="captcha" name="captcha" required>
+
+            <!-- Anti-spam honeypot -->
+            <input type="text" name="_gotcha" style="display:none">
+
+            <button type="submit">Send Comment</button>
+
+            <p id="success-message" style="display:none; color:#008000; margin-top:15px;">
+                ✔ Your comment has been sent successfully.
+            </p>
+
+            <p id="error-message" style="display:none; color:#cc0000; margin-top:15px;">
+                ✖ Error sending comment. Please try again later.
+            </p>
+        </form>
     </section>
 
     <p><a href="../../index.html">← Back to Home</a></p>
 
 </main>
 
-
 <footer>
     <p>© Ukrainian Books</p>
 </footer>
+
+
+<!-- COMMENT FORM SCRIPT -->
+<script>
+document.getElementById("comment-form").addEventListener("submit", async function(event) {
+    event.preventDefault();
+
+    // CAPTCHA
+    const captcha = document.getElementById("captcha").value.trim();
+    if (captcha !== "5") {
+        document.getElementById("error-message").innerText = "✖ Wrong CAPTCHA answer.";
+        document.getElementById("error-message").style.display = "block";
+        return;
+    }
+
+    const form = event.target;
+    const successMsg = document.getElementById("success-message");
+    const errorMsg = document.getElementById("error-message");
+    let data = new FormData(form);
+
+    try {
+        let response = await fetch(form.action, {
+            method: "POST",
+            body: data,
+            headers: { "Accept": "application/json" }
+        });
+
+        if (response.ok) {
+            successMsg.style.display = "block";
+            errorMsg.style.display = "none";
+            form.reset();
+        } else {
+            throw new Error("Network error");
+        }
+
+    } catch (err) {
+        successMsg.style.display = "none";
+        errorMsg.style.display = "block";
+    }
+});
+</script>
+
 
 </body>
 </html>
