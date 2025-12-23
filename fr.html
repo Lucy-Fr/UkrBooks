@@ -5,84 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Voix de l’Ukraine dans la littérature contemporaine</title>
 
-    <!-- главный стиль сайта -->
+    <!-- ЕДИНЫЙ STYLE.CSS -->
     <link rel="stylesheet" href="/UkrBooks/style.css?v=4">
-
-    <style>
-        /* Главная использует ту же разметку layout + sidebar, что и страницы автора */
-
-        .layout {
-            display: flex;
-            justify-content: center;
-            gap: 35px;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        main.content {
-            flex: 1;
-            max-width: var(--max-width);
-        }
-
-        .sidebar-authors {
-            width: 240px;
-            background: #ffffff;
-            border: 1px solid #DDE7F5;
-            border-radius: 12px;
-            padding: 20px 22px;
-            height: fit-content;
-            position: sticky;
-            top: 40px;
-            box-shadow: 0px 3px 10px rgba(0,0,0,0.07);
-            flex-shrink: 0;
-        }
-
-        .sidebar-authors h3 {
-            font-size: 1.05rem;
-            margin-bottom: 16px;
-            color: var(--dark-blue);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .sidebar-authors ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-        }
-
-        .sidebar-authors li {
-            margin-bottom: 12px;
-        }
-
-        .sidebar-authors a {
-            text-decoration: none;
-            color: var(--blue);
-            font-weight: 600;
-            font-size: 0.98rem;
-        }
-
-        .sidebar-authors a:hover {
-            text-decoration: underline;
-        }
-
-        /* мобильный режим */
-        @media (max-width: 900px) {
-            .layout {
-                flex-direction: column;
-            }
-            .sidebar-authors {
-                display: none;
-            }
-        }
-    </style>
 </head>
 
 <body>
 
 <header class="top-nav">
-    <a href="/UkrBooks/index.html">
+    <a href="/UkrBooks/fr.html">
         <img src="/UkrBooks/logo.png" class="logo" alt="Ukrainian Books">
     </a>
 
@@ -93,49 +23,52 @@
     </nav>
 </header>
 
+
+<!-- ЕДИНАЯ СЕТКА КАК НА СТРАНИЦАХ АВТОРОВ -->
 <div class="layout">
 
-    <!-- САЙДБАР СПРАВА — ТАКОЙ ЖЕ КАК У АВТОРА -->
+    <!-- ПРАВЫЙ САЙДБАР (ТОЧНО КАК НА СТРАНИЦЕ АВТОРА) -->
     <aside class="sidebar-authors">
         <h3>Auteurs</h3>
-        <ul>
-            <li><a href="/UkrBooks/authors/kuznetsova/kuznetsovafr.html">Ievheniia Kuznetsova</a></li>
+        <ul id="authors-list">
+            <li><a href="/UkrBooks/authors/kuznetsova/kuznetsovafr.html">
+                Ievheniia Kuznetsova
+            </a></li>
         </ul>
     </aside>
 
-    <!-- ОСНОВНОЙ БЕЛЫЙ БЛОК — ТОЧНО КАК У АВТОРА -->
+    <!-- ОСНОВНОЙ ТЕКСТ (ТОЧНО КАК У АВТОРОВ) -->
     <main class="content">
 
         <h1 class="page-title">Voix de l’Ukraine dans la littérature contemporaine</h1>
 
         <p>
-            Après l’invasion à grande échelle de 2022, la littérature ukrainienne est entrée dans une phase nouvelle et intense
-            marquée par l’écriture documentaire, l’urgence éthique et la redéfinition du rôle de l’écrivain. Les auteurs se tournent
-            vers les journaux, les notes de première ligne, les témoignages et la non-fiction pour enregistrer la réalité de la guerre.
+            Après l’invasion à grande échelle de 2022, la littérature ukrainienne est entrée dans une phase nouvelle et intense,
+            marquée par l’écriture documentaire, l’urgence éthique et la redéfinition du rôle de l’écrivain.
         </p>
 
         <p>
-            La poésie devient un moyen de réaction rapide, capturant le traumatisme, la résistance, la vulnérabilité et la solidarité.
-            La prose contemporaine reflète les déplacements, la perte du foyer, la fragilité du corps et les transformations identitaires.
+            Les auteurs se tournent vers les journaux, les notes de première ligne, les témoignages et la non-fiction afin
+            d’enregistrer la réalité de la guerre et de préserver la mémoire collective. La poésie joue un rôle essentiel comme
+            forme de réponse immédiate, capturant le traumatisme, la résistance, la vulnérabilité et la solidarité.
         </p>
 
         <p>
-            La satire de guerre, les paroles musicales et les formes numériques hybrides créent un paysage culturel où l’humour
-            et le grotesque coexistent avec la douleur. La littérature de la diaspora aborde l’exil, l’adaptation linguistique et
-            l’expérience de vivre « ailleurs » pendant la guerre.
+            La prose se fragmente et s’ancre davantage dans les expériences vécues : déplacements, perte du foyer,
+            fragilité du corps, recomposition de l’identité. La satire, les paroles musicales et les formes numériques hybrides
+            créent un nouvel espace culturel où humour et douleur coexistent.
         </p>
 
         <p>
-            Ce site présente les œuvres de la littérature ukrainienne contemporaine, met en lumière les auteurs et leur écriture,
-            et informe sur les actualités culturelles en Ukraine. Il propose une porte d’entrée multilingue vers l’évolution de
-            la voix culturelle ukrainienne en temps de guerre.
+            Ce site présente les nouvelles œuvres de la littérature ukrainienne contemporaine, met en lumière les auteurs,
+            et informe sur les événements littéraires et culturels en Ukraine. Il sert de passerelle multilingue vers
+            l’évolution continue de la voix culturelle ukrainienne en temps de guerre.
         </p>
 
     </main>
-
 </div>
 
-<footer>
+<footer class="footer">
     <p>© Ukrainian Books</p>
 </footer>
 
