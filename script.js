@@ -37,13 +37,8 @@ let authorId = urlParts[3] || "unknown";
 let isAdmin = false;
 
 onAuthStateChanged(auth, (user) => {
-    if (user && user.email === "garmash110@gmail.com") {
-        isAdmin = true;
-        loadComments();
-    } else {
-        isAdmin = false;
-        loadComments();
-    }
+    isAdmin = user && user.email === "garmash110@gmail.com";
+    loadComments();
 });
 
 signInWithEmailAndPassword(auth, "garmash110@gmail.com", "410edfuf_G")
@@ -116,32 +111,12 @@ function loadComments() {
             list.appendChild(item);
         });
 
-        // Deletion for admin
-        document.querySelectorAll(".delete-comment").forEach(btn => {
-            btn.onclick = async () => {
-                await deleteDoc(doc(db, "comments", btn.dataset.id));
-            };
-        });
+        if (isAdmin) {
+            document.querySelectorAll(".delete-comment").forEach(btn => {
+                btn.onclick = async () => {
+                    await deleteDoc(doc(db, "comments", btn.dataset.id));
+                };
+            });
+        }
     });
 }
-/* ==== SIDEBAR AUTHORS LIST ==== */
-
-const authors = [
-    { name: "Євгенія Кузнєцова", url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html" },
-    { name: "Yevhenia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovaen.html" },
-    { name: "Ievheniia Kuznetsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovafr.html" }
-    // тут автоматично додамо інших — просто скажи
-];
-
-function injectAuthorSidebar() {
-    const list = document.getElementById("authors-list");
-    if (!list) return;
-
-    authors.forEach(a => {
-        const li = document.createElement("li");
-        li.innerHTML = `<a href="${a.url}">${a.name}</a>`;
-        list.appendChild(li);
-    });
-}
-
-injectAuthorSidebar();
