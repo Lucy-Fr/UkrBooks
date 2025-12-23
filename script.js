@@ -48,39 +48,37 @@ signInWithEmailAndPassword(auth, "garmash110@gmail.com", "410edfuf_G")
 // Submit comment
 // ================================
 document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("comment-form");
-    const list = document.getElementById("comments-list");
+    const form = document.getElementById("commentForm");
+    const list = document.getElementById("commentsList");
 
-    if (!form || !list) return;
+    if (form) {
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
 
-    form.addEventListener("submit", async (e) => {
-        e.preventDefault();
+            const name = document.getElementById("name").value.trim();
+            const text = document.getElementById("text").value.trim();
 
-        const name = form.name.value.trim();
-        const text = form.comment.value.trim();
-        const captcha = form.captcha.value.trim();
+            if (!name || !text) return;
 
-        if (captcha !== "5") {
-            alert("Wrong CAPTCHA.");
-            return;
-        }
+            await addDoc(collection(db, "comments"), {
+                author: authorId,
+                name,
+                text,
+                timestamp: Date.now()
+            });
 
-        await addDoc(collection(db, "comments"), {
-            author: authorId,
-            name,
-            text,
-            timestamp: Date.now()
+            form.reset();
         });
+    }
 
-        form.reset();
-    });
+    injectAuthorSidebar();
 });
 
 // ================================
 // Load comments in real time
 // ================================
 function loadComments() {
-    const list = document.getElementById("comments-list");
+    const list = document.getElementById("commentsList");
     if (!list) return;
 
     const q = query(
@@ -121,41 +119,37 @@ function loadComments() {
     });
 }
 
+// ================================
+// SIDEBAR — one name depending on language
+// ================================
 
-
-// ======================================================
-//   RIGHT SIDEBAR — ALWAYS ONE NAME (LANG DETECTED)
-// ======================================================
-
-// Язык страницы = <html lang="...">
-const pageLang = document.documentElement.lang || "en";
-
-// Один автор — на языке страницы
-const authorsSidebar = {
-    en: [
-        { name: "Yevhenia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovaen.html" }
-    ],
-    fr: [
-        { name: "Ievheniia Kuznetsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovafr.html" }
-    ],
-    uk: [
-        { name: "Євгенія Кузнєцова", url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html" }
-    ]
+// имя → URL
+const authorSidebarNames = {
+    "en": { 
+        name: "Yevhenia Kuznietsova",
+        url: "/UkrBooks/authors/kuznetsova/kuznetsovaen.html"
+    },
+    "fr": {
+        name: "Ievheniia Kuznetsova",
+        url: "/UkrBooks/authors/kuznetsova/kuznetsovafr.html"
+    },
+    "ua": {
+        name: "Євгенія Кузнєцова",
+        url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html"
+    }
 };
 
 function injectAuthorSidebar() {
     const list = document.getElementById("authors-list");
     if (!list) return;
 
-    list.innerHTML = ""; // чистим
+    const lang = document.documentElement.lang.toLowerCase();
 
-    const items = authorsSidebar[pageLang] || authorsSidebar.en;
-
-    items.forEach(a => {
+    if (authorSidebarNames[lang]) {
         const li = document.createElement("li");
-        li.innerHTML = `<a href="${a.url}">${a.name}</a>`;
+        li.innerHTML = `<a href="${authorSidebarNames[lang].url}">
+                            ${authorSidebarNames[lang].name}
+                        </a>`;
         list.appendChild(li);
-    });
+    }
 }
-
-injectAuthorSidebar();
