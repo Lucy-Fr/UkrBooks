@@ -124,3 +124,24 @@ function loadComments() {
         });
     });
 }
+/* ==== SIDEBAR AUTHORS LIST ==== */
+
+const authors = [
+    { name: "Євгенія Кузнєцова", url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html" },
+    { name: "Yevhenia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovaen.html" },
+    { name: "Ievheniia Kuznetsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovafr.html" }
+    // тут автоматично додамо інших — просто скажи
+];
+
+function injectAuthorSidebar() {
+    const list = document.getElementById("authors-list");
+    if (!list) return;
+
+    authors.forEach(a => {
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="${a.url}">${a.name}</a>`;
+        list.appendChild(li);
+    });
+}
+
+injectAuthorSidebar();
