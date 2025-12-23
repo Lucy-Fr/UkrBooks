@@ -61,6 +61,10 @@ header {
     text-align: left;
     margin-bottom: 40px;
     line-height: 1.2;
+
+    /* <<< ДОБАВЛЕНО: место для фото справа >>> */
+    position: relative;
+    padding-right: 280px;
 }
 
 h2 {
@@ -113,6 +117,27 @@ h3 {
     flex-wrap: wrap;
 }
 
+/* <<< НОВЫЙ БЛОК: фото рядом с заголовком >>> */
+
+.page-title + .author-card {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 250px;
+}
+
+.page-title + .author-card .author-photo {
+    width: 250px;
+    height: auto;
+    border-radius: 14px;
+    object-fit: cover;
+
+    /* эстетично */
+    border: 2px solid #e6edf5;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+}
+
+/* стандартный стиль для списка авторов */
 .author-photo {
     width: 230px;
     border-radius: 10px;
@@ -226,16 +251,21 @@ a:hover {
     .page-title {
         font-size: 2.2rem;
         text-align: center;
+        padding-right: 0;
     }
 
-    .hero-block {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .hero-block img {
+    /* фото автора переходит вниз */
+    .page-title + .author-card {
+        position: static;
         width: 100%;
-        max-width: 360px;
+        margin-bottom: 20px;
+        text-align: center;
+        order: 1;
+    }
+
+    .page-title + .author-card .author-photo {
+        width: 100%;
+        max-width: 260px;
         margin: 0 auto;
     }
 
@@ -249,4 +279,51 @@ a:hover {
         max-width: 260px;
         margin: 0 auto;
     }
+}
+/* =========================
+   COMMENT FORM (ENGLISH, WITH MESSAGES)
+   ========================= */
+
+.comment-form {
+    margin-top: 40px;
+    background: #f7faff;
+    padding: 25px;
+    border-radius: 10px;
+    border: 1px solid #e1e7ef;
+}
+
+.comment-form label {
+    font-weight: 600;
+    color: #003366;
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 6px;
+}
+
+.comment-form input[type="text"],
+.comment-form input[type="email"],
+.comment-form textarea {
+    width: 100%;
+    padding: 12px;
+    font-size: 1rem;
+    border: 1px solid #b8c8dd;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    background: #fff;
+    box-sizing: border-box;
+}
+
+.comment-form button {
+    background: #005bbb;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    font-size: 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.comment-form button:hover {
+    opacity: 0.85;
 }
