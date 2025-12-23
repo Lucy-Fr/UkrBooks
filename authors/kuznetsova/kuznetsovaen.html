@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <title>Yevhenia Kuznietsova</title>
 
-    <!-- Main site styles -->
-    <link rel="stylesheet" href="/UkrBooks/style.css?v=4">
+    <link rel="stylesheet" href="/UkrBooks/style.css?v=5">
 </head>
 
 <body>
@@ -16,12 +15,13 @@
     </a>
 
     <nav class="language-switch">
-        <a href="/UkrBooks/authors/kuznetsova/kuznetsovaen">EN</a> |
+        <a href="/UkrBooks/authors/kuznetsova/kuznetsovaen.html">EN</a> |
         <a href="/UkrBooks/authors/kuznetsova/kuznetsovafr.html">FR</a> |
         <a href="/UkrBooks/authors/kuznetsova/kuznetsovaua.html">UA</a>
     </nav>
 </header>
 
+<div class="layout">
 
 <main class="content">
 
@@ -45,32 +45,29 @@
         She has worked as a journalist, taught postcolonial studies, and served as a consultant for international organisations, 
         including the UN and the OSCE. She has also taken part in research projects on Ukrainian media space. 
         Her academic interests include media language analysis, internet anthropology, the role of media in society, 
-        and media systems research. Her collaborative project with Vox Ukraine, which analysed behavioural trends of Ukrainian media on social networks, gained professional recognition.
+        and media systems research.
     </p>
 
     <p>
         Kuznetsova debuted with the humorous culinary book “Cooking in Sorrow” (2020). She gained wide recognition with her first work 
-        of fiction, “Ask Miechka” (2021), which was shortlisted for the BBC Book of the Year Award. Her subsequent books — “The Ladder”, 
-        the popular science work “Language is a Sword”, and her new novel “The Sheep Intact”, published in 2025 — have confirmed her status 
-        as one of the most notable contemporary Ukrainian authors. Her writing combines warmth, humour, attention to everyday details, 
-        and deep reflection on language, memory, and identity.
+        of fiction, “Ask Miechka” (2021), shortlisted for the BBC Book of the Year Award. Her later books — “The Ladder”, 
+        “Language is a Sword”, and her new novel “The Sheep Intact” (2025) — established her as one of the leading voices 
+        in contemporary Ukrainian literature.
     </p>
 
     <p>
-        As a translator, Kuznetsova works with both fiction and non-fiction. Her translations include Doris Goodwin’s biography of Lincoln, 
-        Thomas Nichols’s “The Death of Expertise”, and the popular novels “A Kiss in Paris” and “A Kiss in New York”.
+        As a translator, she has worked with both fiction and non-fiction, including Doris Goodwin’s biography of Lincoln, 
+        Thomas Nichols’s “The Death of Expertise”, and the novels “A Kiss in Paris” and “A Kiss in New York”.
     </p>
 
     <p>
-        Kuznetsova notes that Ukrainian has always been her native language, although there was a period when she switched easily to Russian. 
-        A turning point came during a trip abroad in 2009 when she realised the importance of linguistic identity and consciously chose Ukrainian.
+        She notes that Ukrainian has always been her native language, although there was a period when she switched easily to Russian. 
+        A decisive turning point came during a trip abroad in 2009 when she realised the importance of linguistic identity.
     </p>
 
     <p>
-        She lives between Ukraine and Spain, raises two children, and continues to combine literary work, translation, and research. 
-        Her writing centres on themes of home, language, human vulnerability, and resilience.
+        She lives between Ukraine and Spain, raises two children, and combines literary, translation, and research work.
     </p>
-
 
     <h2>Video</h2>
 
@@ -88,22 +85,20 @@
     <section class="comments">
         <h2>Comments</h2>
 
-        <!-- Admin auth controls -->
         <div id="admin-controls" style="margin-bottom: 20px;">
-            <button id="loginBtn" 
-                    style="padding:10px 20px; border-radius:8px; border:none; cursor:pointer; background:#005bbb; color:#fff; font-size:16px;">
+            <button id="loginBtn"
+                style="padding:10px 20px;border-radius:8px;border:none;cursor:pointer;background:#005bbb;color:#fff;">
                 Sign in as Admin
             </button>
 
-            <button id="logoutBtn" 
-                    style="padding:10px 20px; border-radius:8px; border:none; cursor:pointer; background:#777; color:#fff; font-size:16px; display:none;">
+            <button id="logoutBtn"
+                style="padding:10px 20px;border-radius:8px;border:none;cursor:pointer;background:#777;color:#fff;display:none;">
                 Sign out
             </button>
 
-            <span id="adminStatus" style="margin-left:10px; font-size:0.95rem; color:#555;"></span>
+            <span id="adminStatus" style="margin-left:10px;font-size:0.95rem;color:#555;"></span>
         </div>
 
-        <!-- Public comment form -->
         <form id="commentForm" class="comment-form">
             <label for="name">Your Name</label>
             <input type="text" id="name" required>
@@ -114,7 +109,6 @@
             <button type="submit">Send Comment</button>
         </form>
 
-        <!-- Comment list -->
         <div id="commentsList" style="margin-top:30px;"></div>
     </section>
 
@@ -122,203 +116,22 @@
 
 </main>
 
+<!-- ========================= -->
+<!--     RIGHT SIDEBAR         -->
+<!-- ========================= -->
+
+<aside class="sidebar-authors">
+    <h3>Authors</h3>
+    <ul id="authors-list"></ul>
+</aside>
+
+</div>
+
 <footer>
     <p>© Ukrainian Books</p>
 </footer>
 
-
-<!-- ========================= -->
-<!--   FIREBASE COMMENT CODE   -->
-<!-- ========================= -->
-
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import {
-  getFirestore,
-  collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc,
-  serverTimestamp,
-  query,
-  where
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-import {
-  getAuth,
-  onAuthStateChanged,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-/* Firebase config (your project) */
-const firebaseConfig = {
-  apiKey: "AIzaSyBi3kVG2G0RTXKV2EIhs4fQXEkaJ7X6HXU",
-  authDomain: "ucontemporarylit.firebaseapp.com",
-  projectId: "ucontemporarylit",
-  storageBucket: "ucontemporarylit.firebasestorage.app",
-  messagingSenderId: "828332585690",
-  appId: "1:828332585690:web:dbdb5a5edf7b5329d4ebe3",
-  measurementId: "G-7493F35CVD"
-};
-
-/* Init */
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
-
-/* Admin email (only you) */
-const ADMIN_EMAIL = "garmash110@gmail.com";
-let currentUserEmail = null;
-
-/* Elements */
-const loginBtn = document.getElementById("loginBtn");
-const logoutBtn = document.getElementById("logoutBtn");
-const adminStatus = document.getElementById("adminStatus");
-const form = document.getElementById("commentForm");
-const list = document.getElementById("commentsList");
-
-/* Page ID so all authors use one collection but разные записи */
-const PAGE_ID = "kuznetsova_en";
-
-/* Auth state */
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    currentUserEmail = user.email || null;
-    loginBtn.style.display = "none";
-    logoutBtn.style.display = "inline-block";
-    adminStatus.textContent = currentUserEmail === ADMIN_EMAIL
-      ? "Admin mode: ON"
-      : "Signed in (not admin)";
-  } else {
-    currentUserEmail = null;
-    loginBtn.style.display = "inline-block";
-    logoutBtn.style.display = "none";
-    adminStatus.textContent = "";
-  }
-
-  loadComments();
-});
-
-/* Login / logout */
-loginBtn.addEventListener("click", async () => {
-  try {
-    await signInWithPopup(auth, provider);
-  } catch (err) {
-    console.error("Login error", err);
-  }
-});
-
-logoutBtn.addEventListener("click", async () => {
-  try {
-    await signOut(auth);
-  } catch (err) {
-    console.error("Logout error", err);
-  }
-});
-
-/* Load comments (sorted by date, newest first) */
-async function loadComments() {
-  list.innerHTML = "";
-
-  try {
-    const q = query(
-      collection(db, "comments"),
-      where("page", "==", PAGE_ID)
-    );
-    const snapshot = await getDocs(q);
-
-    const items = [];
-    snapshot.forEach((docSnap) => {
-      const data = docSnap.data();
-      items.push({
-        id: docSnap.id,
-        ...data
-      });
-    });
-
-    items.sort((a, b) => {
-      const ta = a.created && a.created.seconds ? a.created.seconds : 0;
-      const tb = b.created && b.created.seconds ? b.created.seconds : 0;
-      return tb - ta; // newest first
-    });
-
-    items.forEach((c) => {
-      const div = document.createElement("div");
-      div.style.padding = "12px 0";
-      div.style.borderBottom = "1px solid #ddd";
-
-      let html = `<strong>${c.name || "Anonymous"}</strong><br>${c.text || ""}`;
-
-      if (c.created && c.created.toDate) {
-        const d = c.created.toDate();
-        const dateStr = d.toLocaleString();
-        html += `<br><span style="font-size:0.85rem; color:#666;">${dateStr}</span>`;
-      }
-
-      if (currentUserEmail === ADMIN_EMAIL) {
-        html += `
-          <br>
-          <button data-id="${c.id}" class="delete-btn"
-                  style="margin-top:8px; background:#b30000; color:white;
-                         border:none; padding:6px 12px; border-radius:6px; cursor:pointer;">
-              Delete
-          </button>
-        `;
-      }
-
-      div.innerHTML = html;
-      list.appendChild(div);
-    });
-
-    if (currentUserEmail === ADMIN_EMAIL) {
-      document.querySelectorAll(".delete-btn").forEach((btn) => {
-        btn.addEventListener("click", async () => {
-          const id = btn.getAttribute("data-id");
-          try {
-            await deleteDoc(doc(db, "comments", id));
-            loadComments();
-          } catch (err) {
-            console.error("Delete error", err);
-          }
-        });
-      });
-    }
-  } catch (err) {
-    console.error("Load comments error", err);
-  }
-}
-
-/* Save new comment */
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-
-  const name = document.getElementById("name").value.trim();
-  const text = document.getElementById("text").value.trim();
-
-  if (!name || !text) return;
-
-  try {
-    await addDoc(collection(db, "comments"), {
-      page: PAGE_ID,
-      name,
-      text,
-      created: serverTimestamp()
-    });
-
-    form.reset();
-    loadComments();
-  } catch (err) {
-    console.error("Add comment error", err);
-  }
-});
-
-/* Initial load */
-loadComments();
-</script>
+<!-- Universal Firebase logic -->
 <script type="module" src="/UkrBooks/script.js"></script>
 
 </body>
