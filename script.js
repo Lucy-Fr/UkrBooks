@@ -193,7 +193,7 @@ function loadComments() {
 const AUTHORS = {
    zhadan: {
     en: { name: "Serhiy Zhadan", url: "/UkrBooks/authors/zhadan/zhadanen.html" },
-    fr: { name: "Sergueï Jadan", url: "/UkrBooks/authors/zhadan/zhadanfr.html" },
+    fr: { name: "Serhiy Jadan", url: "/UkrBooks/authors/zhadan/zhadanfr.html" },
     uk: { name: "Сергій Жадан", url: "/UkrBooks/authors/zhadan/zhadanua.html" }
 },
 
