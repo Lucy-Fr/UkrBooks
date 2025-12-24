@@ -35,7 +35,7 @@ const auth = getAuth(app);
 
 let parts = window.location.pathname.split("/").filter(x => x);
 
-// Expected path:
+// Expected:
 // /UkrBooks/authors/kuznetsova/kuznetsovaen.html
 // ["UkrBooks","authors","kuznetsova","kuznetsovaen.html"]
 
@@ -63,28 +63,35 @@ function detectLanguage() {
 let lang = detectLanguage();
 
 // ======================================================
-// Admin auto-login
+// Admin login
 // ======================================================
 
 let isAdmin = false;
 
-// следим за состоянием логина
+// следим за состоянием авторизации
 onAuthStateChanged(auth, (user) => {
     isAdmin = !!(user && user.email === "garmash110@gmail.com");
     console.log("Auth state changed, isAdmin =", isAdmin);
-    // подписку на комментарии запускаем/держим отдельно
+    // после смены статуса перерисуем комментарии с актуальными правами
+    loadComments();
 });
 
-// автологин после полной загрузки страницы
-window.addEventListener("load", () => {
-    signInWithEmailAndPassword(auth, "garmash110@gmail.com", "410edfuf_G")
-        .then(() => {
-            console.log("Admin auto-login OK");
-        })
-        .catch((err) => {
-            console.error("Admin auto-login error:", err);
-        });
-});
+// глобальная функция для кнопки "Войти как адмін"
+window.adminLogin = async function () {
+    try {
+        const cred = await signInWithEmailAndPassword(
+            auth,
+            "garmash110@gmail.com",
+            "410edfuf_G"
+        );
+        console.log("Admin login success:", cred.user?.email);
+        alert("Ви увійшли як адмін.");
+        loadComments();
+    } catch (err) {
+        console.error("Admin login error:", err);
+        alert("Помилка входу як адмін: " + (err.message || err));
+    }
+};
 
 // ======================================================
 // Comment submission
@@ -118,8 +125,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // если кнопка есть с id="adminLoginBtn" — тоже привяжем
+    const adminBtn = document.getElementById("adminLoginBtn");
+    if (adminBtn) {
+        adminBtn.addEventListener("click", () => window.adminLogin());
+    }
+
     injectAuthorSidebar();
-    loadComments();   // сразу подписываемся на комменты
+    loadComments();
 });
 
 // ======================================================
@@ -134,64 +147,77 @@ function loadComments() {
 
     const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
 
-    // если уже подписаны — отписываемся и подписываемся заново
     if (unsubscribeComments) {
         unsubscribeComments();
     }
 
-    unsubscribeComments = onSnapshot(q, (snapshot) => {
-        list.innerHTML = "";
+    unsubscribeComments = onSnapshot(
+        q,
+        (snapshot) => {
+            list.innerHTML = "";
 
-        snapshot.forEach((docSnap) => {
-            const c = docSnap.data();
+            snapshot.forEach((docSnap) => {
+                const c = docSnap.data();
 
-            if (c.author !== authorId) return;
+                if (c.author !== authorId) return;
 
-            const item = document.createElement("div");
-            item.className = "comment-item";
+                const item = document.createElement("div");
+                item.className = "comment-item";
 
-            const dateStr = c.timestamp
-                ? new Date(c.timestamp).toLocaleString()
-                : "";
+                const dateStr = c.timestamp
+                    ? new Date(c.timestamp).toLocaleString()
+                    : "";
 
-            // Кнопка всегда есть, но прячем её, если не админ
-            const deleteButtonStyle = isAdmin ? "" : 'style="display:none;"';
+                // Кнопка есть всегда, но скрыта, если не админ
+                const deleteButtonStyle = isAdmin ? "" : 'style="display:none;"';
 
-            item.innerHTML = `
-                <p><strong>${c.name}</strong></p>
-                <p>${c.text}</p>
-                <small>${dateStr}</small>
-                <button class="delete-comment" data-id="${docSnap.id}" ${deleteButtonStyle}>Delete</button>
-                <hr>
-            `;
+                item.innerHTML = `
+                    <p><strong>${c.name}</strong></p>
+                    <p>${c.text}</p>
+                    <small>${dateStr}</small>
+                    <button type="button"
+                            class="delete-comment"
+                            data-id="${docSnap.id}"
+                            ${deleteButtonStyle}>
+                        Delete
+                    </button>
+                    <hr>
+                `;
 
-            list.appendChild(item);
-        });
+                list.appendChild(item);
+            });
 
-        // делаем кнопку ЖИВОЙ: вешаем обработчик КАЖДЫЙ раз после перерисовки
-        const buttons = list.querySelectorAll(".delete-comment");
-        buttons.forEach(btn => {
-            btn.onclick = async () => {
-                if (!isAdmin) {
-                    alert("Видаляти коментарі може тільки адміністратор.");
-                    return;
-                }
-                const id = btn.dataset.id;
-                try {
-                    console.log("Trying to delete comment with id:", id);
-                    await deleteDoc(doc(db, "comments", id));
-                    console.log("Comment deleted");
-                } catch (err) {
-                    console.error("Error deleting comment:", err);
-                    alert("Помилка при видаленні коментаря: " + (err.message || err));
-                }
-            };
-        });
+            // Делаем кнопки живыми
+            const buttons = list.querySelectorAll(".delete-comment");
+            buttons.forEach((btn) => {
+                btn.onclick = async () => {
+                    if (!isAdmin) {
+                        alert("Видаляти коментарі може тільки адміністратор.");
+                        return;
+                    }
+                    const id = btn.dataset.id;
+                    try {
+                        console.log("Trying to delete comment with id:", id);
+                        await deleteDoc(doc(db, "comments", id));
+                        console.log("Comment deleted");
+                    } catch (err) {
+                        console.error("Error deleting comment:", err);
+                        alert("Помилка при видаленні коментаря: " + (err.message || err));
+                    }
+                };
+            });
 
-        console.log("Comments rendered. Buttons:", buttons.length, "isAdmin:", isAdmin);
-    }, (err) => {
-        console.error("onSnapshot error:", err);
-    });
+            console.log(
+                "Comments rendered. Buttons:",
+                buttons.length,
+                "isAdmin:",
+                isAdmin
+            );
+        },
+        (err) => {
+            console.error("onSnapshot error:", err);
+        }
+    );
 }
 
 // ======================================================
@@ -222,9 +248,9 @@ function injectAuthorSidebar() {
 
     list.innerHTML = ""; // reset sidebar
 
-    Object.keys(AUTHORS).forEach(key => {
+    Object.keys(AUTHORS).forEach((key) => {
         const record = AUTHORS[key];
-        const entry = record[lang] || record["en"];
+        const entry  = record[lang] || record["en"];
 
         const li = document.createElement("li");
         li.innerHTML = `<a href="${entry.url}">${entry.name}</a>`;
