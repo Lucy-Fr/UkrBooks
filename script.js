@@ -191,6 +191,12 @@ function loadComments() {
 // ======================================================
 
 const AUTHORS = {
+   zhadan: {
+    en: { name: "Serhiy Zhadan", url: "/UkrBooks/authors/zhadan/zhadanen.html" },
+    fr: { name: "Sergueï Jadan", url: "/UkrBooks/authors/zhadan/zhadanfr.html" },
+    uk: { name: "Сергій Жадан", url: "/UkrBooks/authors/zhadan/zhadanua.html" }
+},
+
     kuznetsova: {
         en: { name: "Yevhenia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovaen.html" },
         fr: { name: "Ievheniia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovafr.html" },
