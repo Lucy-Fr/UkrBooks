@@ -1,73 +1,178 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voices of Ukraine in Contemporary Literature</title>
+// ======================================================
+// Firebase universal comments + sidebar
+// ======================================================
 
-    <link rel="stylesheet" href="/UkrBooks/style.css?v=5">
-</head>
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+    getFirestore, collection, addDoc, deleteDoc, doc,
+    query, orderBy, onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {
+    getAuth, onAuthStateChanged, signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-<body>
+// ------------------------------------------------------
+// Firebase config
+// ------------------------------------------------------
+const firebaseConfig = {
+    apiKey: "AIzaSyBi3kVG2G0RTXKV2EIhs4fQXEkaJ7X6HXU",
+    authDomain: "ucontemporarylit.firebaseapp.com",
+    projectId: "ucontemporarylit",
+    storageBucket: "ucontemporarylit.appspot.com",
+    messagingSenderId: "828332585690",
+    appId: "1:828332585690:web:dbdb5a5edf7b5329d4ebe3",
+    measurementId: "G-7493F35CVD"
+};
 
-<header class="top-nav">
-    <a href="/UkrBooks/index.html">
-        <img src="/UkrBooks/logo.png" class="logo" alt="Ukrainian Books">
-    </a>
+const app  = initializeApp(firebaseConfig);
+const db   = getFirestore(app);
+const auth = getAuth(app);
 
-    <nav class="language-switch">
-        <span>EN</span> |
-        <a href="/UkrBooks/fr.html">FR</a> |
-        <a href="/UkrBooks/ua.html">UA</a>
-    </nav>
-</header>
+// ======================================================
+// Detect WHERE WE ARE (author page or main page)
+// ======================================================
+function detectAuthor() {
+    const p = window.location.pathname.split("/").filter(x => x);
+    const authorsIndex = p.indexOf("authors");
+    if (authorsIndex !== -1 && p[authorsIndex + 1]) return p[authorsIndex + 1];
+    return "global";
+}
+const authorId = detectAuthor();
 
-<!-- ОБЕРТКА layout — как на страницах автора -->
-<div class="layout">
+// ======================================================
+// Detect language
+// ======================================================
+function detectLanguage() {
+    const l = (document.documentElement.lang || "").toLowerCase();
+    if (l === "ua") return "uk";
+    return l || "en";
+}
+const lang = detectLanguage();
 
-    <!-- ОСНОВНОЙ ТЕКСТ -->
-    <main class="content">
+// ======================================================
+// Admin login logic
+// ======================================================
+let isAdmin = false;
 
-        <h1 class="page-title">Voices of Ukraine in Contemporary Literature</h1>
+onAuthStateChanged(auth, user => {
+    isAdmin = !!(user && user.email === "garmash110@gmail.com");
+    loadComments();
+});
 
-        <p>
-            After Russia’s full-scale invasion in 2022, Ukrainian literature entered a new and intense phase marked by 
-            documentary writing, ethical urgency, and the redefinition of the writer’s role. Authors increasingly turned 
-            to diaries, frontline notes, testimonies, and nonfiction to record the war’s reality and preserve collective memory. 
-            Poetry gained exceptional importance as a rapid response medium, capturing trauma, resistance, vulnerability, 
-            and solidarity.
-        </p>
+window.adminLogin = async function() {
+    try {
+        await signInWithEmailAndPassword(auth, "garmash110@gmail.com", "410edfuf_G");
+        alert("Admin logged in");
+        loadComments();
+    } catch (err) {
+        alert("Login error: " + err.message);
+    }
+};
 
-        <p>
-            Prose became more fragmentary and grounded in lived experience: stories of displacement, loss of home, bodily 
-            fragility, and the reshaping of identity dominate contemporary narratives. Wartime satire, musical lyrics, 
-            and hybrid digital forms create a new cultural layer where humor and grotesque coexist with pain. A growing 
-            diaspora literature reflects exile, linguistic adaptation, and life “elsewhere” during the war.
-        </p>
+// ======================================================
+// Comment submission
+// ======================================================
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("commentForm");
+    if (form) {
+        form.addEventListener("submit", async e => {
+            e.preventDefault();
 
-        <p>
-            This website introduces readers to the newest works of contemporary Ukrainian literature, presents authors and 
-            their writing, and keeps audiences informed about literary and cultural developments in Ukraine. 
-            It aims to offer a clear, multilingual gateway to the ongoing evolution of Ukraine’s cultural voice in times of war.
-        </p>
+            const name = document.getElementById("name").value.trim();
+            const text = document.getElementById("text").value.trim();
+            if (!name || !text) return;
 
-        
+            await addDoc(collection(db, "comments"), {
+                author: authorId,
+                name,
+                text,
+                lang: lang,
+                timestamp: Date.now()
+            });
 
-    </main>
+            form.reset();
+        });
+    }
 
-  <!-- ПРАВЫЙ САЙДБАР — как на страницах автора -->
-<aside class="sidebar-authors">
-    <h3>Authors</h3>
-    <ul id="authors-list"></ul>
-</aside>
+    const adminBtn = document.getElementById("adminLoginBtn");
+    if (adminBtn) adminBtn.onclick = () => adminLogin();
 
-</div>
+    injectAuthorSidebar();
+    loadComments();
+});
 
-<footer>
-    <p>© Ukrainian Books</p>
-</footer>
+// ======================================================
+// Load comments
+// ======================================================
+let unsubscribe = null;
 
-<script type="module" src="/UkrBooks/script.js"></script>
+function loadComments() {
+    const list = document.getElementById("commentsList");
+    if (!list) return;
 
-</body>
-</html>
+    const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
+
+    if (unsubscribe) unsubscribe();
+
+    unsubscribe = onSnapshot(q, snap => {
+        list.innerHTML = "";
+
+        snap.forEach(docSnap => {
+            const c = docSnap.data();
+            if (c.author !== authorId) return;
+
+            const item = document.createElement("div");
+            item.className = "comment-item";
+
+            const dateStr = new Date(c.timestamp).toLocaleString();
+
+            item.innerHTML = `
+                <p><strong>${c.name}</strong></p>
+                <p>${c.text}</p>
+                <small>${dateStr}</small>
+                <button class="delete-comment" data-id="${docSnap.id}" 
+                    ${isAdmin ? "" : 'style="display:none;"'}>
+                    Delete
+                </button>
+                <hr>
+            `;
+
+            list.appendChild(item);
+        });
+
+        list.querySelectorAll(".delete-comment").forEach(btn => {
+            btn.onclick = async () => {
+                if (!isAdmin) {
+                    alert("Only admin can delete!");
+                    return;
+                }
+                await deleteDoc(doc(db, "comments", btn.dataset.id));
+            };
+        });
+    });
+}
+
+// ======================================================
+// Sidebar authors (WORKING version)
+// ======================================================
+const AUTHORS = {
+    kuznetsova: {
+        en: { name: "Yevhenia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovaen.html" },
+        fr: { name: "Ievheniia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovafr.html" },
+        uk: { name: "Євгенія Кузнєцова", url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html" }
+    }
+};
+
+function injectAuthorSidebar() {
+    const list = document.getElementById("authors-list");
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    Object.keys(AUTHORS).forEach(key => {
+        const entry = AUTHORS[key][lang] || AUTHORS[key].en;
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="${entry.url}">${entry.name}</a>`;
+        list.appendChild(li);
+    });
+}
