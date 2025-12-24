@@ -3,9 +3,9 @@
 // ======================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { 
+import {
     getFirestore, collection, addDoc, deleteDoc, doc,
-    query, orderBy, onSnapshot 
+    query, orderBy, onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import {
     getAuth, onAuthStateChanged, signInWithEmailAndPassword
@@ -16,17 +16,17 @@ import {
 // ------------------------------------------------------
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBi3kVG2G0RTXKV2EIhs4fQXEkaJ7X6HXU",
-  authDomain: "ucontemporarylit.firebaseapp.com",
-  projectId: "ucontemporarylit",
-  storageBucket: "ucontemporarylit.appspot.com",
-  messagingSenderId: "828332585690",
-  appId: "1:828332585690:web:dbdb5a5edf7b5329d4ebe3",
-  measurementId: "G-7493F35CVD"
+    apiKey: "AIzaSyBi3kVG2G0RTXKV2EIhs4fQXEkaJ7X6HXU",
+    authDomain: "ucontemporarylit.firebaseapp.com",
+    projectId: "ucontemporarylit",
+    storageBucket: "ucontemporarylit.appspot.com",
+    messagingSenderId: "828332585690",
+    appId: "1:828332585690:web:dbdb5a5edf7b5329d4ebe3",
+    measurementId: "G-7493F35CVD"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+const app  = initializeApp(firebaseConfig);
+const db   = getFirestore(app);
 const auth = getAuth(app);
 
 // ======================================================
@@ -35,7 +35,7 @@ const auth = getAuth(app);
 
 let parts = window.location.pathname.split("/").filter(x => x);
 
-// Expected:
+// Expected path:
 // /UkrBooks/authors/kuznetsova/kuznetsovaen.html
 // ["UkrBooks","authors","kuznetsova","kuznetsovaen.html"]
 
@@ -50,10 +50,10 @@ function detectLanguage() {
 
     if (!lang) {
         const file = window.location.pathname.toLowerCase();
-        if (file.includes("ua") || file.includes("uk")) lang = "uk";
-        else if (file.includes("fr")) lang = "fr";
-        else if (file.includes("en")) lang = "en";
-        else lang = "en";
+        if (file.includes("ua") || file.includes("uk"))      lang = "uk";
+        else if (file.includes("fr"))                        lang = "fr";
+        else if (file.includes("en"))                        lang = "en";
+        else                                                 lang = "en";
     }
 
     if (lang === "ua") lang = "uk";
@@ -68,17 +68,23 @@ let lang = detectLanguage();
 
 let isAdmin = false;
 
+// следим за состоянием логина
 onAuthStateChanged(auth, (user) => {
-    isAdmin = (user && user.email === "garmash110@gmail.com");
-    loadComments();
+    isAdmin = !!(user && user.email === "garmash110@gmail.com");
+    console.log("Auth state changed, isAdmin =", isAdmin);
+    // подписку на комментарии запускаем/держим отдельно
 });
 
-// <-- ВАЖНО: автологин запускаем ПОСЛЕ загрузки страницы
+// автологин после полной загрузки страницы
 window.addEventListener("load", () => {
     signInWithEmailAndPassword(auth, "garmash110@gmail.com", "410edfuf_G")
-        .catch(() => {});
+        .then(() => {
+            console.log("Admin auto-login OK");
+        })
+        .catch((err) => {
+            console.error("Admin auto-login error:", err);
+        });
 });
-
 
 // ======================================================
 // Comment submission
@@ -96,24 +102,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (!name || !text) return;
 
-            await addDoc(collection(db, "comments"), {
-                author: authorId,
-                name,
-                text,
-                lang: lang,
-                timestamp: Date.now()
-            });
-
-            form.reset();
+            try {
+                await addDoc(collection(db, "comments"), {
+                    author: authorId,
+                    name,
+                    text,
+                    lang: lang,
+                    timestamp: Date.now()
+                });
+                form.reset();
+            } catch (err) {
+                console.error("Error adding comment:", err);
+                alert("Помилка при додаванні коментаря: " + (err.message || err));
+            }
         });
     }
 
     injectAuthorSidebar();
+    loadComments();   // сразу подписываемся на комменты
 });
 
 // ======================================================
 // Load comments in real time
 // ======================================================
+
+let unsubscribeComments = null;
 
 function loadComments() {
     const list = document.getElementById("commentsList");
@@ -121,7 +134,12 @@ function loadComments() {
 
     const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
 
-    onSnapshot(q, (snapshot) => {
+    // если уже подписаны — отписываемся и подписываемся заново
+    if (unsubscribeComments) {
+        unsubscribeComments();
+    }
+
+    unsubscribeComments = onSnapshot(q, (snapshot) => {
         list.innerHTML = "";
 
         snapshot.forEach((docSnap) => {
@@ -132,33 +150,49 @@ function loadComments() {
             const item = document.createElement("div");
             item.className = "comment-item";
 
+            const dateStr = c.timestamp
+                ? new Date(c.timestamp).toLocaleString()
+                : "";
+
+            // Кнопка всегда есть, но прячем её, если не админ
+            const deleteButtonStyle = isAdmin ? "" : 'style="display:none;"';
+
             item.innerHTML = `
                 <p><strong>${c.name}</strong></p>
                 <p>${c.text}</p>
-                <small>${new Date(c.timestamp).toLocaleString()}</small>
-                ${isAdmin ? `<button class="delete-comment" data-id="${docSnap.id}">Delete</button>` : ""}
+                <small>${dateStr}</small>
+                <button class="delete-comment" data-id="${docSnap.id}" ${deleteButtonStyle}>Delete</button>
                 <hr>
             `;
 
             list.appendChild(item);
         });
 
-               if (isAdmin) {
-            document.querySelectorAll(".delete-comment").forEach(btn => {
-                btn.onclick = async () => {
-                    try {
-                        console.log("Trying to delete comment with id:", btn.dataset.id);
-                        await deleteDoc(doc(db, "comments", btn.dataset.id));
-                        console.log("Comment deleted");
-                        // onSnapshot сам обновит список, ничего больше не нужно
-                    } catch (err) {
-                        console.error("Error deleting comment:", err);
-                        alert("Помилка при видаленні коментаря: " + (err.message || err));
-                    }
-                };
-            });
-        }
+        // делаем кнопку ЖИВОЙ: вешаем обработчик КАЖДЫЙ раз после перерисовки
+        const buttons = list.querySelectorAll(".delete-comment");
+        buttons.forEach(btn => {
+            btn.onclick = async () => {
+                if (!isAdmin) {
+                    alert("Видаляти коментарі може тільки адміністратор.");
+                    return;
+                }
+                const id = btn.dataset.id;
+                try {
+                    console.log("Trying to delete comment with id:", id);
+                    await deleteDoc(doc(db, "comments", id));
+                    console.log("Comment deleted");
+                } catch (err) {
+                    console.error("Error deleting comment:", err);
+                    alert("Помилка при видаленні коментаря: " + (err.message || err));
+                }
+            };
+        });
 
+        console.log("Comments rendered. Buttons:", buttons.length, "isAdmin:", isAdmin);
+    }, (err) => {
+        console.error("onSnapshot error:", err);
+    });
+}
 
 // ======================================================
 //  UNIVERSAL SIDEBAR WITH FULL LIST OF AUTHORS
@@ -190,8 +224,6 @@ function injectAuthorSidebar() {
 
     Object.keys(AUTHORS).forEach(key => {
         const record = AUTHORS[key];
-
-        // pick correct name for current language
         const entry = record[lang] || record["en"];
 
         const li = document.createElement("li");
