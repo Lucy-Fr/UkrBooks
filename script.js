@@ -35,14 +35,14 @@ const auth = getAuth(app);
 
 let parts = window.location.pathname.split("/").filter(x => x);
 
-// Examples:
-// /UkrBooks/authors/kuznetsova/kuznetsovaen.html → ["UkrBooks","authors","kuznetsova","kuznetsovaen.html"]
-// /UkrBooks/index.html → ["UkrBooks","index.html"]
+// Expected:
+// /UkrBooks/authors/kuznetsova/kuznetsovaen.html
+// ["UkrBooks","authors","kuznetsova","kuznetsovaen.html"]
 
 let authorId = (parts[1] === "authors" && parts[2]) ? parts[2] : "global";
 
 // ======================================================
-// Detect language for UI
+// Detect language
 // ======================================================
 
 function detectLanguage() {
@@ -157,12 +157,14 @@ const AUTHORS = {
     kuznetsova: {
         en: { name: "Yevhenia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovaen.html" },
         fr: { name: "Ievheniia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovafr.html" },
-        uk: { name: "Євгенія Кузнєцова", url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html" }
+        uk: { name: "Євгенія Кузнєцова", url: "/UkrBooks/authors/kuznetsova/kузnetsovaua.html" }
     }
-
-    // Add more authors here:
-    // zhadan: { en:{}, fr:{}, uk:{} }
-    // zabuzhko: { ... }
+    // -------- add new authors here ----------
+    // zhadan: {
+    //     en: { name: "Serhiy Zhadan", url: "/UkrBooks/authors/zhadan/zhadanen.html" },
+    //     fr: { name: "Sergueï Jadan", url: "/UkrBooks/authors/zhadan/zhadanfr.html" },
+    //     uk: { name: "Сергій Жадан", url: "/UkrBooks/authors/zhadan/zhadanua.html" }
+    // }
 };
 
 // ======================================================
@@ -173,14 +175,16 @@ function injectAuthorSidebar() {
     const list = document.getElementById("authors-list");
     if (!list) return;
 
-    list.innerHTML = ""; // reset
+    list.innerHTML = ""; // reset sidebar
 
     Object.keys(AUTHORS).forEach(key => {
-        const item = AUTHORS[key][lang] || AUTHORS[key]["en"];
-        const li = document.createElement("li");
+        const record = AUTHORS[key];
 
-        li.innerHTML = `<a href="${item.url}">${item.name}</a>`;
+        // pick correct name for current language
+        const entry = record[lang] || record["en"];
+
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="${entry.url}">${entry.name}</a>`;
         list.appendChild(li);
     });
 }
-
