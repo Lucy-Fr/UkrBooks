@@ -11,6 +11,7 @@ import {
     getAuth, onAuthStateChanged, signInWithEmailAndPassword
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+// ------------------------------------------------------
 const firebaseConfig = {
   apiKey: "AIzaSyBi3kVG2G0RTXKV2EIhs4fQXEkaJ7X6HXU",
   authDomain: "ucontemporarylit.firebaseapp.com",
@@ -21,20 +22,19 @@ const firebaseConfig = {
   measurementId: "G-7493F35CVD"
 };
 
-// --------------------------------------------
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const auth = getAuth(app);
 
-// ================================
-// Identify author from URL (robust)
-// ================================
+// ======================================================
+// Identify author from URL
+// ======================================================
 let pathParts = window.location.pathname.split("/").filter(x => x);
 let authorId = pathParts.includes("kuznetsova") ? "kuznetsova" : "unknown";
 
-// ================================
+// ======================================================
 // Admin auto-login
-// ================================
+// ======================================================
 let isAdmin = false;
 
 onAuthStateChanged(auth, (user) => {
@@ -45,12 +45,11 @@ onAuthStateChanged(auth, (user) => {
 signInWithEmailAndPassword(auth, "garmash110@gmail.com", "410edfuf_G")
     .catch(() => {});
 
-// ================================
+// ======================================================
 // Submit comment
-// ================================
+// ======================================================
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("commentForm");
-
     if (form) {
         form.addEventListener("submit", async (e) => {
             e.preventDefault();
@@ -77,9 +76,9 @@ document.addEventListener("DOMContentLoaded", () => {
     injectAuthorSidebar();
 });
 
-// ================================
+// ======================================================
 // Load comments in real time
-// ================================
+// ======================================================
 function loadComments() {
     const list = document.getElementById("commentsList");
     if (!list) return;
@@ -126,9 +125,9 @@ function loadComments() {
     });
 }
 
-// ================================
-// SIDEBAR — one name depending on language
-// ================================
+// ======================================================
+// SIDEBAR — multilingual author link
+// ======================================================
 
 const authorSidebarNames = {
     "en": { 
@@ -139,27 +138,51 @@ const authorSidebarNames = {
         name: "Ievheniia Kuznietsova",
         url: "/UkrBooks/authors/kuznetsova/kuznetsovafr.html"
     },
-    "ua": {
-        name: "Євгенія Кузнєцова",
-        url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html"
-    },
     "uk": {   
         name: "Євгенія Кузнєцова",
-        url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html"
+        url: "/UkrBooks/authors/kузnetsova/kuznetsovaua.html"
     }
 };
 
+// ======================================================
+// Universal language detection
+// ======================================================
+function detectLanguage() {
+    // 1. Try <html lang="">
+    let lang = (document.documentElement.lang || "").toLowerCase();
+
+    // 2. If empty — detect by file name
+    if (!lang) {
+        const file = window.location.pathname.toLowerCase();
+        if (file.includes("ua")) lang = "uk";
+        if (file.includes("uk")) lang = "uk";
+        if (file.includes("fr")) lang = "fr";
+        if (file.includes("en")) lang = "en";
+    }
+
+    // 3. Normalize ua → uk
+    if (lang === "ua") lang = "uk";
+
+    // 4. Default fallback
+    if (!lang || !authorSidebarNames[lang]) lang = "en";
+
+    return lang;
+}
+
+// ======================================================
+// Insert correct author link into sidebar
+// ======================================================
 function injectAuthorSidebar() {
     const list = document.getElementById("authors-list");
     if (!list) return;
 
-    let lang = (document.documentElement.lang || "en").toLowerCase();
+    const lang = detectLanguage();
 
-    if (authorSidebarNames[lang]) {
-        const li = document.createElement("li");
-        li.innerHTML = `<a href="${authorSidebarNames[lang].url}">
-                            ${authorSidebarNames[lang].name}
-                        </a>`;
-        list.appendChild(li);
-    }
+    const li = document.createElement("li");
+    li.innerHTML = `
+        <a href="${authorSidebarNames[lang].url}">
+            ${authorSidebarNames[lang].name}
+        </a>
+    `;
+    list.appendChild(li);
 }
