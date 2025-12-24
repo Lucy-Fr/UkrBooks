@@ -28,18 +28,20 @@ const auth = getAuth(app);
 
 // ======================================================
 // Identify author from URL — UNIVERSAL
-// Example URL:
-//   /UkrBooks/authors/kuznetsova/kuznetsovaen.html
-// parts = ["UkrBooks","authors","kuznetsova","kuznetsovaen.html"]
-// authorId = parts[2] = "kuznetsova"
 // ======================================================
 
 let parts = window.location.pathname.split("/").filter(x => x);
+
+// correct expected structure:
+// 0 = "UkrBooks"
+// 1 = "authors"
+// 2 = "<authorId>"
+// 3 = "filename"
+
 let authorId = parts[2] || "unknown";
 
 // ======================================================
 // Identify LANGUAGE — UNIVERSAL
-// Detect from <html lang=""> or file name
 // ======================================================
 
 function detectLanguage() {
@@ -81,6 +83,7 @@ signInWithEmailAndPassword(auth, "garmash110@gmail.com", "410edfuf_G")
 // ======================================================
 
 document.addEventListener("DOMContentLoaded", () => {
+
     const form = document.getElementById("commentForm");
 
     if (form) {
@@ -92,19 +95,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (!name || !text) return;
 
-            try {
-                await addDoc(collection(db, "comments"), {
-                    author: authorId,
-                    name,
-                    text,
-                    lang: lang,
-                    timestamp: Date.now()
-                });
+            await addDoc(collection(db, "comments"), {
+                author: authorId,
+                name,
+                text,
+                lang: lang,
+                timestamp: Date.now()
+            });
 
-                form.reset();
-            } catch (err) {
-                console.error("Error submitting comment:", err);
-            }
+            form.reset();
         });
     }
 
@@ -112,7 +111,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ======================================================
-// Load comments in real time (filtered by author)
+// Load comments in real time
 // ======================================================
 
 function loadComments() {
@@ -155,10 +154,6 @@ function loadComments() {
 
 // ======================================================
 // UNIVERSAL SIDEBAR for ANY author
-// Generates links:
-//   /<authorId>en.html
-//   /<authorId>fr.html
-//   /<authorId>ua.html
 // ======================================================
 
 function injectAuthorSidebar() {
@@ -173,7 +168,7 @@ function injectAuthorSidebar() {
         uk: `${base}ua.html`
     };
 
-    const authorName = authorId; // если нужно, сделаю автоподстановку красивых имён позже
+    const authorName = authorId;
 
     const li = document.createElement("li");
 
