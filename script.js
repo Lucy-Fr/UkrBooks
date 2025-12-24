@@ -157,7 +157,7 @@ const AUTHORS = {
     kuznetsova: {
         en: { name: "Yevhenia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovaen.html" },
         fr: { name: "Ievheniia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovafr.html" },
-        uk: { name: "Євгенія Кузнєцова", url: "/UkrBooks/authors/kuznetsova/kузnetsovaua.html" }
+        uk: { name: "Євгенія Кузнєцова", url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html" }
     }
     // -------- add new authors here ----------
     // zhadan: {
