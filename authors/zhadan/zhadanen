@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Serhiy Zhadan</title>
+    <link rel="stylesheet" href="/UkrBooks/style.css?v=5">
+</head>
+
+<body>
+
+<header class="top-nav">
+    <a href="/UkrBooks/index.html">
+        <img src="/UkrBooks/logo.png" class="logo" alt="Ukrainian Books">
+    </a>
+
+    <nav class="language-switch">
+        <span>EN</span> |
+        <a href="/UkrBooks/authors/zhadan/zhadanfr.html">FR</a> |
+        <a href="/UkrBooks/authors/zhadan/zhadanua.html">UA</a>
+    </nav>
+</header>
+
+<div class="layout">
+
+<main class="content">
+
+    <h1 class="page-title">Serhiy Zhadan</h1>
+
+    <figure style="margin: 0 0 20px 0;">
+    <img 
+      src="/UkrBooks/authors/zhadan/2022Zhadan.JPG"
+      alt="Сергій Жадан"
+      class="author-photo">
+    <figcaption style="font-size: 0.8rem; color:#777; text-align:center; margin-top:5px;">
+        Фото: Serhiy Jadan à Varsovie, 2022, Mariusz Kubik 
+    </figcaption>
+</figure>
+
+    <h2>Introduction</h2>
+
+    <p>
+       Serhiy Zhadan is a writer whose presence in contemporary Ukrainian culture combines literature, civic involvement, and direct experience of war. His work reflects the social and cultural changes that shaped Ukraine from the 1990s to the present: the transformation of the post-Soviet space, the urban experience of eastern Ukraine, the everyday reality of war, and questions of identity. Zhadan works across several genres — poetry, prose, essays, and documentary writing — and is also engaged in a wide range of cultural and community initiatives. The combination of literary work and public activity defines his role over the past decade.
+    </p>
+
+   
+    <h2>Biography of Serhiy Zhadan</h2>
+    <p>Serhiy Zhadan was born on 23 August 1974 in Starobilsk, Luhansk region. He grew up in a working-class family and attended the local school. In 1991, he moved to Kharkiv to study Ukrainian and German philology at the H.S. Skovoroda Kharkiv Pedagogical University. During the 1990s he became deeply involved in Kharkiv’s cultural life, taking part in literary groups and civic initiatives. After graduating, he entered a doctoral programme, defended a dissertation on Ukrainian futurism and the work of Mykhail Semenko, and taught Ukrainian literature for several years.
+</p><p>In 1997, Zhadan was elected Vice President of the Association of Ukrainian Writers. In 2004, he left academic work to concentrate entirely on literary and cultural activities. After 2014, when Kharkiv faced the consequences of Russian aggression, Zhadan became actively involved in volunteering and civic support. Following the full-scale invasion on 24 February 2022, he remained in Kharkiv, helped the military and civilians, and performed at charity events.
+</p><p>In October 2022, he received a commemorative medal for the defence of Kharkiv. In June 2024, he joined the National Guard of Ukraine, completed basic training, and continued service in the 13th Brigade “Khartia.” His duties include internal and external communications, personnel support, and assistance to several services within the brigade. This military involvement became a continuation of his pre-war civic engagement.
+</p>
+    
+
+    <h2>Work, Recent Publications, and Later Developments</h2>
+    <p>Zhadan began his career as a poet. His first collection appeared in 1993, and later works established him as a central figure in Ukrainian poetry of the late 1990s and early 2000s. His style is characterised by conversational intonation, attention to everyday urban experience, and a restrained emotional tone. These features shaped his audience and defined the reception of his poetic work.
+</p><p>Alongside poetry, he developed a distinctive prose style. Novels such as Depeche Mode (2004), Anarchy in the UKR (2005), and Red Elvis (2007) examine the post-Soviet environment and the transformations taking place in eastern Ukraine. Voroshylovhrad (2010) marked an important stage in his prose, addressing issues of memory, local identity, and responsibility for one’s place of origin. Mesopotamia (2014) combined poetic and narrative elements in a multi-layered portrait of Kharkiv. The Orphanage (2017) offered a civilian perspective on the war in the Donbas, focusing on everyday realities without idealisation.
+</p><p>After 2022, documentary writing became an important part of his work. His Facebook posts from the first six months of the full-scale invasion were collected and published in Germany as Sky over Kharkiv (2022). The book combines observations from daily life in a city under bombardment with personal accounts of movement, encounters, and survival. For this work, Zhadan received the Peace Prize of the German Book Trade. The book was later published in the United States, Poland, and Denmark. Zhadan noted that he had not intended to publish these notes, which were written in transit, in shelters, and in frontline areas.
+</p><p>Another notable publication of recent years is the poetry collection Skrypnykivka (2023), which contains fifty poems and one additional text written before and after the start of the full-scale war. Unlike his earlier collections, the poems are arranged chronologically, creating a poetic diary. The title refers to the Skrypnyk orthography, but the book does not reproduce its linguistic rules; instead, it uses the reference as a cultural and historical metaphor. The central theme is the transformation of language and expression under wartime conditions.
+</p><p>In 2024, Zhadan published Arabesques, a collection of short prose written in a restrained, concise manner and centred on the everyday life of people affected by war. The book received strong critical attention and was included among the sixty best books of 2025 by the Polish weekly Tygodnik Powszechny.
+</p><p>In 2025, Zhadan received the Jerzy Giedroyc Award from the Polish daily Rzeczpospolita, which recognised his contribution to Polish-Ukrainian cultural dialogue and his work during the war.
+Across poetry, prose, and documentary writing, Zhadan’s recent work demonstrates a consistent focus on language, everyday experience, and the documentation of wartime reality. His publications of the last years — Sky over Kharkiv, Skrypnykivka, Arabesques — reflect this approach and form an important part of the cultural record of present-day Ukraine.
+</p>
+    
+<h2>Perfomances</h2>
+    <p><a href="https://www.youtube.com/watch?v=sGg8OGPrH3I&list=PLflbvfgQ55-KrHpDFP6HRcYlidHzKB9dH&index=6" target="_blank"> SERHIY ZHADAN reads selected poems and texts from the book Antenna: lyric poetry, biography, and verse.</a></p>
+
+    <h2>Video</h2>
+    <p><a href="https://www.youtube.com/watch?v=uSL_xcOdkSI" target="_blank">Serhiy Zhadan on love and on returning to Luhansk region. Concert in Uzhhorod </a></p>
+    <h2>Comments</h2>
+
+    <div id="admin-controls" style="margin-bottom: 20px;">
+        <button id="loginBtn" style="padding:10px 20px; background:#005bbb; color:#fff; border:none; border-radius:8px;">Sign in as Admin</button>
+        <button id="logoutBtn" style="padding:10px 20px; background:#777; color:#fff; border:none; border-radius:8px; display:none;">Sign out</button>
+        <span id="adminStatus" style="margin-left:10px; color:#555;"></span>
+    </div>
+
+    <form id="commentForm" class="comment-form">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" required>
+
+        <label for="text">Your Comment</label>
+        <textarea id="text" rows="5" required></textarea>
+
+        <button type="submit">Send</button>
+    </form>
+
+    <div id="commentsList" style="margin-top:30px;"></div>
+
+    <p><a href="/UkrBooks/index.html">← Back to Home</a></p>
+
+</main>
+
+<aside class="sidebar-authors">
+    <h3>Authors</h3>
+    <ul id="authors-list"></ul>
+</aside>
+
+</div>
+
+<footer>
+    <p>© Ukrainian Books</p>
+</footer>
+
+<script type="module" src="/UkrBooks/script.js"></script>
+
+</body>
+</html>
