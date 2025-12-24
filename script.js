@@ -1,5 +1,5 @@
 // ======================================================
-//  Firebase universal comments — universal for ALL authors
+//  Firebase universal comments — works on ALL pages
 // ======================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
@@ -12,6 +12,9 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // ------------------------------------------------------
+//  Firebase configuration
+// ------------------------------------------------------
+
 const firebaseConfig = {
   apiKey: "AIzaSyBi3kVG2G0RTXKV2EIhs4fQXEkaJ7X6HXU",
   authDomain: "ucontemporarylit.firebaseapp.com",
@@ -27,21 +30,19 @@ const db = getFirestore(app);
 const auth = getAuth(app);
 
 // ======================================================
-// Identify author from URL — UNIVERSAL
+// Identify author from URL (for comments ONLY)
 // ======================================================
 
 let parts = window.location.pathname.split("/").filter(x => x);
 
-// correct expected structure:
-// 0 = "UkrBooks"
-// 1 = "authors"
-// 2 = "<authorId>"
-// 3 = "filename"
+// Examples:
+// /UkrBooks/authors/kuznetsova/kuznetsovaen.html → ["UkrBooks","authors","kuznetsova","kuznetsovaen.html"]
+// /UkrBooks/index.html → ["UkrBooks","index.html"]
 
-let authorId = parts[2] || "unknown";
+let authorId = (parts[1] === "authors" && parts[2]) ? parts[2] : "global";
 
 // ======================================================
-// Identify LANGUAGE — UNIVERSAL
+// Detect language for UI
 // ======================================================
 
 function detectLanguage() {
@@ -49,16 +50,13 @@ function detectLanguage() {
 
     if (!lang) {
         const file = window.location.pathname.toLowerCase();
-
-        if (file.includes("ua")) lang = "uk";
-        else if (file.includes("uk")) lang = "uk";
+        if (file.includes("ua") || file.includes("uk")) lang = "uk";
         else if (file.includes("fr")) lang = "fr";
         else if (file.includes("en")) lang = "en";
+        else lang = "en";
     }
 
     if (lang === "ua") lang = "uk";
-    if (!lang) lang = "en";
-
     return lang;
 }
 
@@ -79,11 +77,10 @@ signInWithEmailAndPassword(auth, "garmash110@gmail.com", "410edfuf_G")
     .catch(() => {});
 
 // ======================================================
-// Submit comment
+// Comment submission
 // ======================================================
 
 document.addEventListener("DOMContentLoaded", () => {
-
     const form = document.getElementById("commentForm");
 
     if (form) {
@@ -153,28 +150,37 @@ function loadComments() {
 }
 
 // ======================================================
-// UNIVERSAL SIDEBAR for ANY author
+//  UNIVERSAL SIDEBAR WITH FULL LIST OF AUTHORS
+// ======================================================
+
+const AUTHORS = {
+    kuznetsova: {
+        en: { name: "Yevhenia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovaen.html" },
+        fr: { name: "Ievheniia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovafr.html" },
+        uk: { name: "Євгенія Кузнєцова", url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html" }
+    }
+
+    // Add more authors here:
+    // zhadan: { en:{}, fr:{}, uk:{} }
+    // zabuzhko: { ... }
+};
+
+// ======================================================
+// Build sidebar ON ALL PAGES
 // ======================================================
 
 function injectAuthorSidebar() {
     const list = document.getElementById("authors-list");
     if (!list) return;
 
-    const base = `/UkrBooks/authors/${authorId}/${authorId}`;
+    list.innerHTML = ""; // reset
 
-    const urls = {
-        en: `${base}en.html`,
-        fr: `${base}fr.html`,
-        uk: `${base}ua.html`
-    };
+    Object.keys(AUTHORS).forEach(key => {
+        const item = AUTHORS[key][lang] || AUTHORS[key]["en"];
+        const li = document.createElement("li");
 
-    const authorName = authorId;
-
-    const li = document.createElement("li");
-
-    li.innerHTML = `
-        <a href="${urls[lang]}">${authorName}</a>
-    `;
-
-    list.appendChild(li);
+        li.innerHTML = `<a href="${item.url}">${item.name}</a>`;
+        list.appendChild(li);
+    });
 }
+
