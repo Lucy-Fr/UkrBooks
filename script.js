@@ -1,4 +1,190 @@
 // ======================================================
+// Firebase universal comments — fixed version
+// ======================================================
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+    getFirestore, collection, addDoc, deleteDoc, doc,
+    query, orderBy, onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {
+    getAuth, onAuthStateChanged, signInWithEmailAndPassword
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+// ------------------------------------------------------
+// Firebase configuration
+// ------------------------------------------------------
+
+const firebaseConfig = {
+    apiKey: "AIzaSyBi3kVG2G0RTXKV2EIhs4fQXEkaJ7X6HXU",
+    authDomain: "ucontemporarylit.firebaseapp.com",
+    projectId: "ucontemporarylit",
+    storageBucket: "ucontemporarylit.appspot.com",
+    messagingSenderId: "828332585690",
+    appId: "1:828332585690:web:dbdb5a5edf7b5329d4ebe3",
+    measurementId: "G-7493F35CVD"
+};
+
+const app  = initializeApp(firebaseConfig);
+const db   = getFirestore(app);
+const auth = getAuth(app);
+
+// ======================================================
+// STABLE AUTHOR DETECTION (fixed)
+// ======================================================
+
+function detectAuthor() {
+    // always last folder before file
+    const p = window.location.pathname.split("/").filter(x => x);
+    // e.g. authors/kuznetsova/kuznetsovaua.html → we want "kuznetsova"
+    const i = p.indexOf("authors");
+    if (i !== -1 && p[i + 1]) return p[i + 1];
+    return "global";
+}
+
+let authorId = detectAuthor();
+
+// ======================================================
+// Detect language
+// ======================================================
+
+function detectLanguage() {
+    const langAttr = document.documentElement.lang;
+    if (!langAttr) return "en";
+    if (langAttr === "ua") return "uk";
+    return langAttr.toLowerCase();
+}
+
+let lang = detectLanguage();
+
+// ======================================================
+// Admin login
+// ======================================================
+
+let isAdmin = false;
+
+onAuthStateChanged(auth, user => {
+    isAdmin = !!(user && user.email === "garmash110@gmail.com");
+    loadComments();
+});
+
+window.adminLogin = async () => {
+    try {
+        await signInWithEmailAndPassword(auth, "garmash110@gmail.com", "410edfuf_G");
+        alert("Ви увійшли як адмін");
+        loadComments();
+    } catch (err) {
+        alert("Помилка входу: " + err.message);
+        console.error(err);
+    }
+};
+
+// ======================================================
+// Comment submission
+// ======================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+    const form = document.getElementById("commentForm");
+
+    if (form) {
+        form.addEventListener("submit", async e => {
+            e.preventDefault();
+
+            const name = document.getElementById("name").value.trim();
+            const text = document.getElementById("text").value.trim();
+            if (!name || !text) return;
+
+            await addDoc(collection(db, "comments"), {
+                author: authorId,
+                name,
+                text,
+                lang,
+                timestamp: Date.now()
+            });
+
+            form.reset();
+        });
+    }
+
+    loadComments();
+    injectAuthorSidebar();
+});
+
+// ======================================================
+// Load comments in real time (fixed)
+// ======================================================
+
+function loadComments() {
+    const list = document.getElementById("commentsList");
+    if (!list) return;
+
+    const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
+
+    onSnapshot(q, snap => {
+        list.innerHTML = "";
+
+        snap.forEach(docSnap => {
+            const c = docSnap.data();
+
+            // FIXED: now filtering works correctly
+            if (c.author !== authorId) return;
+
+            const wrap = document.createElement("div");
+            wrap.className = "comment-item";
+
+            wrap.innerHTML = `
+                <p><strong>${c.name}</strong></p>
+                <p>${c.text}</p>
+                <small>${new Date(c.timestamp).toLocaleString()}</small>
+                <button class="delete-comment" data-id="${docSnap.id}" 
+                    ${isAdmin ? "" : 'style="display:none;"'}>
+                    Delete
+                </button>
+                <hr>
+            `;
+
+            list.append(wrap);
+        });
+
+        // fix dead buttons
+        list.querySelectorAll(".delete-comment").forEach(btn => {
+            btn.onclick = async () => {
+                try {
+                    await deleteDoc(doc(db, "comments", btn.dataset.id));
+                } catch (err) {
+                    alert("Помилка: " + err.message);
+                }
+            };
+        });
+    });
+}
+
+// ======================================================
+// Sidebar
+// ======================================================
+
+const AUTHORS = {
+    kuznetsova: {
+        en: { name: "Yevhenia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovaen.html" },
+        fr: { name: "Ievheniia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovafr.html" },
+        uk: { name: "Євгенія Кузнєцова", url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html" }
+    }
+};
+
+function injectAuthorSidebar() {
+    const list = document.getElementById("authors-list");
+    if (!list) return;
+
+    list.innerHTML = "";
+
+    for (const key in AUTHORS) {
+        const data = AUTHORS[key][lang] || AUTHORS[key].en;
+        const li = document.createElement("li");
+        li.innerHTML = `<a href="${data.url}">${data.name}</a>`;
+        list.append(li);
+    }
+}
+// ======================================================
 //  Firebase universal comments — works on ALL pages
 // ======================================================
 
