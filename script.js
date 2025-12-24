@@ -73,8 +73,12 @@ onAuthStateChanged(auth, (user) => {
     loadComments();
 });
 
-signInWithEmailAndPassword(auth, "garmash110@gmail.com", "410edfuf_G")
-    .catch(() => {});
+// <-- ВАЖНО: автологин запускаем ПОСЛЕ загрузки страницы
+window.addEventListener("load", () => {
+    signInWithEmailAndPassword(auth, "garmash110@gmail.com", "410edfuf_G")
+        .catch(() => {});
+});
+
 
 // ======================================================
 // Comment submission
