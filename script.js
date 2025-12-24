@@ -143,15 +143,22 @@ function loadComments() {
             list.appendChild(item);
         });
 
-        if (isAdmin) {
+               if (isAdmin) {
             document.querySelectorAll(".delete-comment").forEach(btn => {
                 btn.onclick = async () => {
-                    await deleteDoc(doc(db, "comments", btn.dataset.id));
+                    try {
+                        console.log("Trying to delete comment with id:", btn.dataset.id);
+                        await deleteDoc(doc(db, "comments", btn.dataset.id));
+                        console.log("Comment deleted");
+                        // onSnapshot сам обновит список, ничего больше не нужно
+                    } catch (err) {
+                        console.error("Error deleting comment:", err);
+                        alert("Помилка при видаленні коментаря: " + (err.message || err));
+                    }
                 };
             });
         }
-    });
-}
+
 
 // ======================================================
 //  UNIVERSAL SIDEBAR WITH FULL LIST OF AUTHORS
