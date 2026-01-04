@@ -1,178 +1,72 @@
-// ======================================================
-// Firebase universal comments + sidebar
-// ======================================================
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>UkrBooks</title>
+  <link rel="stylesheet" href="./style.css?v=5" />
+</head>
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {
-    getFirestore, collection, addDoc, deleteDoc, doc,
-    query, orderBy, onSnapshot
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import {
-    getAuth, onAuthStateChanged, signInWithEmailAndPassword
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+<body>
 
-// ------------------------------------------------------
-// Firebase config
-// ------------------------------------------------------
-const firebaseConfig = {
-    apiKey: "AIzaSyBi3kVG2G0RTXKV2EIhs4fQXEkaJ7X6HXU",
-    authDomain: "ucontemporarylit.firebaseapp.com",
-    projectId: "ucontemporarylit",
-    storageBucket: "ucontemporarylit.appspot.com",
-    messagingSenderId: "828332585690",
-    appId: "1:828332585690:web:dbdb5a5edf7b5329d4ebe3",
-    measurementId: "G-7493F35CVD"
-};
+<header class="top-nav">
+  <a href="/UkrBooks/index.html">
+    <img src="/UkrBooks/logo.png" class="logo" alt="Ukrainian Books">
+  </a>
 
-const app  = initializeApp(firebaseConfig);
-const db   = getFirestore(app);
-const auth = getAuth(app);
+  <nav class="language-switch">
+    <a href="/UkrBooks/index.html">EN</a> |
+    <a href="/UkrBooks/fr.html">FR</a> |
+    <a href="/UkrBooks/ua.html">UA</a>
+  </nav>
+</header>
 
-// ======================================================
-// Detect WHERE WE ARE (author page or main page)
-// ======================================================
-function detectAuthor() {
-    const p = window.location.pathname.split("/").filter(x => x);
-    const authorsIndex = p.indexOf("authors");
-    if (authorsIndex !== -1 && p[authorsIndex + 1]) return p[authorsIndex + 1];
-    return "global";
-}
-const authorId = detectAuthor();
+<div class="layout">
 
-// ======================================================
-// Detect language
-// ======================================================
-function detectLanguage() {
-    const l = (document.documentElement.lang || "").toLowerCase();
-    if (l === "ua") return "uk";
-    return l || "en";
-}
-const lang = detectLanguage();
+  <!-- ===== Sidebar (authors) ===== -->
+  <aside class="sidebar">
+    <h3>Authors</h3>
+    <ul id="authors-list"></ul>
+  </aside>
 
-// ======================================================
-// Admin login logic
-// ======================================================
-let isAdmin = false;
+  <!-- ===== Main content ===== -->
+  <main class="content">
+    <h1>Ukrainian Books</h1>
+    <p>Welcome!</p>
 
-onAuthStateChanged(auth, user => {
-    isAdmin = !!(user && user.email === "garmash110@gmail.com");
-    loadComments();
-});
+    <!-- ===== Comments ===== -->
+    <section class="comments">
+      <h2>Comments</h2>
 
-window.adminLogin = async function() {
-    try {
-        await signInWithEmailAndPassword(auth, "garmash110@gmail.com", "410edfuf_G");
-        alert("Admin logged in");
-        loadComments();
-    } catch (err) {
-        alert("Login error: " + err.message);
-    }
-};
+      <form id="commentForm">
+        <input id="name" type="text" placeholder="Name" required />
+        <textarea id="text" placeholder="Comment" required></textarea>
+        <button type="submit">Send</button>
+      </form>
 
-// ======================================================
-// Comment submission
-// ======================================================
-document.addEventListener("DOMContentLoaded", () => {
-    const form = document.getElementById("commentForm");
-    if (form) {
-        form.addEventListener("submit", async e => {
-            e.preventDefault();
+      <div id="commentsList"></div>
 
-            const name = document.getElementById("name").value.trim();
-            const text = document.getElementById("text").value.trim();
-            if (!name || !text) return;
+      <!-- ===== Admin login (safe: manual input) ===== -->
+      <details class="admin-box">
+        <summary>Admin</summary>
 
-            await addDoc(collection(db, "comments"), {
-                author: authorId,
-                name,
-                text,
-                lang: lang,
-                timestamp: Date.now()
-            });
+        <div id="adminLoginBlock">
+          <input id="adminEmail" type="email" placeholder="Admin email" />
+          <input id="adminPassword" type="password" placeholder="Admin password" />
+          <button id="adminLoginBtn" type="button">Login</button>
+        </div>
 
-            form.reset();
-        });
-    }
+        <div id="adminPanel" style="display:none;">
+          <button id="adminLogoutBtn" type="button">Logout</button>
+        </div>
+      </details>
 
-    const adminBtn = document.getElementById("adminLoginBtn");
-    if (adminBtn) adminBtn.onclick = () => adminLogin();
+    </section>
+  </main>
 
-    injectAuthorSidebar();
-    loadComments();
-});
+</div>
 
-// ======================================================
-// Load comments
-// ======================================================
-let unsubscribe = null;
-
-function loadComments() {
-    const list = document.getElementById("commentsList");
-    if (!list) return;
-
-    const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
-
-    if (unsubscribe) unsubscribe();
-
-    unsubscribe = onSnapshot(q, snap => {
-        list.innerHTML = "";
-
-        snap.forEach(docSnap => {
-            const c = docSnap.data();
-            if (c.author !== authorId) return;
-
-            const item = document.createElement("div");
-            item.className = "comment-item";
-
-            const dateStr = new Date(c.timestamp).toLocaleString();
-
-            item.innerHTML = `
-                <p><strong>${c.name}</strong></p>
-                <p>${c.text}</p>
-                <small>${dateStr}</small>
-                <button class="delete-comment" data-id="${docSnap.id}" 
-                    ${isAdmin ? "" : 'style="display:none;"'}>
-                    Delete
-                </button>
-                <hr>
-            `;
-
-            list.appendChild(item);
-        });
-
-        list.querySelectorAll(".delete-comment").forEach(btn => {
-            btn.onclick = async () => {
-                if (!isAdmin) {
-                    alert("Only admin can delete!");
-                    return;
-                }
-                await deleteDoc(doc(db, "comments", btn.dataset.id));
-            };
-        });
-    });
-}
-
-// ======================================================
-// Sidebar authors (WORKING version)
-// ======================================================
-const AUTHORS = {
-    kuznetsova: {
-        en: { name: "Yevhenia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovaen.html" },
-        fr: { name: "Ievheniia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovafr.html" },
-        uk: { name: "Євгенія Кузнєцова", url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html" }
-    }
-};
-
-function injectAuthorSidebar() {
-    const list = document.getElementById("authors-list");
-    if (!list) return;
-
-    list.innerHTML = "";
-
-    Object.keys(AUTHORS).forEach(key => {
-        const entry = AUTHORS[key][lang] || AUTHORS[key].en;
-        const li = document.createElement("li");
-        li.innerHTML = `<a href="${entry.url}">${entry.name}</a>`;
-        list.appendChild(li);
-    });
-}
+<!-- ✅ ВАЖНО: модульный скрипт (иначе import не работает) -->
+<script type="module" src="./comments.js"></script>
+</body>
+</html>
