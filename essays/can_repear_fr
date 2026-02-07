@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>« On peut recommencer » : quand la mémoire devient un slogan</title>
+
+  <link rel="stylesheet" href="/UkrBooks/style.css?v=5">
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7493F35CVD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-7493F35CVD');
+  </script>
+</head>
+
+<body>
+
+<header class="top-nav">
+  <a href="/UkrBooks/fr.html">
+    <img src="/UkrBooks/logo.png" class="logo" alt="Ukrainian Books">
+  </a>
+
+  <nav class="language-switch">
+    <a href="/UkrBooks/index.html">EN</a> |
+    <span>FR</span> |
+    <a href="/UkrBooks/ua.html">UA</a>
+  </nav>
+</header>
+
+<div class="layout">
+
+  <main class="content">
+
+    <h1 class="page-title">« On peut recommencer » : quand la mémoire devient un slogan</h1>
+    <img src="/UkrBooks/essays/Fire_of_Moscow_1812.jpg" class="essay-image" alt="Feu de Moscou (1812)">
+
+    <p>
+      Il est des phrases qui survivent aux actualités. Elles ne sont pas seulement des mots : ce sont des boutons.
+      On appuie, et un ensemble d’émotions déjà prêtes s’allume dans l’esprit — fierté, inquiétude, colère, exaltation.
+      Le slogan russe « On peut recommencer » (en russe : « Можем повторить ») est précisément de cet ordre.
+      Court, rugueux, presque plaisantin au premier regard, il est devenu l’un des mots d’ordre les plus visibles de ces dernières années.
+      Mais que propose-t-on exactement de « recommencer » — et pourquoi cette formule est-elle si commode pour la propagande ?
+    </p>
+
+    <p>
+      Pris au pied de la lettre, l’énoncé renvoie à la victoire de l’URSS pendant la Seconde Guerre mondiale, appelée dans la tradition officielle russe
+      « Grande Guerre patriotique ». Cet épisode est depuis longtemps au cœur d’un mythe national : la victoire comme preuve de la justesse historique,
+      de la force, de la « capacité au sacrifice ». « Recommencer », ici, signifie « vaincre de nouveau ». Mais vaincre qui ? Dans quelles conditions ?
+      Et à quel prix ? Le slogan ne le dit pas — et c’est volontaire. Sa puissance tient à l’implicite. Il devient universel justement parce qu’il n’est
+      pas arrimé aux faits.
+    </p>
+
+    <p>
+      Cette universalité en fait un outil redoutablement efficace de communication de masse. La politique contemporaine est complexe :
+      géopolitique, économie, dilemmes moraux, droit international — tout cela exige des explications, des nuances, des débats.
+      Le slogan offre un raccourci : ne réfléchis pas, ressens. Ne démêle pas, souviens-toi. La mémoire de la victoire fonctionne comme une batterie affective
+      à laquelle on peut « brancher » n’importe quel conflit présent. Résultat : la réalité se réduit à un schéma binaire
+      « nous — les vainqueurs / eux — les ennemis ».
+    </p>
+
+    <p>
+      Il y a encore un autre effet. « On peut recommencer » fabrique l’image d’une nation « éternellement victorieuse » pour laquelle la guerre n’est pas une tragédie,
+      mais une épreuve dont on sort renforcé. C’est une langue de puissance, une langue de disponibilité au nouvel affrontement.
+      Elle mobilise, soude, donne l’impression d’une mission historique. Parce qu’elle est brève, la formule se transforme aisément en mème,
+      en autocollant, en slogan sur un tee-shirt. Elle circule vite : les mèmes voyagent plus vite que les arguments, puisqu’ils n’exigent pas de preuves —
+      seulement la reconnaissance.
+    </p>
+
+    <p>
+      Mais cette efficacité a un envers. Pour beaucoup, « On peut recommencer » sonne comme une banalisation de la guerre elle-même.
+      Derrière le mot « victoire » se trouvent des millions de morts, des villes détruites, des traumatismes transmis de génération en génération.
+      Quand la tragédie devient un slogan, la mémoire cesse d’être un espace de réflexion et se change en ressource pour l’agenda du présent.
+      Les critiques y voient non une fidélité à l’histoire, mais son exploitation : au lieu de « se souvenir pour que cela ne se reproduise pas »,
+      on glisse vers « se souvenir pour le reproduire ».
+    </p>
+
+    <p>
+      Le slogan fonctionne parce qu’il s’adresse moins aux faits qu’aux affects. Il ne raconte pas une histoire : il déclenche une réaction.
+      C’est là sa force propagandiste — et, en même temps, sa fragilité. Plus une formule est courte, plus on peut y déposer de sens,
+      et plus il est facile de remplacer un contenu par un autre. La mémoire du passé devient la langue du présent ; la langue du présent,
+      un dispositif de légitimation de décisions qui façonnent l’avenir.
+    </p>
+
+    <p>
+      « On peut recommencer » n’est ni une citation d’archive ni un document d’époque. C’est un construit politique contemporain,
+      conçu pour être immédiatement reconnaissable et mobilisateur. Il montre à quel point la mémoire collective peut se transformer en capital rhétorique,
+      et combien il est difficile de maintenir la frontière entre l’interprétation du passé et son instrumentalisation.
+      La question qui reste hors champ est simple — et dérangeante : que voulons-nous exactement « recommencer »,
+      et sommes-nous prêts à recommencer tout ce que ce mot implique ?
+    </p>
+
+  </main>
+
+  <aside class="sidebar-right">
+
+    <section class="sidebar-box sidebar-authors">
+      <h3>Auteurs</h3>
+      <ul id="authors-list"></ul>
+    </section>
+
+    <section class="sidebar-box sidebar-essays">
+      <h3>Essais</h3>
+      <ul>
+        <li><a href="/UkrBooks/essays/beyond-empire-fr.html">Au-delà de l’Empire</a></li>
+        <li><a href="/UkrBooks/essays/on-peut-recommencer-fr.html">« On peut recommencer »</a></li>
+      </ul>
+    </section>
+
+  </aside>
+
+</div>
+
+<footer>
+  <p>© Ukrainian Books</p>
+</footer>
+
+<script type="module" src="/UkrBooks/script.js"></script>
+
+</body>
+</html>
