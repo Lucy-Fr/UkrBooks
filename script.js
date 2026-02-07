@@ -40,7 +40,10 @@ const pageId = window.location.pathname;
 // ======================================================
 
 function detectLanguage() {
-  let l = document.documentElement.lang?.toLowerCase() || "";
+  let l = (document.documentElement.lang || "").toLowerCase().trim();
+
+  // normalize UA
+  if (l === "ua") l = "uk";
 
   if (!l) {
     const path = window.location.pathname.toLowerCase();
@@ -49,7 +52,7 @@ function detectLanguage() {
     return "en";
   }
 
-  if (l === "ua") return "uk";
+  if (l !== "en" && l !== "fr" && l !== "uk") return "en";
   return l;
 }
 
@@ -145,10 +148,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
 let unsubscribe = null;
 
+const UI_LABELS = {
+  en: { del: "Delete", onlyAdmin: "Only admin can delete comments." },
+  fr: { del: "Supprimer", onlyAdmin: "Seul l’admin peut supprimer les commentaires." },
+  uk: { del: "Видалити", onlyAdmin: "Лише адміністратор може видаляти коментарі." }
+};
+
 function loadComments() {
   const list = document.getElementById("commentsList");
   if (!list) return;
 
+  const labels = UI_LABELS[lang] || UI_LABELS.en;
   const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
 
   if (unsubscribe) unsubscribe();
@@ -171,7 +181,7 @@ function loadComments() {
         <button class="delete-comment"
                 data-id="${docSnap.id}"
                 style="${isAdmin ? "" : "display:none;"}">
-          Delete
+          ${labels.del}
         </button>
         <hr>
       `;
@@ -181,7 +191,8 @@ function loadComments() {
 
     list.querySelectorAll(".delete-comment").forEach(btn => {
       btn.onclick = async () => {
-        if (!isAdmin) return alert("Only admin can delete comments.");
+        const labels2 = UI_LABELS[lang] || UI_LABELS.en;
+        if (!isAdmin) return alert(labels2.onlyAdmin);
         await deleteDoc(doc(db, "comments", btn.dataset.id));
       };
     });
@@ -212,11 +223,10 @@ const AUTHORS = {
   },
 
   vakulenko: {
-  en: { name: "Volodymyr Vakulenko", url: "/UkrBooks/authors/vakulenko/vakulenkoen.html" },
-  fr: { name: "Volodymyr Vakoulenko", url: "/UkrBooks/authors/vakulenko/vakulenkofr.html" },
-  uk: { name: "Володимир Вакуленко", url: "/UkrBooks/authors/vakulenko/vakulenkoua.html" }
-},
-
+    en: { name: "Volodymyr Vakulenko", url: "/UkrBooks/authors/vakulenko/vakulenkoen.html" },
+    fr: { name: "Volodymyr Vakoulenko", url: "/UkrBooks/authors/vakulenko/vakulenkofr.html" },
+    uk: { name: "Володимир Вакуленко", url: "/UkrBooks/authors/vakulenko/vakulenkoua.html" }
+  },
 
   amelina: {
     en: { name: "Victoria Amelina", url: "/UkrBooks/authors/amelina/amelinaen.html" },
@@ -255,7 +265,14 @@ function injectAuthors() {
 
   list.innerHTML = "";
 
-  for (const key in AUTHORS) {
+  // stable order: by displayed name in current lang
+  const keys = Object.keys(AUTHORS).sort((a, b) => {
+    const A = (AUTHORS[a][lang] || AUTHORS[a].en).name.toLowerCase();
+    const B = (AUTHORS[b][lang] || AUTHORS[b].en).name.toLowerCase();
+    return A.localeCompare(B);
+  });
+
+  for (const key of keys) {
     const entry = AUTHORS[key][lang] || AUTHORS[key].en;
     const li = document.createElement("li");
     li.innerHTML = `<a href="${entry.url}">${entry.name}</a>`;
@@ -265,11 +282,18 @@ function injectAuthors() {
 
 function injectEssays() {
   const list = document.getElementById("essays-list");
-  if (!list) return; // if the page doesn't have essays sidebar, skip
+  if (!list) return;
 
   list.innerHTML = "";
 
-  for (const key in ESSAYS) {
+  // stable order: by displayed title in current lang
+  const keys = Object.keys(ESSAYS).sort((a, b) => {
+    const A = (ESSAYS[a][lang] || ESSAYS[a].en).title.toLowerCase();
+    const B = (ESSAYS[b][lang] || ESSAYS[b].en).title.toLowerCase();
+    return A.localeCompare(B);
+  });
+
+  for (const key of keys) {
     const entry = ESSAYS[key][lang] || ESSAYS[key].en;
     const li = document.createElement("li");
     li.innerHTML = `<a href="${entry.url}">${entry.title}</a>`;
