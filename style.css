@@ -69,7 +69,7 @@ main.content {
     position: sticky;
     top: 40px;
 
-    width: 38%;                /* % width as requested */
+    width: 408%;                /* % width as requested */
     min-width: 260px;          /* do not collapse */
     max-width: 340px;          /* do not become huge */
 }
