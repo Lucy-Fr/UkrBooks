@@ -318,12 +318,10 @@ footer {
     }
 }
 
-main.content .essay-image {
-    display: block;
-    max-width: 100%;   /* не шире карточки */
+main.content img {
+    max-width: 100%;
     height: auto;
-    margin: 25px 0 35px;
-    border-radius: 14px;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.12);
+    display: block;
+    margin: 25px auto;
 }
 
