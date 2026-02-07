@@ -227,7 +227,7 @@ const ESSAYS = {
 
   we_can_do_it_again: {
     en: { title: "“We Can Do It Again”", url: "/UkrBooks/essays/can_repeat_en.html" },
-    fr: { title: "« On peut recommencer »", url: "/UkrBooks/essays/can_repear_fr.html" },
+    fr: { title: "« On peut recommencer »", url: "/UkrBooks/essays/can_repeat_fr.html" },
     uk: { title: "«Можемо повторити»", url: "/UkrBooks/essays/can_repeat_ua.html" }
   }
 };
