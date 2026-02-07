@@ -1,14 +1,14 @@
 // ======================================================
-// CLEAN UNIVERSAL FIREBASE COMMENTS + SIDEBAR
+// CLEAN UNIVERSAL FIREBASE COMMENTS + SIDEBAR (AUTHORS + ESSAYS)
 // ======================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-    getFirestore, collection, addDoc, deleteDoc, doc,
-    query, orderBy, onSnapshot
+  getFirestore, collection, addDoc, deleteDoc, doc,
+  query, orderBy, onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import {
-    getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut
+  getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // ------------------------------------------------------
@@ -16,13 +16,13 @@ import {
 // ------------------------------------------------------
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBi3kVG2G0RTXKV2EIhs4fQXEkaJ7X6HXU",
-    authDomain: "ucontemporarylit.firebaseapp.com",
-    projectId: "ucontemporarylit",
-    storageBucket: "ucontemporarylit.appspot.com",
-    messagingSenderId: "828332585690",
-    appId: "1:828332585690:web:dbdb5a5edf7b5329d4ebe3",
-    measurementId: "G-7493F35CVD"
+  apiKey: "AIzaSyBi3kVG2G0RTXKV2EIhs4fQXEkaJ7X6HXU",
+  authDomain: "ucontemporarylit.firebaseapp.com",
+  projectId: "ucontemporarylit",
+  storageBucket: "ucontemporarylit.appspot.com",
+  messagingSenderId: "828332585690",
+  appId: "1:828332585690:web:dbdb5a5edf7b5329d4ebe3",
+  measurementId: "G-7493F35CVD"
 };
 
 const app  = initializeApp(firebaseConfig);
@@ -40,17 +40,17 @@ const pageId = window.location.pathname;
 // ======================================================
 
 function detectLanguage() {
-    let lang = document.documentElement.lang?.toLowerCase() || "";
+  let lang = document.documentElement.lang?.toLowerCase() || "";
 
-    if (!lang) {
-        const path = window.location.pathname.toLowerCase();
-        if (path.includes("ua") || path.includes("uk")) return "uk";
-        if (path.includes("fr")) return "fr";
-        return "en";
-    }
+  if (!lang) {
+    const path = window.location.pathname.toLowerCase();
+    if (path.includes("ua") || path.includes("uk")) return "uk";
+    if (path.includes("fr")) return "fr";
+    return "en";
+  }
 
-    if (lang === "ua") return "uk";
-    return lang;
+  if (lang === "ua") return "uk";
+  return lang;
 }
 
 const lang = detectLanguage();
@@ -62,78 +62,83 @@ const lang = detectLanguage();
 let isAdmin = false;
 
 onAuthStateChanged(auth, user => {
-    isAdmin = !!(user && user.email === "garmash110@gmail.com");
+  isAdmin = !!(user && user.email === "garmash110@gmail.com");
 
-    const loginBtn  = document.getElementById("loginBtn");
-    const logoutBtn = document.getElementById("logoutBtn");
-    const statusEl  = document.getElementById("adminStatus");
+  const loginBtn  = document.getElementById("loginBtn");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const statusEl  = document.getElementById("adminStatus");
 
-    if (loginBtn && logoutBtn && statusEl) {
-        if (isAdmin) {
-            loginBtn.style.display  = "none";
-            logoutBtn.style.display = "inline-block";
-            statusEl.textContent    = "Admin mode";
-        } else {
-            loginBtn.style.display  = "inline-block";
-            logoutBtn.style.display = "none";
-            statusEl.textContent    = "";
-        }
+  if (loginBtn && logoutBtn && statusEl) {
+    if (isAdmin) {
+      loginBtn.style.display  = "none";
+      logoutBtn.style.display = "inline-block";
+      statusEl.textContent    = "Admin mode";
+    } else {
+      loginBtn.style.display  = "inline-block";
+      logoutBtn.style.display = "none";
+      statusEl.textContent    = "";
     }
+  }
 
-    loadComments();
+  loadComments();
 });
 
 window.adminLogin = async function () {
-    try {
-        await signInWithEmailAndPassword(auth, "garmash110@gmail.com", "410edfuf_G");
-    } catch (err) {
-        alert("Login error: " + err.message);
-    }
+  try {
+    await signInWithEmailAndPassword(auth, "garmash110@gmail.com", "410edfuf_G");
+  } catch (err) {
+    alert("Login error: " + err.message);
+  }
 };
 
 window.adminLogout = async function () {
-    try {
-        await signOut(auth);
-    } catch (err) {
-        alert("Logout error: " + err.message);
-    }
+  try {
+    await signOut(auth);
+  } catch (err) {
+    alert("Logout error: " + err.message);
+  }
 };
 
 // ======================================================
-// COMMENT SUBMISSION
+// COMMENT SUBMISSION + SIDEBAR INJECTION
 // ======================================================
 
 document.addEventListener("DOMContentLoaded", () => {
-    const form  = document.getElementById("commentForm");
-    const login = document.getElementById("loginBtn");
-    const logout= document.getElementById("logoutBtn");
+  const form   = document.getElementById("commentForm");
+  const login  = document.getElementById("loginBtn");
+  const logout = document.getElementById("logoutBtn");
 
-    if (login)  login.onclick  = () => window.adminLogin();
-    if (logout) logout.onclick = () => window.adminLogout();
+  if (login)  login.onclick  = () => window.adminLogin();
+  if (logout) logout.onclick = () => window.adminLogout();
 
-    if (form) {
-        form.addEventListener("submit", async e => {
-            e.preventDefault();
+  if (form) {
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
 
-            const name = document.getElementById("name").value.trim();
-            const text = document.getElementById("text").value.trim();
+      const nameEl = document.getElementById("name");
+      const textEl = document.getElementById("text");
 
-            if (!name || !text) return;
+      const name = nameEl ? nameEl.value.trim() : "";
+      const text = textEl ? textEl.value.trim() : "";
 
-            await addDoc(collection(db, "comments"), {
-                page: pageId,
-                name,
-                text,
-                lang,
-                timestamp: Date.now()
-            });
+      if (!name || !text) return;
 
-            form.reset();
-        });
-    }
+      await addDoc(collection(db, "comments"), {
+        page: pageId,
+        name,
+        text,
+        lang,
+        timestamp: Date.now()
+      });
 
-    injectAuthorSidebar();
-    loadComments();
+      form.reset();
+    });
+  }
+
+  // NEW: inject both Authors + Essays (and localized titles)
+  injectSidebars();
+
+  loadComments();
 });
 
 // ======================================================
@@ -143,77 +148,126 @@ document.addEventListener("DOMContentLoaded", () => {
 let unsubscribe = null;
 
 function loadComments() {
-    const list = document.getElementById("commentsList");
-    if (!list) return;
+  const list = document.getElementById("commentsList");
+  if (!list) return;
 
-    const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
+  const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
 
-    if (unsubscribe) unsubscribe();
+  if (unsubscribe) unsubscribe();
 
-    unsubscribe = onSnapshot(q, snapshot => {
-        list.innerHTML = "";
+  unsubscribe = onSnapshot(q, snapshot => {
+    list.innerHTML = "";
 
-        snapshot.forEach(docSnap => {
-            const c = docSnap.data();
+    snapshot.forEach(docSnap => {
+      const c = docSnap.data();
+      if (c.page !== pageId) return;
 
-            if (c.page !== pageId) return;
+      const item = document.createElement("div");
+      item.className = "comment-item";
 
-            const item = document.createElement("div");
-            item.className = "comment-item";
+      item.innerHTML = `
+        <p><strong>${c.name}</strong></p>
+        <p>${c.text}</p>
+        <small>${new Date(c.timestamp).toLocaleString()}</small>
 
-            item.innerHTML = `
-                <p><strong>${c.name}</strong></p>
-                <p>${c.text}</p>
-                <small>${new Date(c.timestamp).toLocaleString()}</small>
+        <button class="delete-comment"
+                data-id="${docSnap.id}"
+                style="${isAdmin ? "" : "display:none;"}">
+          Delete
+        </button>
+        <hr>
+      `;
 
-                <button class="delete-comment"
-                        data-id="${docSnap.id}"
-                        style="${isAdmin ? "" : "display:none;"}">
-                    Delete
-                </button>
-                <hr>
-            `;
-
-            list.appendChild(item);
-        });
-
-        list.querySelectorAll(".delete-comment").forEach(btn => {
-            btn.onclick = async () => {
-                if (!isAdmin) return alert("Only admin can delete comments.");
-                await deleteDoc(doc(db, "comments", btn.dataset.id));
-            };
-        });
+      list.appendChild(item);
     });
+
+    list.querySelectorAll(".delete-comment").forEach(btn => {
+      btn.onclick = async () => {
+        if (!isAdmin) return alert("Only admin can delete comments.");
+        await deleteDoc(doc(db, "comments", btn.dataset.id));
+      };
+    });
+  });
 }
 
 // ======================================================
-// SIDEBAR AUTHORS
+// SIDEBAR (AUTHORS + ESSAYS) — single source of truth
 // ======================================================
 
-const AUTHORS = {
-   zhadan: {
-    en: { name: "Serhiy Zhadan", url: "/UkrBooks/authors/zhadan/zhadanen.html" },
-    fr: { name: "Serhiy Jadan", url: "/UkrBooks/authors/zhadan/zhadanfr.html" },
-    uk: { name: "Сергій Жадан", url: "/UkrBooks/authors/zhadan/zhadanua.html" }
-},
-
-    kuznetsova: {
-        en: { name: "Yevhenia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovaen.html" },
-        fr: { name: "Ievheniia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovafr.html" },
-        uk: { name: "Євгенія Кузнєцова",     url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html" }
-    }
+const SIDEBAR_LABELS = {
+  en: { authors: "Authors", essays: "Essays" },
+  fr: { authors: "Auteurs", essays: "Essais" },
+  uk: { authors: "Автори",  essays: "Есеї" }
 };
 
-function injectAuthorSidebar() {
-    const list = document.getElementById("authors-list");
-    if (!list) return;
+const AUTHORS = {
+  zhadan: {
+    en: { name: "Serhiy Zhadan", url: "/UkrBooks/authors/zhadan/zhadanen.html" },
+    fr: { name: "Serhiy Jadan",  url: "/UkrBooks/authors/zhadan/zhadanfr.html" },
+    uk: { name: "Сергій Жадан",  url: "/UkrBooks/authors/zhadan/zhadanua.html" }
+  },
 
-    list.innerHTML = "";
+  kuznetsova: {
+    en: { name: "Yevheniia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovaen.html" },
+    fr: { name: "Ievheniia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovafr.html" },
+    uk: { name: "Євгенія Кузнєцова",     url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html" }
+  }
+};
 
-    for (const key in AUTHORS) {
-        const entry = AUTHORS[key][lang] || AUTHORS[key].en;
-        const li = document.createElement("li");
-        li.innerHTML = `<a href="${entry.url}">${entry.name}</a>`;
-        list.appendChild(li);
-    }
+const ESSAYS = {
+  beyond_empire: {
+    en: { title: "Beyond Empire", url: "/UkrBooks/essays/beyond-empire.html" },
+    fr: { title: "Au-delà de l’Empire", url: "/UkrBooks/essays/beyond-empire-fr.html" },
+    uk: { title: "Поза імперією", url: "/UkrBooks/essays/beyond-empire.html-ua" }
+  },
+
+  we_can_do_it_again: {
+    en: { title: "“We Can Do It Again”", url: "/UkrBooks/essays/we-can-do-it-again.html" },
+    fr: { title: "« On peut recommencer »", url: "/UkrBooks/essays/on-peut-recommencer-fr.html" },
+    uk: { title: "«Можемо повторити»", url: "/UkrBooks/essays/mozhemo-povtoryty.html-ua" }
+  }
+};
+
+function injectSidebarTitles() {
+  const labels = SIDEBAR_LABELS[lang] || SIDEBAR_LABELS.en;
+
+  const authorsTitle = document.getElementById("sidebar-authors-title");
+  const essaysTitle  = document.getElementById("sidebar-essays-title");
+
+  if (authorsTitle) authorsTitle.textContent = labels.authors;
+  if (essaysTitle)  essaysTitle.textContent  = labels.essays;
+}
+
+function injectAuthors() {
+  const list = document.getElementById("authors-list");
+  if (!list) return;
+
+  list.innerHTML = "";
+
+  for (const key in AUTHORS) {
+    const entry = AUTHORS[key][lang] || AUTHORS[key].en;
+    const li = document.createElement("li");
+    li.innerHTML = `<a href="${entry.url}">${entry.name}</a>`;
+    list.appendChild(li);
+  }
+}
+
+function injectEssays() {
+  const list = document.getElementById("essays-list");
+  if (!list) return; // if the page doesn't have essays sidebar, skip
+
+  list.innerHTML = "";
+
+  for (const key in ESSAYS) {
+    const entry = ESSAYS[key][lang] || ESSAYS[key].en;
+    const li = document.createElement("li");
+    li.innerHTML = `<a href="${entry.url}">${entry.title}</a>`;
+    list.appendChild(li);
+  }
+}
+
+function injectSidebars() {
+  injectSidebarTitles();
+  injectAuthors();
+  injectEssays();
 }
