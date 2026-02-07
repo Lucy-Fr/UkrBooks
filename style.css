@@ -317,10 +317,14 @@ footer {
         width: 100%;
     }
 }
+
+
+
 .essay-image {
     display: block;
     width: 100%;
-    max-width: 700px;
+    max-width: 500px;   /* можно 500–700 */
+    height: auto;
     margin: 25px auto 35px;
     border-radius: 14px;
     box-shadow: 0 4px 18px rgba(0,0,0,0.12);
