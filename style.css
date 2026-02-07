@@ -30,9 +30,9 @@ body {
 
 .layout {
     display: flex;
-    flex-direction: row;        /* ← фиксируем порядок: main слева, sidebar справа */
+    flex-direction: row;        /* main left, sidebar right */
     justify-content: center;
-    align-items: flex-start;    /* ← sidebar теперь всегда сверху справа */
+    align-items: flex-start;    /* sidebar stays top-aligned */
     gap: 35px;
     max-width: 1300px;
     margin: 0 auto;
@@ -54,20 +54,36 @@ main.content {
 }
 
 /* ======================================
-   SIDEBAR (RIGHT SIDE LIST OF AUTHORS)
+   RIGHT SIDEBAR WRAPPER (AUTHORS + ESSAYS)
+   Requires HTML wrapper: <aside class="sidebar-right">...</aside>
    ====================================== */
 
-.sidebar-authors {
+.sidebar-right {
+    display: flex;
+    flex-direction: row;      /* two cards side-by-side */
+    gap: 18px;
+    align-items: flex-start;
+    height: fit-content;
+
+    position: sticky;         /* sticky whole right block */
+    top: 40px;
+}
+
+/* Common card styling for right side */
+.sidebar-box {
     width: 240px;
     background: #ffffff;
     border: 1px solid #DDE7F5;
     border-radius: 12px;
     padding: 20px 22px;
     height: fit-content;
-    position: sticky;
-    top: 40px;
     box-shadow: 0px 3px 10px rgba(0,0,0,0.07);
 }
+
+/* ======================================
+   AUTHORS SIDEBAR (inside .sidebar-right)
+   Use: <section class="sidebar-box sidebar-authors">...</section>
+   ====================================== */
 
 .sidebar-authors h3 {
     font-size: 1.05rem;
@@ -93,6 +109,38 @@ main.content {
 }
 
 .sidebar-authors a:hover {
+    text-decoration: underline;
+}
+
+/* ======================================
+   ESSAYS SIDEBAR (inside .sidebar-right)
+   Use: <section class="sidebar-box sidebar-essays">...</section>
+   ====================================== */
+
+.sidebar-essays h3 {
+    font-size: 1.05rem;
+    margin-bottom: 16px;
+    color: var(--dark-blue);
+}
+
+.sidebar-essays ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-essays li {
+    margin-bottom: 12px;
+}
+
+.sidebar-essays a {
+    color: var(--blue);
+    font-weight: 600;
+    font-size: 0.98rem;
+    text-decoration: none;
+}
+
+.sidebar-essays a:hover {
     text-decoration: underline;
 }
 
@@ -257,9 +305,15 @@ footer {
         padding: 10px;
     }
 
-    .sidebar-authors {
+    .sidebar-right {
         width: 100%;
         position: static;
+        flex-direction: column; /* stack cards */
+        gap: 18px;
         margin-bottom: 20px;
+    }
+
+    .sidebar-box {
+        width: 100%;
     }
 }
