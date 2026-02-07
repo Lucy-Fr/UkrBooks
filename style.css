@@ -44,7 +44,7 @@ body {
    ====================================== */
 
 main.content {
-    flex: 0 1 68%;
+    flex: 0 1 64%;
     max-width: var(--max-width);
     background: #FFFFFF;
     border-radius: 14px;
@@ -69,7 +69,7 @@ main.content {
     position: sticky;
     top: 40px;
 
-    width: 32%;                /* % width as requested */
+    width: 36%;                /* % width as requested */
     min-width: 300px;          /* do not collapse */
     max-width: 420px;          /* do not become huge */
 }
