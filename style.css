@@ -318,14 +318,12 @@ footer {
     }
 }
 
-
-
-.essay-image {
+main.content .essay-image {
     display: block;
-    width: 100%;
-    max-width: 500px;   /* можно 500–700 */
+    max-width: 100%;   /* не шире карточки */
     height: auto;
-    margin: 25px auto 35px;
+    margin: 25px 0 35px;
     border-radius: 14px;
     box-shadow: 0 4px 18px rgba(0,0,0,0.12);
 }
+
