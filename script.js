@@ -1,7 +1,3 @@
-// ======================================================
-// CLEAN UNIVERSAL FIREBASE COMMENTS + SIDEBAR (AUTHORS + ESSAYS)
-// ======================================================
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore, collection, addDoc, deleteDoc, doc,
@@ -10,10 +6,6 @@ import {
 import {
   getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-// ------------------------------------------------------
-// Firebase configuration
-// ------------------------------------------------------
 
 const firebaseConfig = {
   apiKey: "AIzaSyBi3kVG2G0RTXKV2EIhs4fQXEkaJ7X6HXU",
@@ -29,26 +21,20 @@ const app  = initializeApp(firebaseConfig);
 const db   = getFirestore(app);
 const auth = getAuth(app);
 
-// ======================================================
-// PAGE ID (each HTML page has its own comments)
-// ======================================================
+function normalizePageId(pathname) {
+  let p = pathname || "/";
+  if (p.length > 1 && p.endsWith("/")) p = p.slice(0, -1);
+  if (p.endsWith("/index.html")) p = p.slice(0, -"/index.html".length) || "/";
+  return p;
+}
 
-const pageId = window.location.pathname;
-
-// ======================================================
-// LANGUAGE DETECTION  ✅ FIXED (no UkrBooks false match)
-// ======================================================
+const pageId = normalizePageId(window.location.pathname);
 
 function detectLanguage() {
   let l = (document.documentElement.lang || "").toLowerCase().trim();
-
-  // normalize UA
   if (l === "ua") l = "uk";
-
-  // trust explicit lang
   if (l === "en" || l === "fr" || l === "uk") return l;
 
-  // fallback: detect only by filename or clear path segment (NOT by includes("uk"))
   const path = window.location.pathname.toLowerCase();
   const file = (path.split("/").pop() || "").toLowerCase();
   const segments = path.split("/").filter(Boolean);
@@ -56,15 +42,10 @@ function detectLanguage() {
   if (/(^|[-_])(ua|uk)\.html$/.test(file) || segments.includes("ua") || segments.includes("uk")) return "uk";
   if (/(^|[-_])fr\.html$/.test(file) || segments.includes("fr")) return "fr";
   if (/(^|[-_])en\.html$/.test(file) || segments.includes("en")) return "en";
-
   return "en";
 }
 
 const lang = detectLanguage();
-
-// ======================================================
-// ADMIN AUTH
-// ======================================================
 
 let isAdmin = false;
 
@@ -92,7 +73,9 @@ onAuthStateChanged(auth, user => {
 
 window.adminLogin = async function () {
   try {
-    await signInWithEmailAndPassword(auth, "garmash110@gmail.com", "410edfuf_G");
+    const pwd = prompt("Admin password:");
+    if (!pwd) return;
+    await signInWithEmailAndPassword(auth, "garmash110@gmail.com", pwd);
   } catch (err) {
     alert("Login error: " + err.message);
   }
@@ -105,10 +88,6 @@ window.adminLogout = async function () {
     alert("Logout error: " + err.message);
   }
 };
-
-// ======================================================
-// COMMENT SUBMISSION + SIDEBAR INJECTION
-// ======================================================
 
 document.addEventListener("DOMContentLoaded", () => {
   const form   = document.getElementById("commentForm");
@@ -146,10 +125,6 @@ document.addEventListener("DOMContentLoaded", () => {
   loadComments();
 });
 
-// ======================================================
-// LOAD COMMENTS (REALTIME)
-// ======================================================
-
 let unsubscribe = null;
 
 const UI_LABELS = {
@@ -181,10 +156,7 @@ function loadComments() {
         <p><strong>${c.name}</strong></p>
         <p>${c.text}</p>
         <small>${new Date(c.timestamp).toLocaleString()}</small>
-
-        <button class="delete-comment"
-                data-id="${docSnap.id}"
-                style="${isAdmin ? "" : "display:none;"}">
+        <button class="delete-comment" data-id="${docSnap.id}" style="${isAdmin ? "" : "display:none;"}">
           ${labels.del}
         </button>
         <hr>
@@ -203,10 +175,6 @@ function loadComments() {
   });
 }
 
-// ======================================================
-// SIDEBAR (AUTHORS + ESSAYS) — single source of truth
-// ======================================================
-
 const SIDEBAR_LABELS = {
   en: { authors: "Authors", essays: "Essays" },
   fr: { authors: "Auteurs", essays: "Essais" },
@@ -220,21 +188,18 @@ const AUTHORS = {
     fr: { name: "Serhiy Jadan",  url: "/UkrBooks/authors/zhadan/zhadanfr.html" },
     uk: { name: "Сергій Жадан",  url: "/UkrBooks/authors/zhadan/zhadanua.html" }
   },
-
   kuznetsova: {
     order: 20,
     en: { name: "Yevheniia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovaen.html" },
     fr: { name: "Ievheniia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovafr.html" },
     uk: { name: "Євгенія Кузнєцова",     url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html" }
   },
-
   vakulenko: {
     order: 30,
     en: { name: "Volodymyr Vakulenko", url: "/UkrBooks/authors/vakulenko/vakulenkoen.html" },
     fr: { name: "Volodymyr Vakoulenko", url: "/UkrBooks/authors/vakulenko/vakulenkofr.html" },
     uk: { name: "Володимир Вакуленко", url: "/UkrBooks/authors/vakulenko/vakulenkoua.html" }
   },
-
   amelina: {
     order: 40,
     en: { name: "Victoria Amelina", url: "/UkrBooks/authors/amelina/amelinaen.html" },
@@ -250,7 +215,6 @@ const ESSAYS = {
     fr: { title: "Au-delà de l’Empire", url: "/UkrBooks/essays/beyond-empire-fr.html" },
     uk: { title: "Поза імперією", url: "/UkrBooks/essays/beyond-empire-ua.html" }
   },
-
   we_can_do_it_again: {
     order: 20,
     en: { title: "“We Can Do It Again”", url: "/UkrBooks/essays/can_repeat_en.html" },
@@ -275,10 +239,7 @@ function injectAuthors() {
 
   list.innerHTML = "";
 
-  // ✅ stable order: always by AUTHORS[*].order (same on all pages)
-  const keys = Object.keys(AUTHORS).sort((a, b) => {
-    return (AUTHORS[a].order ?? 9999) - (AUTHORS[b].order ?? 9999);
-  });
+  const keys = Object.keys(AUTHORS).sort((a, b) => (AUTHORS[a].order ?? 9999) - (AUTHORS[b].order ?? 9999));
 
   for (const key of keys) {
     const entry = AUTHORS[key][lang] || AUTHORS[key].en;
@@ -294,10 +255,7 @@ function injectEssays() {
 
   list.innerHTML = "";
 
-  // ✅ stable order: always by ESSAYS[*].order (same on all pages)
-  const keys = Object.keys(ESSAYS).sort((a, b) => {
-    return (ESSAYS[a].order ?? 9999) - (ESSAYS[b].order ?? 9999);
-  });
+  const keys = Object.keys(ESSAYS).sort((a, b) => (ESSAYS[a].order ?? 9999) - (ESSAYS[b].order ?? 9999));
 
   for (const key of keys) {
     const entry = ESSAYS[key][lang] || ESSAYS[key].en;
