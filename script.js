@@ -5,7 +5,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore, collection, addDoc, deleteDoc, doc,
-  query, orderBy, onSnapshot, where
+  query, orderBy, onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import {
   getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut
@@ -36,27 +36,21 @@ const auth = getAuth(app);
 const pageId = window.location.pathname;
 
 // ======================================================
-// LANGUAGE DETECTION (robust, no UkrBooks false matches)
+// LANGUAGE DETECTION (NO UkrBooks false matches)
 // ======================================================
 
 function detectLanguage() {
-  // 1) explicit <html lang="...">
+  // Prefer explicit lang in HTML
   let l = (document.documentElement.lang || "").toLowerCase().trim();
   if (l === "ua") l = "uk";
   if (l === "en" || l === "fr" || l === "uk") return l;
 
-  // 2) check file name suffixes: *-ua.html, *_fr.html, etc.
-  const path = window.location.pathname.toLowerCase();
-  const file = (path.split("/").pop() || "").toLowerCase();
+  // Fallback by filename suffix only (safe)
+  const file = (window.location.pathname.split("/").pop() || "").toLowerCase();
 
   if (/(^|[-_])(ua|uk)\.html$/.test(file)) return "uk";
   if (/(^|[-_])fr\.html$/.test(file)) return "fr";
   if (/(^|[-_])en\.html$/.test(file)) return "en";
-
-  // 3) check path segments exactly: /ua/... /uk/... /fr/...
-  const segments = path.split("/").filter(Boolean);
-  if (segments.includes("ua") || segments.includes("uk")) return "uk";
-  if (segments.includes("fr")) return "fr";
 
   return "en";
 }
@@ -151,7 +145,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ======================================================
-// LOAD COMMENTS (REALTIME) + SAFE HTML
+// LOAD COMMENTS (REALTIME) — NO WHERE() => NO INDEX ERRORS
 // ======================================================
 
 let unsubscribe = null;
@@ -178,66 +172,55 @@ function loadComments() {
 
   const labels = UI_LABELS[lang] || UI_LABELS.en;
 
-  const qFiltered = query(
-    collection(db, "comments"),
-    where("page", "==", pageId),
-    orderBy("timestamp", "desc")
-  );
-
-  const qFallback = query(
-    collection(db, "comments"),
-    orderBy("timestamp", "desc")
-  );
-
-  const render = (snapshot, needsPageFilter) => {
-    list.innerHTML = "";
-
-    snapshot.forEach(docSnap => {
-      const c = docSnap.data();
-      if (needsPageFilter && c.page !== pageId) return;
-
-      const ts = (typeof c.timestamp === "number") ? c.timestamp : Date.now();
-
-      const item = document.createElement("div");
-      item.className = "comment-item";
-      item.innerHTML = `
-        <p><strong>${escapeHtml(c.name)}</strong></p>
-        <p>${escapeHtml(c.text)}</p>
-        <small>${new Date(ts).toLocaleString()}</small>
-
-        <button class="delete-comment"
-                data-id="${docSnap.id}"
-                style="${isAdmin ? "" : "display:none;"}">
-          ${labels.del}
-        </button>
-        <hr>
-      `;
-      list.appendChild(item);
-    });
-
-    list.querySelectorAll(".delete-comment").forEach(btn => {
-      btn.onclick = async () => {
-        const labels2 = UI_LABELS[lang] || UI_LABELS.en;
-        if (!isAdmin) return alert(labels2.onlyAdmin);
-
-        try {
-          await deleteDoc(doc(db, "comments", btn.dataset.id));
-        } catch (err) {
-          alert("Delete error: " + err.message);
-        }
-      };
-    });
-  };
+  // Simple query: always works without composite indexes
+  const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
 
   if (unsubscribe) unsubscribe();
 
-  // Try filtered first (may require composite index). If it errors -> fallback.
   unsubscribe = onSnapshot(
-    qFiltered,
-    snapshot => render(snapshot, false),
-    () => {
-      if (unsubscribe) unsubscribe();
-      unsubscribe = onSnapshot(qFallback, snapshot => render(snapshot, true));
+    q,
+    snapshot => {
+      list.innerHTML = "";
+
+      snapshot.forEach(docSnap => {
+        const c = docSnap.data();
+        if (!c || c.page !== pageId) return;
+
+        const ts = (typeof c.timestamp === "number") ? c.timestamp : Date.now();
+
+        const item = document.createElement("div");
+        item.className = "comment-item";
+        item.innerHTML = `
+          <p><strong>${escapeHtml(c.name)}</strong></p>
+          <p>${escapeHtml(c.text)}</p>
+          <small>${new Date(ts).toLocaleString()}</small>
+
+          <button class="delete-comment"
+                  data-id="${docSnap.id}"
+                  style="${isAdmin ? "" : "display:none;"}">
+            ${labels.del}
+          </button>
+          <hr>
+        `;
+
+        list.appendChild(item);
+      });
+
+      list.querySelectorAll(".delete-comment").forEach(btn => {
+        btn.onclick = async () => {
+          const labels2 = UI_LABELS[lang] || UI_LABELS.en;
+          if (!isAdmin) return alert(labels2.onlyAdmin);
+
+          try {
+            await deleteDoc(doc(db, "comments", btn.dataset.id));
+          } catch (err) {
+            alert("Delete error: " + err.message);
+          }
+        };
+      });
+    },
+    err => {
+      alert("Comments listener error: " + err.message);
     }
   );
 }
@@ -252,7 +235,7 @@ const SIDEBAR_LABELS = {
   uk: { authors: "Автори",  essays: "Есеї" }
 };
 
-// ✅ stable order via `order` (same on all pages)
+// ✅ stable order via `order` (same on all pages/languages)
 const AUTHORS = {
   zhadan: {
     order: 10,
@@ -312,8 +295,8 @@ function injectAuthors() {
   list.innerHTML = "";
 
   const keys = Object.keys(AUTHORS).sort((a, b) => {
-    const A = Number(AUTHORS[a].order != null ? AUTHORS[a].order : 9999);
-    const B = Number(AUTHORS[b].order != null ? AUTHORS[b].order : 9999);
+    const A = Number(AUTHORS[a] && AUTHORS[a].order != null ? AUTHORS[a].order : 9999);
+    const B = Number(AUTHORS[b] && AUTHORS[b].order != null ? AUTHORS[b].order : 9999);
     return A - B;
   });
 
@@ -332,8 +315,8 @@ function injectEssays() {
   list.innerHTML = "";
 
   const keys = Object.keys(ESSAYS).sort((a, b) => {
-    const A = Number(ESSAYS[a].order != null ? ESSAYS[a].order : 9999);
-    const B = Number(ESSAYS[b].order != null ? ESSAYS[b].order : 9999);
+    const A = Number(ESSAYS[a] && ESSAYS[a].order != null ? ESSAYS[a].order : 9999);
+    const B = Number(ESSAYS[b] && ESSAYS[b].order != null ? ESSAYS[b].order : 9999);
     return A - B;
   });
 
