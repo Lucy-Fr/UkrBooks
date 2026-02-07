@@ -36,21 +36,26 @@ const auth = getAuth(app);
 const pageId = window.location.pathname;
 
 // ======================================================
-// LANGUAGE DETECTION (NO UkrBooks false matches)
+// LANGUAGE DETECTION  ✅ FIXED (no UkrBooks false match)
 // ======================================================
 
 function detectLanguage() {
-  // Prefer explicit lang in HTML
   let l = (document.documentElement.lang || "").toLowerCase().trim();
+
+  // normalize UA
   if (l === "ua") l = "uk";
+
+  // trust explicit lang
   if (l === "en" || l === "fr" || l === "uk") return l;
 
-  // Fallback by filename suffix only (safe)
-  const file = (window.location.pathname.split("/").pop() || "").toLowerCase();
+  // fallback: detect only by filename or clear path segment (NOT by includes("uk"))
+  const path = window.location.pathname.toLowerCase();
+  const file = (path.split("/").pop() || "").toLowerCase();
+  const segments = path.split("/").filter(Boolean);
 
-  if (/(^|[-_])(ua|uk)\.html$/.test(file)) return "uk";
-  if (/(^|[-_])fr\.html$/.test(file)) return "fr";
-  if (/(^|[-_])en\.html$/.test(file)) return "en";
+  if (/(^|[-_])(ua|uk)\.html$/.test(file) || segments.includes("ua") || segments.includes("uk")) return "uk";
+  if (/(^|[-_])fr\.html$/.test(file) || segments.includes("fr")) return "fr";
+  if (/(^|[-_])en\.html$/.test(file) || segments.includes("en")) return "en";
 
   return "en";
 }
@@ -125,18 +130,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (!name || !text) return;
 
-      try {
-        await addDoc(collection(db, "comments"), {
-          page: pageId,
-          name,
-          text,
-          lang,
-          timestamp: Date.now()
-        });
-        form.reset();
-      } catch (err) {
-        alert("Comment error: " + err.message);
-      }
+      await addDoc(collection(db, "comments"), {
+        page: pageId,
+        name,
+        text,
+        lang,
+        timestamp: Date.now()
+      });
+
+      form.reset();
     });
   }
 
@@ -145,84 +147,60 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ======================================================
-// LOAD COMMENTS (REALTIME) — NO WHERE() => NO INDEX ERRORS
+// LOAD COMMENTS (REALTIME)
 // ======================================================
 
 let unsubscribe = null;
 
 const UI_LABELS = {
-  en: { del: "Delete",   onlyAdmin: "Only admin can delete comments." },
+  en: { del: "Delete", onlyAdmin: "Only admin can delete comments." },
   fr: { del: "Supprimer", onlyAdmin: "Seul l’admin peut supprimer les commentaires." },
   uk: { del: "Видалити", onlyAdmin: "Лише адміністратор може видаляти коментарі." }
 };
-
-function escapeHtml(str) {
-  const s = String(str == null ? "" : str);
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#39;");
-}
 
 function loadComments() {
   const list = document.getElementById("commentsList");
   if (!list) return;
 
   const labels = UI_LABELS[lang] || UI_LABELS.en;
-
-  // Simple query: always works without composite indexes
   const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
 
   if (unsubscribe) unsubscribe();
 
-  unsubscribe = onSnapshot(
-    q,
-    snapshot => {
-      list.innerHTML = "";
+  unsubscribe = onSnapshot(q, snapshot => {
+    list.innerHTML = "";
 
-      snapshot.forEach(docSnap => {
-        const c = docSnap.data();
-        if (!c || c.page !== pageId) return;
+    snapshot.forEach(docSnap => {
+      const c = docSnap.data();
+      if (c.page !== pageId) return;
 
-        const ts = (typeof c.timestamp === "number") ? c.timestamp : Date.now();
+      const item = document.createElement("div");
+      item.className = "comment-item";
 
-        const item = document.createElement("div");
-        item.className = "comment-item";
-        item.innerHTML = `
-          <p><strong>${escapeHtml(c.name)}</strong></p>
-          <p>${escapeHtml(c.text)}</p>
-          <small>${new Date(ts).toLocaleString()}</small>
+      item.innerHTML = `
+        <p><strong>${c.name}</strong></p>
+        <p>${c.text}</p>
+        <small>${new Date(c.timestamp).toLocaleString()}</small>
 
-          <button class="delete-comment"
-                  data-id="${docSnap.id}"
-                  style="${isAdmin ? "" : "display:none;"}">
-            ${labels.del}
-          </button>
-          <hr>
-        `;
+        <button class="delete-comment"
+                data-id="${docSnap.id}"
+                style="${isAdmin ? "" : "display:none;"}">
+          ${labels.del}
+        </button>
+        <hr>
+      `;
 
-        list.appendChild(item);
-      });
+      list.appendChild(item);
+    });
 
-      list.querySelectorAll(".delete-comment").forEach(btn => {
-        btn.onclick = async () => {
-          const labels2 = UI_LABELS[lang] || UI_LABELS.en;
-          if (!isAdmin) return alert(labels2.onlyAdmin);
-
-          try {
-            await deleteDoc(doc(db, "comments", btn.dataset.id));
-          } catch (err) {
-            alert("Delete error: " + err.message);
-          }
-        };
-      });
-    },
-    err => {
-      alert("Comments listener error: " + err.message);
-    }
-  );
+    list.querySelectorAll(".delete-comment").forEach(btn => {
+      btn.onclick = async () => {
+        const labels2 = UI_LABELS[lang] || UI_LABELS.en;
+        if (!isAdmin) return alert(labels2.onlyAdmin);
+        await deleteDoc(doc(db, "comments", btn.dataset.id));
+      };
+    });
+  });
 }
 
 // ======================================================
@@ -235,7 +213,6 @@ const SIDEBAR_LABELS = {
   uk: { authors: "Автори",  essays: "Есеї" }
 };
 
-// ✅ stable order via `order` (same on all pages/languages)
 const AUTHORS = {
   zhadan: {
     order: 10,
@@ -243,18 +220,21 @@ const AUTHORS = {
     fr: { name: "Serhiy Jadan",  url: "/UkrBooks/authors/zhadan/zhadanfr.html" },
     uk: { name: "Сергій Жадан",  url: "/UkrBooks/authors/zhadan/zhadanua.html" }
   },
+
   kuznetsova: {
     order: 20,
     en: { name: "Yevheniia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovaen.html" },
     fr: { name: "Ievheniia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovafr.html" },
     uk: { name: "Євгенія Кузнєцова",     url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html" }
   },
+
   vakulenko: {
     order: 30,
     en: { name: "Volodymyr Vakulenko", url: "/UkrBooks/authors/vakulenko/vakulenkoen.html" },
     fr: { name: "Volodymyr Vakoulenko", url: "/UkrBooks/authors/vakulenko/vakulenkofr.html" },
     uk: { name: "Володимир Вакуленко", url: "/UkrBooks/authors/vakulenko/vakulenkoua.html" }
   },
+
   amelina: {
     order: 40,
     en: { name: "Victoria Amelina", url: "/UkrBooks/authors/amelina/amelinaen.html" },
@@ -270,6 +250,7 @@ const ESSAYS = {
     fr: { title: "Au-delà de l’Empire", url: "/UkrBooks/essays/beyond-empire-fr.html" },
     uk: { title: "Поза імперією", url: "/UkrBooks/essays/beyond-empire-ua.html" }
   },
+
   we_can_do_it_again: {
     order: 20,
     en: { title: "“We Can Do It Again”", url: "/UkrBooks/essays/can_repeat_en.html" },
@@ -294,10 +275,9 @@ function injectAuthors() {
 
   list.innerHTML = "";
 
+  // ✅ stable order: always by AUTHORS[*].order (same on all pages)
   const keys = Object.keys(AUTHORS).sort((a, b) => {
-    const A = Number(AUTHORS[a] && AUTHORS[a].order != null ? AUTHORS[a].order : 9999);
-    const B = Number(AUTHORS[b] && AUTHORS[b].order != null ? AUTHORS[b].order : 9999);
-    return A - B;
+    return (AUTHORS[a].order ?? 9999) - (AUTHORS[b].order ?? 9999);
   });
 
   for (const key of keys) {
@@ -314,10 +294,9 @@ function injectEssays() {
 
   list.innerHTML = "";
 
+  // ✅ stable order: always by ESSAYS[*].order (same on all pages)
   const keys = Object.keys(ESSAYS).sort((a, b) => {
-    const A = Number(ESSAYS[a] && ESSAYS[a].order != null ? ESSAYS[a].order : 9999);
-    const B = Number(ESSAYS[b] && ESSAYS[b].order != null ? ESSAYS[b].order : 9999);
-    return A - B;
+    return (ESSAYS[a].order ?? 9999) - (ESSAYS[b].order ?? 9999);
   });
 
   for (const key of keys) {
