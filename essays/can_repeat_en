@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>“We Can Do It Again”: When Memory Becomes a Slogan</title>
+
+  <link rel="stylesheet" href="/UkrBooks/style.css?v=5">
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7493F35CVD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-7493F35CVD');
+  </script>
+</head>
+
+<body>
+
+<header class="top-nav">
+  <a href="/UkrBooks/index.html">
+    <img src="/UkrBooks/logo.png" class="logo" alt="Ukrainian Books">
+  </a>
+
+  <nav class="language-switch">
+    <a href="/UkrBooks/index.html">EN</a> |
+    <a href="/UkrBooks/fr.html">FR</a> |
+    <a href="/UkrBooks/ua.html">UA</a>
+  </nav>
+</header>
+
+<div class="layout">
+
+  <!-- MAIN CONTENT -->
+  <main class="content">
+
+    <h1 class="page-title">“We Can Do It Again”: When Memory Becomes a Slogan</h1>
+    <img src="/UkrBooks/essays/Fire_of_Moscow_1812.jpg" class="essay-image" alt="Fire of Moscow 1812">
+
+    <p>
+      Some phrases outlive the news cycle. They are not merely words — they are buttons. You press them and an entire set of ready-made
+      emotions lights up: pride, anxiety, anger, exhilaration. The Russian slogan “We can do it again” (in Russian: “Можем повторить”)
+      is exactly that kind of button. Short, rough-edged, and almost jokey at first glance, it has become one of the most visible catchphrases
+      of recent years. But what, precisely, is supposed to be “done again” — and why is this formula so convenient for propaganda?
+    </p>
+
+    <p>
+      Taken literally, the phrase refers to the Soviet Union’s victory in World War II — framed in Russia’s official tradition as the “Great Patriotic War.”
+      This event has long been turned into a central element of a national myth: victory as proof of historical rightness, strength, and “sacrifice.”
+      “Doing it again” here means “winning again.” But against whom? Under what conditions? And at what cost? The slogan does not specify —
+      and that ambiguity is deliberate. Its power lies in what it leaves unsaid. It becomes universal precisely because it is not anchored in facts.
+    </p>
+
+    <p>
+      That universality makes it an extremely effective tool of mass communication. Contemporary politics is complex: geopolitics, economics,
+      moral dilemmas, international law — all of this demands explanation, nuance, and debate. The slogan offers a shortcut: don’t analyze — feel.
+      Don’t disentangle — remember. Memory of victory functions like an emotional battery that can be “plugged into” any present-day conflict.
+      The result is a simplified, binary picture: “we are the victors / they are the enemies.”
+    </p>
+
+    <p>
+      There is another effect as well. “We can do it again” produces the image of a nation as an “eternal winner” for whom war is not a tragedy
+      but a trial that makes you stronger. It is the language of power, the language of readiness for a new confrontation. It mobilizes, unites,
+      and provides a sense of historical mission. Because it is so concise, the phrase easily turns into a meme, a bumper sticker, a slogan on a T-shirt.
+      It spreads fast: memes travel faster than arguments because they require no evidence — only recognition.
+    </p>
+
+    <p>
+      But this effectiveness has a darker reverse side. For many, “We can do it again” sounds like a trivialization of war itself.
+      Behind the word “victory” stand millions of dead, destroyed cities, and generational trauma. When tragedy becomes a slogan, memory stops being
+      a space for reflection and turns into a resource for the politics of the present. Critics see here not respect for history but its exploitation:
+      instead of “remember so it never happens again,” the logic shifts toward “remember so we can repeat it.”
+    </p>
+
+    <p>
+      The slogan works precisely because it appeals not to facts but to feelings. It does not tell a history — it triggers a reaction.
+      That is its propagandistic strength and, at the same time, its vulnerability. The shorter the formula, the more meaning can be poured into it —
+      and the easier it becomes to replace one meaning with another. The memory of the past becomes the language of the present, and the language of the present
+      becomes a device for legitimizing decisions that shape the future.
+    </p>
+
+    <p>
+      “We can do it again” is neither an archival quotation nor a document of its time. It is a contemporary political construct designed for instant
+      recognition and immediate mobilization. It shows how easily collective memory can be converted into rhetorical capital — and how difficult it is to keep
+      the line between engaging with history and instrumentalizing it. The question that remains offstage is simple and uncomfortable:
+      what, exactly, do we want to “do again” — and are we prepared to repeat everything that this phrase implies?
+    </p>
+
+  </main>
+
+  <!-- RIGHT SIDEBAR -->
+  <aside class="sidebar-right">
+
+    <section class="sidebar-box sidebar-authors">
+      <h3>Authors</h3>
+      <ul id="authors-list"></ul>
+    </section>
+
+    <section class="sidebar-box sidebar-essays">
+      <h3>Essays</h3>
+      <ul>
+        <li><a href="/UkrBooks/essays/beyond-empire.html">Beyond Empire</a></li>
+        <li><a href="/UkrBooks/essays/we-can-do-it-again.html">“We Can Do It Again”</a></li>
+      </ul>
+    </section>
+
+  </aside>
+
+</div>
+
+<footer>
+  <p>© Ukrainian Books</p>
+</footer>
+
+<script type="module" src="/UkrBooks/script.js"></script>
+
+</body>
+</html>
