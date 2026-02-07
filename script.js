@@ -40,17 +40,17 @@ const pageId = window.location.pathname;
 // ======================================================
 
 function detectLanguage() {
-  let lang = document.documentElement.lang?.toLowerCase() || "";
+  let l = document.documentElement.lang?.toLowerCase() || "";
 
-  if (!lang) {
+  if (!l) {
     const path = window.location.pathname.toLowerCase();
     if (path.includes("ua") || path.includes("uk")) return "uk";
     if (path.includes("fr")) return "fr";
     return "en";
   }
 
-  if (lang === "ua") return "uk";
-  return lang;
+  if (l === "ua") return "uk";
+  return l;
 }
 
 const lang = detectLanguage();
@@ -135,9 +135,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // NEW: inject both Authors + Essays (and localized titles)
   injectSidebars();
-
   loadComments();
 });
 
@@ -211,6 +209,12 @@ const AUTHORS = {
     en: { name: "Yevheniia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovaen.html" },
     fr: { name: "Ievheniia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovafr.html" },
     uk: { name: "Євгенія Кузнєцова",     url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html" }
+  },
+
+  amelina: {
+    en: { name: "Victoria Amelina", url: "/UkrBooks/authors/amelina/amelinaen.html" },
+    fr: { name: "Viktoriia Amelina", url: "/UkrBooks/authors/amelina/amelinafr.html" },
+    uk: { name: "Вікторія Амеліна",  url: "/UkrBooks/authors/amelina/amelinaua.html" }
   }
 };
 
@@ -222,9 +226,9 @@ const ESSAYS = {
   },
 
   we_can_do_it_again: {
-    en: { title: "“We Can Do It Again”", url: "/UkrBooks/essays/we-can-do-it-again.html" },
-    fr: { title: "« On peut recommencer »", url: "/UkrBooks/essays/on-peut-recommencer-fr.html" },
-    uk: { title: "«Можемо повторити»", url: "/UkrBooks/essays/mozhemo-povtoryty.html-ua" }
+    en: { title: "“We Can Do It Again”", url: "/UkrBooks/essays/can_repeat_en.html" },
+    fr: { title: "« On peut recommencer »", url: "/UkrBooks/essays/can_repeat_fr.html" },
+    uk: { title: "«Можемо повторити»", url: "/UkrBooks/essays/can_repeat_ua.html-ua" }
   }
 };
 
