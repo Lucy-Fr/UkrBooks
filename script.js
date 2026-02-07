@@ -222,13 +222,13 @@ const ESSAYS = {
   beyond_empire: {
     en: { title: "Beyond Empire", url: "/UkrBooks/essays/beyond-empire.html" },
     fr: { title: "Au-delà de l’Empire", url: "/UkrBooks/essays/beyond-empire-fr.html" },
-    uk: { title: "Поза імперією", url: "/UkrBooks/essays/beyond-empire.html-ua" }
+    uk: { title: "Поза імперією", url: "/UkrBooks/essays/beyond-empire-ua.html" }
   },
 
   we_can_do_it_again: {
     en: { title: "“We Can Do It Again”", url: "/UkrBooks/essays/can_repeat_en.html" },
     fr: { title: "« On peut recommencer »", url: "/UkrBooks/essays/can_repeat_fr.html" },
-    uk: { title: "«Можемо повторити»", url: "/UkrBooks/essays/can_repeat_ua.html-ua" }
+    uk: { title: "«Можемо повторити»", url: "/UkrBooks/essays/can_repeat_ua.html" }
   }
 };
 
