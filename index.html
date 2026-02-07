@@ -1,93 +1,86 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Voices of Ukraine in Contemporary Literature</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voices of Ukraine in Contemporary Literature</title>
 
-    <!-- общий стиль -->
-    <link rel="stylesheet" href="/UkrBooks/style.css?v=4">
-    <!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-7493F35CVD"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-7493F35CVD');
-</script>
+  <link rel="stylesheet" href="/UkrBooks/style.css?v=5">
 
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7493F35CVD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-7493F35CVD');
+  </script>
 </head>
 
 <body>
 
-<header class="top-nav">
+  <header class="top-nav">
     <a href="/UkrBooks/index.html">
-        <img src="/UkrBooks/logo.png" class="logo" alt="Ukrainian Books">
+      <img src="/UkrBooks/logo.png" class="logo" alt="Ukrainian Books">
     </a>
 
     <nav class="language-switch">
-        <span>EN</span> |
-        <a href="/UkrBooks/fr.html">FR</a> |
-        <a href="/UkrBooks/ua.html">UA</a>
+      <span>EN</span> |
+      <a href="/UkrBooks/fr.html">FR</a> |
+      <a href="/UkrBooks/ua.html">UA</a>
     </nav>
-</header>
+  </header>
 
+  <div class="layout">
 
-<div class="layout">
-
-    <!-- ===== MAIN CONTENT ===== -->
     <main class="content">
+      <h1 class="page-title">Voices of Ukraine in Contemporary Literature</h1>
 
-        <h1 class="page-title">Voices of Ukraine in Contemporary Literature</h1>
-<img src="/UkrBooks/essays/books2.jpg" class="essay-image" alt="books2">
-        <p>
-            After Russia’s full-scale invasion of 2022, Ukrainian literature entered a new and intense phase marked by
-            documentary writing, ethical urgency, and a rethinking of the writer’s role. Authors increasingly turn to
-            diaries, frontline notes, testimonies, and non-fiction to record the reality of war and preserve collective memory.
-        </p>
+      <img src="/UkrBooks/essays/books2.jpg" class="essay-image" alt="books2">
 
-        <p>
-            Poetry has become a form of rapid response, capturing trauma, resistance, vulnerability, and solidarity.
-            Prose grows more fragmentary and grounded in lived experience: displacement, the loss of home, bodily fragility,
-            and the redefinition of identity shape contemporary narratives.
-        </p>
+      <p>
+        After Russia’s full-scale invasion of 2022, Ukrainian literature entered a new and intense phase marked by
+        documentary writing, ethical urgency, and a rethinking of the writer’s role. Authors increasingly turn to
+        diaries, frontline notes, testimonies, and non-fiction to record the reality of war and preserve collective memory.
+      </p>
 
-        <p>
-            War satire, song lyrics, and hybrid digital forms create a cultural landscape where humour and pain coexist.
-            Diaspora writing addresses exile, linguistic adaptation, and living “elsewhere” during wartime.
-        </p>
+      <p>
+        Poetry has become a form of rapid response, capturing trauma, resistance, vulnerability, and solidarity.
+        Prose grows more fragmentary and grounded in lived experience: displacement, the loss of home, bodily fragility,
+        and the redefinition of identity shape contemporary narratives.
+      </p>
 
-        <p>
-            This website presents recent works of contemporary Ukrainian literature, highlights authors, and shares information
-            about literary and cultural events in Ukraine. It offers a multilingual gateway to the evolving Ukrainian cultural
-            voice in times of war.
-        </p>
+      <p>
+        War satire, song lyrics, and hybrid digital forms create a cultural landscape where humour and pain coexist.
+        Diaspora writing addresses exile, linguistic adaptation, and living “elsewhere” during wartime.
+      </p>
 
-   </main>
+      <p>
+        This website presents recent works of contemporary Ukrainian literature, highlights authors, and shares information
+        about literary and cultural events in Ukraine. It offers a multilingual gateway to the evolving Ukrainian cultural
+        voice in times of war.
+      </p>
+    </main>
 
-<!-- ===== RIGHT SIDEBARS ===== -->
-<aside class="sidebar-right">
-
-    <section class="sidebar-box sidebar-authors">
-        <h3>Authors</h3>
+    <!-- RIGHT SIDEBAR -->
+    <aside class="sidebar-right">
+      <section class="sidebar-box sidebar-authors">
+        <h3 id="sidebar-authors-title">Authors</h3>
         <ul id="authors-list"></ul>
-    </section>
+      </section>
 
-    <section class="sidebar-box sidebar-essays">
-        <h3>Essays</h3>
-        <ul>
-            <li><a href="essays/beyond-empire.html">Beyond Empire</a></li>
-        </ul>
-    </section>
+      <section class="sidebar-box sidebar-essays">
+        <h3 id="sidebar-essays-title">Essays</h3>
+        <ul id="essays-list"></ul>
+      </section>
+    </aside>
 
-</aside>
+  </div>
 
-</div>
-<footer>
+  <footer>
     <p>© Ukrainian Books</p>
-</footer>
+  </footer>
 
-<script type="module" src="/UkrBooks/script.js"></script>
-
+  <script type="module" src="/UkrBooks/script.js"></script>
 </body>
 </html>
