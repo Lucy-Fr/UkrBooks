@@ -78,25 +78,41 @@
 
   <h2>Коментарі</h2>
 
-  <div id="admin-controls">
-    <button id="loginBtn">Sign in as Admin</button>
-    <button id="logoutBtn" style="display:none;">Sign out</button>
-    <span id="adminStatus"></span>
+  <div id="admin-controls" style="margin-bottom: 20px;">
+    <button id="loginBtn" style="padding:10px 20px; background:#005bbb; color:#fff; border:none; border-radius:8px;">Sign in as Admin</button>
+    <button id="logoutBtn" style="padding:10px 20px; background:#777; color:#fff; border:none; border-radius:8px; display:none;">Sign out</button>
+    <span id="adminStatus" style="margin-left:10px; color:#555;"></span>
   </div>
 
-  <form id="commentForm">
+  <form id="commentForm" class="comment-form">
+    <label for="name">Ваше ім’я</label>
     <input type="text" id="name" required>
-    <textarea id="text" required></textarea>
+
+    <label for="text">Ваш коментар</label>
+    <textarea id="text" rows="5" required></textarea>
+
     <button type="submit">Надіслати</button>
   </form>
 
-  <div id="commentsList"></div>
+  <div id="commentsList" style="margin-top:30px;"></div>
+
+  <p><a href="/UkrBooks/index.html">← На головну</a></p>
 
 </main>
 
+<!-- RIGHT SIDEBAR (auto-filled from script.js) — НЕ МЕНЯТЬ -->
 <aside class="sidebar-right">
-  <ul id="authors-list"></ul>
-  <ul id="essays-list"></ul>
+
+  <section class="sidebar-box sidebar-authors">
+    <h3 id="sidebar-authors-title">Authors</h3>
+    <ul id="authors-list"></ul>
+  </section>
+
+  <section class="sidebar-box sidebar-essays">
+    <h3 id="sidebar-essays-title">Essays</h3>
+    <ul id="essays-list"></ul>
+  </section>
+
 </aside>
 
 </div>
