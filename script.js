@@ -74,6 +74,43 @@ function detectLanguage() {
 
 const lang = detectLanguage();
 
+
+// ✅ INSERTED ------------------------------------------------------
+// FIX language switch on author pages (prevents /authors/<slug>/<slug>.html)
+// Requires: <nav class="language-switch"><a>UA</a><a>FR</a><a>EN</a></nav>
+// ------------------------------------------------------
+function fixLanguageSwitchLinks() {
+  const nav = document.querySelector("nav.language-switch");
+  if (!nav) return;
+
+  const links = nav.querySelectorAll("a");
+  if (!links.length) return;
+
+  const path = window.location.pathname;
+
+  // Only for author pages: /UkrBooks/authors/<slug>/<file>
+  const m = path.match(/\/UkrBooks\/authors\/([^/]+)\/[^/]+$/i);
+  if (!m) return;
+
+  const slug = m[1];
+
+  // Your real filenames:
+  // /authors/<slug>/<slug>ua.html | <slug>en.html | <slug>fr.html
+  const map = {
+    ua: `/UkrBooks/authors/${slug}/${slug}ua.html`,
+    uk: `/UkrBooks/authors/${slug}/${slug}ua.html`,
+    en: `/UkrBooks/authors/${slug}/${slug}en.html`,
+    fr: `/UkrBooks/authors/${slug}/${slug}fr.html`,
+  };
+
+  links.forEach(a => {
+    const key = (a.textContent || "").trim().toLowerCase();
+    if (map[key]) a.href = map[key];
+  });
+}
+// ✅ INSERTED END --------------------------------------------------
+
+
 // ------------------------------------------------------
 // Admin state
 // ------------------------------------------------------
@@ -241,6 +278,9 @@ document.addEventListener("DOMContentLoaded", () => {
       form.reset();
     });
   }
+
+  // ✅ INSERTED: fix language links BEFORE rendering sidebars
+  fixLanguageSwitchLinks();
 
   injectSidebars();
   loadComments();
