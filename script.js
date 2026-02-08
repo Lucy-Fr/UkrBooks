@@ -46,13 +46,21 @@ function getStablePageId() {
 const pageId = getStablePageId();
 
 // ------------------------------------------------------
-// Language detection
+// Language detection (FIXED: stable + sidebar-safe)
 // ------------------------------------------------------
 function detectLanguage() {
+  // 1) if page sets <main data-lang="..."> (recommended), use it
+  const main = document.querySelector("main.content[data-lang]");
+  let forced = (main?.getAttribute("data-lang") || "").toLowerCase().trim();
+  if (forced === "ua") forced = "uk";
+  if (forced === "en" || forced === "fr" || forced === "uk") return forced;
+
+  // 2) <html lang="...">
   let l = (document.documentElement.lang || "").toLowerCase().trim();
   if (l === "ua") l = "uk";
   if (l === "en" || l === "fr" || l === "uk") return l;
 
+  // 3) pathname heuristics
   const path = window.location.pathname.toLowerCase();
   const file = (path.split("/").pop() || "").toLowerCase();
   const segments = path.split("/").filter(Boolean);
@@ -60,6 +68,7 @@ function detectLanguage() {
   if (/(^|[-_])(ua|uk)\.html$/.test(file) || segments.includes("ua") || segments.includes("uk")) return "uk";
   if (/(^|[-_])fr\.html$/.test(file) || segments.includes("fr")) return "fr";
   if (/(^|[-_])en\.html$/.test(file) || segments.includes("en")) return "en";
+
   return "en";
 }
 
@@ -260,7 +269,7 @@ const AUTHORS = {
     uk: { name: "Володимир Вакуленко",  url: "/UkrBooks/authors/vakulenko/vakulenkoua.html" }
   },
   maksymchuk: {
-    order: 35, // чтобы не совпадало с vakulenko
+    order: 35,
     en: { name: "Oksana Maksymchuk", url: "/UkrBooks/authors/maksymchuk/maksymchuken.html" },
     fr: { name: "Oksana Maksymchuk", url: "/UkrBooks/authors/maksymchuk/maksymchukfr.html" },
     uk: { name: "Оксана Максимчук",  url: "/UkrBooks/authors/maksymchuk/maksymchukua.html" }
@@ -312,7 +321,9 @@ function injectAuthors() {
   );
 
   for (const key of keys) {
-    const entry = AUTHORS[key][lang] || AUTHORS[key].en;
+    // FIX: fallback lang -> uk -> en (prevents accidental EN on UA pages)
+    const entry = AUTHORS[key][lang] || AUTHORS[key].uk || AUTHORS[key].en;
+
     const li = document.createElement("li");
     const a = document.createElement("a");
     a.href = entry.url;
@@ -333,7 +344,9 @@ function injectEssays() {
   );
 
   for (const key of keys) {
-    const entry = ESSAYS[key][lang] || ESSAYS[key].en;
+    // FIX: fallback lang -> uk -> en
+    const entry = ESSAYS[key][lang] || ESSAYS[key].uk || ESSAYS[key].en;
+
     const li = document.createElement("li");
     const a = document.createElement("a");
     a.href = entry.url;
