@@ -200,6 +200,12 @@ const AUTHORS = {
     fr: { name: "Volodymyr Vakoulenko", url: "/UkrBooks/authors/vakulenko/vakulenkofr.html" },
     uk: { name: "Володимир Вакуленко", url: "/UkrBooks/authors/vakulenko/vakulenkoua.html" }
   },
+  maksymchuk: {
+    order: 30,
+    en: { name: "Oksana Maksymchuk", url: "/UkrBooks/authors/maksymchuk/maksymchuken.html" },
+    fr: { name: "Oksana Maksymchuk", url: "/UkrBooks/authors/maksymchuk/maksymchukfr.html" },
+    uk: { name: "Oksana Maksymchuk", url: "/UkrBooks/authors/maksymchuk/maksymchukua.html" }
+  },
   amelina: {
     order: 40,
     en: { name: "Victoria Amelina", url: "/UkrBooks/authors/amelina/amelinaen.html" },
