@@ -1,12 +1,15 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore, collection, addDoc, deleteDoc, doc,
-  query, orderBy, onSnapshot
+  query, where, orderBy, onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import {
   getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
+// ------------------------------------------------------
+// Firebase configuration
+// ------------------------------------------------------
 const firebaseConfig = {
   apiKey: "AIzaSyBi3kVG2G0RTXKV2EIhs4fQXEkaJ7X6HXU",
   authDomain: "ucontemporarylit.firebaseapp.com",
@@ -21,15 +24,30 @@ const app  = initializeApp(firebaseConfig);
 const db   = getFirestore(app);
 const auth = getAuth(app);
 
-function normalizePageId(pathname) {
+// ------------------------------------------------------
+// Page ID: prefer stable data-page-id, fallback to pathname
+// ------------------------------------------------------
+function normalizePathname(pathname) {
   let p = pathname || "/";
   if (p.length > 1 && p.endsWith("/")) p = p.slice(0, -1);
   if (p.endsWith("/index.html")) p = p.slice(0, -"/index.html".length) || "/";
   return p;
 }
 
-const pageId = normalizePageId(window.location.pathname);
+function getStablePageId() {
+  // если на странице есть <main class="content" data-page-id="...">
+  const main = document.querySelector("main.content[data-page-id]");
+  const attr = main?.getAttribute("data-page-id");
+  if (attr && attr.trim()) return attr.trim();
+  // иначе — по пути
+  return normalizePathname(window.location.pathname);
+}
 
+const pageId = getStablePageId();
+
+// ------------------------------------------------------
+// Language detection
+// ------------------------------------------------------
 function detectLanguage() {
   let l = (document.documentElement.lang || "").toLowerCase().trim();
   if (l === "ua") l = "uk";
@@ -47,6 +65,9 @@ function detectLanguage() {
 
 const lang = detectLanguage();
 
+// ------------------------------------------------------
+// Admin state
+// ------------------------------------------------------
 let isAdmin = false;
 
 onAuthStateChanged(auth, user => {
@@ -68,6 +89,7 @@ onAuthStateChanged(auth, user => {
     }
   }
 
+  // при смене статуса админа перерисуем комментарии (кнопки delete)
   loadComments();
 });
 
@@ -89,6 +111,96 @@ window.adminLogout = async function () {
   }
 };
 
+// ------------------------------------------------------
+// Labels
+// ------------------------------------------------------
+const UI_LABELS = {
+  en: { del: "Delete", onlyAdmin: "Only admin can delete comments." },
+  fr: { del: "Supprimer", onlyAdmin: "Seul l’admin peut supprimer les commentaires." },
+  uk: { del: "Видалити", onlyAdmin: "Лише адміністратор може видаляти коментарі." }
+};
+
+const SIDEBAR_LABELS = {
+  en: { authors: "Authors", essays: "Essays" },
+  fr: { authors: "Auteurs", essays: "Essais" },
+  uk: { authors: "Автори",  essays: "Есеї" }
+};
+
+// ------------------------------------------------------
+// Comments (SAFE render + query by page only)
+// ------------------------------------------------------
+let unsubscribe = null;
+
+function renderComment(listEl, c, docId) {
+  const labels = UI_LABELS[lang] || UI_LABELS.en;
+
+  const item = document.createElement("div");
+  item.className = "comment-item";
+
+  const pName = document.createElement("p");
+  const strong = document.createElement("strong");
+  strong.textContent = c.name || "";
+  pName.appendChild(strong);
+
+  const pText = document.createElement("p");
+  pText.textContent = c.text || "";
+
+  const small = document.createElement("small");
+  const ts = typeof c.timestamp === "number" ? c.timestamp : Date.now();
+  small.textContent = new Date(ts).toLocaleString();
+
+  const btn = document.createElement("button");
+  btn.className = "delete-comment";
+  btn.dataset.id = docId;
+  btn.textContent = labels.del;
+
+  // show/hide
+  btn.style.display = isAdmin ? "inline-block" : "none";
+
+  btn.onclick = async () => {
+    const labels2 = UI_LABELS[lang] || UI_LABELS.en;
+    if (!isAdmin) return alert(labels2.onlyAdmin);
+    await deleteDoc(doc(db, "comments", docId));
+  };
+
+  const hr = document.createElement("hr");
+
+  item.appendChild(pName);
+  item.appendChild(pText);
+  item.appendChild(small);
+  item.appendChild(btn);
+  item.appendChild(hr);
+
+  listEl.appendChild(item);
+}
+
+function loadComments() {
+  const list = document.getElementById("commentsList");
+  if (!list) return;
+
+  // остановить предыдущую подписку
+  if (unsubscribe) unsubscribe();
+
+  // ВАЖНО: грузим только нужную страницу
+  const q = query(
+    collection(db, "comments"),
+    where("page", "==", pageId),
+    orderBy("timestamp", "desc")
+  );
+
+  unsubscribe = onSnapshot(q, snapshot => {
+    list.innerHTML = "";
+
+    snapshot.forEach(docSnap => {
+      const c = docSnap.data();
+      renderComment(list, c, docSnap.id);
+    });
+  });
+}
+
+// ------------------------------------------------------
+// Submit comment
+// ------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
   const form   = document.getElementById("commentForm");
   const login  = document.getElementById("loginBtn");
@@ -110,7 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!name || !text) return;
 
       await addDoc(collection(db, "comments"), {
-        page: pageId,
+        page: pageId,      // теперь стабильно
         name,
         text,
         lang,
@@ -125,62 +237,9 @@ document.addEventListener("DOMContentLoaded", () => {
   loadComments();
 });
 
-let unsubscribe = null;
-
-const UI_LABELS = {
-  en: { del: "Delete", onlyAdmin: "Only admin can delete comments." },
-  fr: { del: "Supprimer", onlyAdmin: "Seul l’admin peut supprimer les commentaires." },
-  uk: { del: "Видалити", onlyAdmin: "Лише адміністратор може видаляти коментарі." }
-};
-
-function loadComments() {
-  const list = document.getElementById("commentsList");
-  if (!list) return;
-
-  const labels = UI_LABELS[lang] || UI_LABELS.en;
-  const q = query(collection(db, "comments"), orderBy("timestamp", "desc"));
-
-  if (unsubscribe) unsubscribe();
-
-  unsubscribe = onSnapshot(q, snapshot => {
-    list.innerHTML = "";
-
-    snapshot.forEach(docSnap => {
-      const c = docSnap.data();
-      if (c.page !== pageId) return;
-
-      const item = document.createElement("div");
-      item.className = "comment-item";
-
-      item.innerHTML = `
-        <p><strong>${c.name}</strong></p>
-        <p>${c.text}</p>
-        <small>${new Date(c.timestamp).toLocaleString()}</small>
-        <button class="delete-comment" data-id="${docSnap.id}" style="${isAdmin ? "" : "display:none;"}">
-          ${labels.del}
-        </button>
-        <hr>
-      `;
-
-      list.appendChild(item);
-    });
-
-    list.querySelectorAll(".delete-comment").forEach(btn => {
-      btn.onclick = async () => {
-        const labels2 = UI_LABELS[lang] || UI_LABELS.en;
-        if (!isAdmin) return alert(labels2.onlyAdmin);
-        await deleteDoc(doc(db, "comments", btn.dataset.id));
-      };
-    });
-  });
-}
-
-const SIDEBAR_LABELS = {
-  en: { authors: "Authors", essays: "Essays" },
-  fr: { authors: "Auteurs", essays: "Essais" },
-  uk: { authors: "Автори",  essays: "Есеї" }
-};
-
+// ------------------------------------------------------
+// Sidebar data
+// ------------------------------------------------------
 const AUTHORS = {
   zhadan: {
     order: 10,
@@ -196,21 +255,21 @@ const AUTHORS = {
   },
   vakulenko: {
     order: 30,
-    en: { name: "Volodymyr Vakulenko", url: "/UkrBooks/authors/vakulenko/vakulenkoen.html" },
+    en: { name: "Volodymyr Vakulenko",  url: "/UkrBooks/authors/vakulenko/vakulenkoen.html" },
     fr: { name: "Volodymyr Vakoulenko", url: "/UkrBooks/authors/vakulenko/vakulenkofr.html" },
-    uk: { name: "Володимир Вакуленко", url: "/UkrBooks/authors/vakulenko/vakulenkoua.html" }
+    uk: { name: "Володимир Вакуленко",  url: "/UkrBooks/authors/vakulenko/vakulenkoua.html" }
   },
   maksymchuk: {
-    order: 30,
+    order: 35, // чтобы не совпадало с vakulenko
     en: { name: "Oksana Maksymchuk", url: "/UkrBooks/authors/maksymchuk/maksymchuken.html" },
     fr: { name: "Oksana Maksymchuk", url: "/UkrBooks/authors/maksymchuk/maksymchukfr.html" },
-    uk: { name: "Oksana Maksymchuk", url: "/UkrBooks/authors/maksymchuk/maksymchukua.html" }
+    uk: { name: "Оксана Максимчук",  url: "/UkrBooks/authors/maksymchuk/maksymchukua.html" }
   },
   amelina: {
     order: 40,
     en: { name: "Victoria Amelina", url: "/UkrBooks/authors/amelina/amelinaen.html" },
     fr: { name: "Viktoria Amelina", url: "/UkrBooks/authors/amelina/amelinafr.html" },
-    uk: { name: "Вікторія Амеліна",  url: "/UkrBooks/authors/amelina/amelinaua.html" }
+    uk: { name: "Вікторія Амеліна", url: "/UkrBooks/authors/amelina/amelinaua.html" }
   }
 };
 
@@ -229,6 +288,9 @@ const ESSAYS = {
   }
 };
 
+// ------------------------------------------------------
+// Sidebar injectors
+// ------------------------------------------------------
 function injectSidebarTitles() {
   const labels = SIDEBAR_LABELS[lang] || SIDEBAR_LABELS.en;
 
@@ -245,12 +307,17 @@ function injectAuthors() {
 
   list.innerHTML = "";
 
-  const keys = Object.keys(AUTHORS).sort((a, b) => (AUTHORS[a].order ?? 9999) - (AUTHORS[b].order ?? 9999));
+  const keys = Object.keys(AUTHORS).sort(
+    (a, b) => (AUTHORS[a].order ?? 9999) - (AUTHORS[b].order ?? 9999)
+  );
 
   for (const key of keys) {
     const entry = AUTHORS[key][lang] || AUTHORS[key].en;
     const li = document.createElement("li");
-    li.innerHTML = `<a href="${entry.url}">${entry.name}</a>`;
+    const a = document.createElement("a");
+    a.href = entry.url;
+    a.textContent = entry.name;
+    li.appendChild(a);
     list.appendChild(li);
   }
 }
@@ -261,12 +328,17 @@ function injectEssays() {
 
   list.innerHTML = "";
 
-  const keys = Object.keys(ESSAYS).sort((a, b) => (ESSAYS[a].order ?? 9999) - (ESSAYS[b].order ?? 9999));
+  const keys = Object.keys(ESSAYS).sort(
+    (a, b) => (ESSAYS[a].order ?? 9999) - (ESSAYS[b].order ?? 9999)
+  );
 
   for (const key of keys) {
     const entry = ESSAYS[key][lang] || ESSAYS[key].en;
     const li = document.createElement("li");
-    li.innerHTML = `<a href="${entry.url}">${entry.title}</a>`;
+    const a = document.createElement("a");
+    a.href = entry.url;
+    a.textContent = entry.title;
+    li.appendChild(a);
     list.appendChild(li);
   }
 }
