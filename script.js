@@ -203,7 +203,7 @@ const AUTHORS = {
   amelina: {
     order: 40,
     en: { name: "Victoria Amelina", url: "/UkrBooks/authors/amelina/amelinaen.html" },
-    fr: { name: "Viktoriia Amelina", url: "/UkrBooks/authors/amelina/amelinafr.html" },
+    fr: { name: "Viktoria Amelina", url: "/UkrBooks/authors/amelina/amelinafr.html" },
     uk: { name: "Вікторія Амеліна",  url: "/UkrBooks/authors/amelina/amelinaua.html" }
   }
 };
