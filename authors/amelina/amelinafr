@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Victoria Amelina</title>
+    <link rel="stylesheet" href="/UkrBooks/style.css?v=5">
+
+    <!-- Google Analytics — НЕ МЕНЯТЬ -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-7493F35CVD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-7493F35CVD');
+    </script>
+</head>
+
+<body>
+
+<header class="top-nav">
+    <a href="/UkrBooks/index.html">
+        <img src="/UkrBooks/logo.png" class="logo" alt="Ukrainian Books">
+    </a>
+
+    <nav class="language-switch">
+        <span>FR</span> |
+        <a href="/UkrBooks/authors/amelina/amelinaen.html">EN</a> |
+        <a href="/UkrBooks/authors/amelina/amelinaua.html">UA</a>
+    </nav>
+</header>
+
+<div class="layout">
+
+<main class="content" data-page-id="author-amelina-fr">
+
+    <h1 class="page-title">Victoria Amelina</h1>
+
+    <figure style="margin: 0 0 20px 0;">
+        <img
+          src="/UkrBooks/authors/amelina/amelina2015.jpg"
+          alt="Victoria Amelina"
+          class="author-photo">
+        <figcaption style="font-size: 0.8rem; color:#777; text-align:center; margin-top:5px;">
+            Amelina en 2015
+        </figcaption>
+    </figure>
+
+    <h2>Introduction</h2>
+    <p>Victoria Amelina est une romancière, essayiste, poétesse et chercheuse sur les crimes de guerre ukrainienne dont l’œuvre littéraire et l’engagement civique ont fait d’elle l’une des voix majeures de la culture ukrainienne contemporaine. Autrice de deux romans et d’un livre pour enfants, lauréate du Prix littéraire Joseph Conrad et finaliste du Prix de l’Union européenne de littérature, elle a su conjuguer écriture de fiction et travail de documentation des violations des droits humains pendant l’invasion russe à grande échelle de l’Ukraine. Sa prose et sa poésie, traduites dans de nombreuses langues, explorent la mémoire, les transformations post-soviétiques et l’expérience de la guerre, créant un espace puissant de témoignage et de réflexion morale.</p>
+
+    <h2>Biographie</h2>
+    <p>Viktoriia Yuriyivna Amelina (née Shalamay) est née le 1ᵉʳ janvier 1986 à Lviv, en Ukraine. À l’âge de quatorze ans, elle a émigré au Canada avec son père, avant de revenir rapidement en Ukraine. Elle a obtenu un diplôme en informatique à Lviv et a d’abord travaillé dans le secteur des technologies de l’information avant de se consacrer entièrement à l’écriture en 2015.</p>
+    <p>Son premier roman, <em>The Fall Syndrome, or Homo Compatiens</em> (2014/2015), consacré aux événements du Maïdan de 2014, a été salué par la critique et a reçu plusieurs distinctions littéraires. En 2016, elle a publié un livre pour enfants, <em>Somebody, or Water Heart</em>, puis en 2017 le roman <em>Dom’s Dream Kingdom</em>, situé à Lviv dans les années 1990 et lié à l’histoire de l’appartement d’enfance de l’écrivain polono-juif Stanisław Lem. Ce roman a figuré sur les listes finales de plusieurs prix littéraires ukrainiens et européens et a suscité par la suite l’intérêt d’éditeurs internationaux.</p>
+    <p>Membre de PEN International, Amelina a participé au 84ᵉ Congrès mondial du PEN, où elle a pris la parole en défense de prisonniers politiques ukrainiens. En 2021, elle a reçu le Prix littéraire Joseph Conrad-Korzeniowski et a fondé un festival littéraire dans la région de Donetsk. À partir de 2022, elle s’est tournée plus activement vers la poésie, décrivant la guerre comme une force qui condense le langage et accroît le poids de chaque mot.</p>
+    <p>Après le début de l’invasion russe à grande échelle, Amelina a travaillé comme chercheuse sur les crimes de guerre au sein de l’organisation ukrainienne Truth Hounds, menant des entretiens avec des témoins et documentant des preuves. En septembre 2022, lors d’une mission de recherche dans la région d’Izium, elle a découvert le journal de guerre de l’écrivain ukrainien assassiné Volodymyr Vakulenko et a ensuite accepté en son nom une récompense internationale d’édition à titre posthume. Elle a également soutenu des personnes déplacées à l’intérieur du pays et participé à l’acheminement de l’aide humanitaire à Lviv.</p>
+    <p>Son dernier projet majeur fut le livre de non-fiction <em>Looking at Women Looking at War</em>, une œuvre diaristique consacrée aux témoignages de femmes en quête de justice pendant la guerre. Le manuscrit est resté inachevé au moment de sa mort, mais a été complété et publié à titre posthume, recevant en 2025 l’Orwell Prize for Political Writing.</p>
+    <p>Le 27 juin 2023, Victoria Amelina a été grièvement blessée lors d’une frappe de missile russe à Kramatorsk. Elle est décédée de ses blessures le 1ᵉʳ juillet 2023 dans un hôpital de Dnipro, à l’âge de 37 ans, et a été enterrée à Lviv. Elle demeure dans la mémoire collective comme une écrivaine ayant uni littérature, mémoire et responsabilité civique face à la guerre.</p>
+
+    <h2>Activité en temps de guerre</h2>
+    <p>Après le début de l’invasion russe à grande échelle de l’Ukraine, Victoria Amelina a rejoint l’organisation ukrainienne de défense des droits humains Truth Hounds, qui documente les crimes de guerre et les violations du droit international humanitaire. S’appuyant sur sa formation de romancière, elle menait des entretiens approfondis avec des témoins et des survivants, alliant sensibilité littéraire et rigueur d’enquête. Une part importante de son temps pendant la guerre fut consacrée à la collecte de preuves, au travail de terrain et à la recherche analytique liée au conflit en cours.</p>
+    <p>En septembre 2022, lors d’une mission de recherche dans la région d’Izium, Amelina a découvert le journal de guerre caché de l’écrivain ukrainien pour enfants Volodymyr Vakulenko, enlevé puis tué par les forces d’occupation russes plus tôt la même année. Enterré dans un jardin du village de Kapytolivka, ce journal est devenu un document majeur de témoignage civil sous occupation. Par la suite, Amelina a représenté l’héritage littéraire de Vakulenko au Musée littéraire de Kharkiv et, en mai 2023, a accepté en son nom un prix posthume de l’Association internationale des éditeurs, contribuant à la reconnaissance internationale de son œuvre et de son destin.</p>
+    <p>Parallèlement à son travail d’enquête, Amelina s’est engagée activement dans des initiatives civiques et humanitaires. Elle accueillait chez elle des Ukrainiens déplacés à l’intérieur du pays et participait à l’acheminement de l’aide humanitaire à Lviv, réunissant ainsi activités littéraires, recherche et bénévolat comme formes interdépendantes de responsabilité en temps de guerre.</p>
+    <p>La guerre a également profondément transformé sa voix poétique. Plusieurs de ses poèmes, publiés dans l’anthologie <em>Entre les sirènes</em>, sont unis par le leitmotiv de la perte — soldats tombés, civils tués lors d’alertes aériennes, perte du foyer. Ses vers font écho à la réponse poétique plus large à la guerre, exprimant l’idée que « la réalité de la guerre / dévore la ponctuation / la cohérence du récit », ainsi que la conscience précoce que seule la poésie semblait possible dans les premiers mois de l’invasion, même si la langue paraissait déjà insuffisante pour décrire de nouvelles circonstances : « Des fragments de langue / ressemblent à de la poésie / mais n’en sont pas. »</p>
+
+    <h2>Performances</h2>
+    <p>
+        <a href="https://www.youtube.com/watch?v=hpcKldIT0Nw" target="_blank">
+            Victoria Amelina lit des poèmes : la dernière performance de l’écrivaine. Book Fest 2023, « Between Sirens ».
+        </a>
+    </p>
+
+    <h2>Vidéo</h2>
+    <p>
+        <a href="https://www.youtube.com/watch?v=FpaikhnVrZw" target="_blank">
+            Victoria Amelina : Les Ukrainiens, c’est Harry Potter — poésie “Z”, nouveau livre, Lviv-arche, la banalité du mal
+        </a>
+    </p>
+
+    <h2>Commentaires</h2>
+
+    <div id="admin-controls" style="margin-bottom: 20px;">
+        <button id="loginBtn" style="padding:10px 20px; background:#005bbb; color:#fff; border:none; border-radius:8px;">Sign in as Admin</button>
+        <button id="logoutBtn" style="padding:10px 20px; background:#777; color:#fff; border:none; border-radius:8px; display:none;">Sign out</button>
+        <span id="adminStatus" style="margin-left:10px; color:#555;"></span>
+    </div>
+
+    <form id="commentForm" class="comment-form">
+        <label for="name">Your Name</label>
+        <input type="text" id="name" required>
+
+        <label for="text">Your Comment</label>
+        <textarea id="text" rows="5" required></textarea>
+
+        <button type="submit">Send</button>
+    </form>
+
+    <div id="commentsList" style="margin-top:30px;"></div>
+
+    <p><a href="/UkrBooks/index.html">← Back to Home</a></p>
+
+</main>
+
+<aside class="sidebar-right">
+    <section class="sidebar-box sidebar-authors">
+        <h3 id="sidebar-authors-title">Authors</h3>
+        <ul id="authors-list"></ul>
+    </section>
+
+    <section class="sidebar-box sidebar-essays">
+        <h3 id="sidebar-essays-title">Essays</h3>
+        <ul id="essays-list"></ul>
+    </section>
+</aside>
+
+</div>
+
+<footer>
+    <p>© Ukrainian Books</p>
+</footer>
+
+<script type="module" src="/UkrBooks/script.js"></script>
+
+</body>
+</html>
