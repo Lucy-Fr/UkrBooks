@@ -14,7 +14,6 @@ import {
 // ------------------------------------------------------
 // Firebase configuration
 // ------------------------------------------------------
-
 const firebaseConfig = {
   apiKey: "AIzaSyBi3kVG2G0RTXKV2EIhs4fQXEkaJ7X6HXU",
   authDomain: "ucontemporarylit.firebaseapp.com",
@@ -341,7 +340,7 @@ const ESSAYS = {
     uk: { title: "«Можемо повторити»", url: "/UkrBooks/essays/can_repeat_ua.html" }
   },
 
-  // ✅ INSERTED: NEW ESSAY (essays folder)
+  // ✅ ДОБАВЛЕНО: After the Center / Після центру / Après le Centre
   deconstruction_identity: {
     order: 30,
     en: { title: "After the Center: Deconstruction of Identity", url: "/UkrBooks/essays/deconstruction-identity-en.html" },
