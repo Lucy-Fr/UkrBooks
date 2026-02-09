@@ -323,6 +323,13 @@ const ESSAYS = {
     fr: { title: "Au-delà de l’Empire", url: "/UkrBooks/essays/beyond-empire-fr.html" },
     uk: { title: "Поза імперією", url: "/UkrBooks/essays/beyond-empire.html-ua" }
   },
+
+  deconstruction_identity: {
+    en: { title: "Deconstruction of Identity", url: "/UkrBooks/essays/deconstruction-identity-en.html" },
+    fr: { title: "Déconstruction de l’identité", url: "/UkrBooks/essays/deconstruction-identity-fr.html" },
+    uk: { title: "Деконструкція ідентичності", url: "/UkrBooks/essays/deconstruction-identity-ua.html" }
+  },
+
   we_can_do_it_again: {
     en: { title: "“We Can Do It Again”", url: "/UkrBooks/essays/we-can-do-it-again.html" },
     fr: { title: "« On peut recommencer »", url: "/UkrBooks/essays/on-peut-recommencer-fr.html" },
@@ -330,7 +337,12 @@ const ESSAYS = {
   }
 };
 
-const ESSAYS_ORDER = ["beyond_empire", "we_can_do_it_again"];
+const ESSAYS_ORDER = [
+  "beyond_empire",
+  "deconstruction_identity",
+  "we_can_do_it_again"
+];
+
 
 function injectSidebarTitles() {
   const labels = SIDEBAR_LABELS[lang] || SIDEBAR_LABELS.en;
