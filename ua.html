@@ -1,93 +1,83 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Голоси України в сучасній літературі</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Голоси України в сучасній літературі</title>
 
-    <link rel="stylesheet" href="/UkrBooks/style.css?v=5">
-    <!-- Google Analytics -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-7493F35CVD"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-7493F35CVD');
-</script>
+  <link rel="stylesheet" href="/UkrBooks/style.css?v=5">
 
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-7493F35CVD"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-7493F35CVD');
+  </script>
 </head>
 
 <body>
-
-<header class="top-nav">
+  <header class="top-nav">
     <a href="/UkrBooks/ua.html">
-        <img src="/UkrBooks/logo.png" class="logo" alt="Ukrainian Books">
+      <img src="/UkrBooks/logo.png" class="logo" alt="Ukrainian Books">
     </a>
 
     <nav class="language-switch">
-        <a href="/UkrBooks/index.html">EN</a> |
-        <a href="/UkrBooks/fr.html">FR</a> |
-        <span>UA</span>
+      <a href="/UkrBooks/index.html">EN</a> |
+      <a href="/UkrBooks/fr.html">FR</a> |
+      <span>UA</span>
     </nav>
-</header>
+  </header>
 
-<div class="layout">
-
-    <!-- Основний контент -->
+  <div class="layout">
     <main class="content">
+      <h1 class="page-title">Голоси України в сучасній літературі</h1>
 
-        <h1 class="page-title">Голоси України в сучасній літературі</h1>
-<img src="/UkrBooks/essays/books2.jpg" class="essay-image" alt="books2">
-        <p>
-            Після повномасштабного вторгнення Росії у 2022 році українська література увійшла в нову інтенсивну фазу, позначену 
-            документальністю, етичною невідкладністю та переосмисленням ролі письменника. Автори дедалі частіше звертаються 
-            до щоденників, фронтових нотаток, свідчень і нон-фікшн, щоб зафіксувати реальність війни й зберегти колективну пам'ять.
-        </p>
+      <img src="/UkrBooks/essays/books2.jpg" class="essay-image" alt="books2">
 
-        <p>
-            Поезія набула особливого значення як форма швидкої реакції — вона фіксує травму, опір, вразливість і солідарність. 
-            Проза стає фрагментарною й зосередженою на особистому досвіді: переселення, втрата дому, тілесна крихкість і 
-            переосмислення ідентичності формують сучасні воєнні наративи.
-        </p>
+      <p>
+        Після повномасштабного вторгнення Росії у 2022 році українська література увійшла в нову інтенсивну фазу, позначену
+        документальністю, етичною невідкладністю та переосмисленням ролі письменника. Автори дедалі частіше звертаються
+        до щоденників, фронтових нотаток, свідчень і нон-фікшн, щоб зафіксувати реальність війни й зберегти колективну пам'ять.
+      </p>
 
-        <p>
-            Воєнна сатира, музичні тексти й гібридні цифрові форми творять новий культурний пласт, де гумор і гротеск співіснують 
-            із болем. Література діаспори осмислює вигнання, мовну адаптацію та життя «деінде» під час війни.
-        </p>
+      <p>
+        Поезія набула особливого значення як форма швидкої реакції — вона фіксує травму, опір, вразливість і солідарність.
+        Проза стає фрагментарною й зосередженою на особистому досвіді: переселення, втрата дому, тілесна крихкість і
+        переосмислення ідентичності формують сучасні воєнні наративи.
+      </p>
 
-        <p>
-            Цей сайт знайомить читачів із новітніми творами української літератури, представляє авторів та їхні тексти і 
-            інформує про літературні та ширші культурні події в Україні. Він пропонує багатомовний доступ до розвитку голосу 
-            української культури в умовах війни.
-        </p>
+      <p>
+        Воєнна сатира, музичні тексти й гібридні цифрові форми творять новий культурний пласт, де гумор і гротеск співіснують
+        із болем. Література діаспори осмислює вигнання, мовну адаптацію та життя «деінде» під час війни.
+      </p>
 
-      
-
+      <p>
+        Цей сайт знайомить читачів із новітніми творами української літератури, представляє авторів та їхні тексти і
+        інформує про літературні та ширші культурні події в Україні. Він пропонує багатомовний доступ до розвитку голосу
+        української культури в умовах війни.
+      </p>
     </main>
 
-     <aside class="sidebar-right">
+    <aside class="sidebar-right">
+      <section class="sidebar-box sidebar-authors">
+        <h3 id="sidebar-authors-title">Автори</h3>
+        <ul id="authors-list"></ul>
+      </section>
 
-        <section class="sidebar-box sidebar-authors">
-            <h3>Автори</h3>
-            <ul id="authors-list"></ul>
-        </section>
+      <section class="sidebar-box sidebar-essays">
+        <h3 id="sidebar-essays-title">Есеї</h3>
+        <ul id="essays-list"></ul>
+      </section>
+    </aside>
+  </div>
 
-        <section class="sidebar-box sidebar-essays">
-            <h3>Есеї</h3>
-            <ul>
-                <li><a href="/UkrBooks/essays/beyond-empire-ua.html">Поза імперією</a></li>
-            </ul>
-        </section>
-</aside>
-
-
-</div>
-
-<footer>
+  <footer>
     <p>© Ukrainian Books</p>
-</footer>
+  </footer>
 
-<script type="module" src="/UkrBooks/script.js"></script>
-
+  <!-- IMPORTANT: module + cache-bust so UA page doesn't keep old script -->
+  <script type="module" src="/UkrBooks/script.js?v=7"></script>
 </body>
 </html>
