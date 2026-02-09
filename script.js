@@ -1,23 +1,26 @@
 // ======================================================
 // CLEAN UNIVERSAL FIREBASE COMMENTS + SIDEBAR (AUTHORS + ESSAYS)
-// FIXES:
-// 1) removed hardcoded admin password (critical leak)
-// 2) admin check uses custom claim (recommended) or allowlist fallback
-// 3) comments query filters by page in Firestore (less data, faster)
-// 4) basic XSS-safe rendering for user content
+// HARDENED VERSION (minimize bugs + reduce attack surface)
+// - No secrets in frontend
+// - Strict module-safe code
+// - Page-scoped Firestore query
+// - Robust escaping without replaceAll dependency
+// - Avoid duplicate subscriptions
+// - Safer event wiring, error handling
+// - Stable author order (no for..in order ambiguity)
 // ======================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore, collection, addDoc, deleteDoc, doc,
-  query, where, orderBy, onSnapshot, serverTimestamp
+  query, where, orderBy, onSnapshot, serverTimestamp, limit
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import {
   getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // ------------------------------------------------------
-// Firebase configuration (public identifiers; keep API key restricted in GCP)
+// Firebase configuration (public identifiers)
 // ------------------------------------------------------
 
 const firebaseConfig = {
@@ -35,35 +38,50 @@ const db   = getFirestore(app);
 const auth = getAuth(app);
 
 // ======================================================
-// PAGE ID (each HTML page has its own comments)
+// PAGE ID (stable key per page)
+// - strips query/hash
+// - normalizes trailing slash
 // ======================================================
 
-const pageId = window.location.pathname;
+function normalizePathname(p) {
+  try {
+    const u = new URL(p, window.location.origin);
+    let path = u.pathname || "/";
+    if (path.length > 1 && path.endsWith("/")) path = path.slice(0, -1);
+    return path;
+  } catch {
+    let path = window.location.pathname || "/";
+    if (path.length > 1 && path.endsWith("/")) path = path.slice(0, -1);
+    return path;
+  }
+}
+const pageId = normalizePathname(window.location.href);
 
 // ======================================================
 // LANGUAGE DETECTION
+// - prefers <html lang="">
+// - falls back to URL heuristics
 // ======================================================
 
 function detectLanguage() {
-  let lang = document.documentElement.lang?.toLowerCase() || "";
+  const raw = (document.documentElement.lang || "").toLowerCase().trim();
 
-  if (!lang) {
-    const path = window.location.pathname.toLowerCase();
-    if (path.includes("ua") || path.includes("uk")) return "uk";
-    if (path.includes("fr")) return "fr";
-    return "en";
+  if (raw) {
+    if (raw === "ua") return "uk";
+    if (raw === "uk" || raw === "fr" || raw === "en") return raw;
   }
 
-  if (lang === "ua") return "uk";
-  return lang;
+  const path = (window.location.pathname || "").toLowerCase();
+  if (path.includes("/ua") || path.includes("ua.html") || path.includes("/uk") || path.includes("uk.html")) return "uk";
+  if (path.includes("/fr") || path.includes("fr.html")) return "fr";
+  return "en";
 }
-
 const lang = detectLanguage();
 
 // ======================================================
-// ADMIN AUTH (NO PASSWORD IN FRONTEND)
-// Option A (recommended): set a custom claim "admin": true on your account
-// Option B (fallback): allowlist by email (still requires secure rules)
+// ADMIN AUTH (frontend check is NOT security; rules must enforce)
+// - Prefer custom claim admin:true
+// - Fallback allowlist by email
 // ======================================================
 
 let isAdmin = false;
@@ -74,43 +92,35 @@ function setAdminUI() {
   const logoutBtn = document.getElementById("logoutBtn");
   const statusEl  = document.getElementById("adminStatus");
 
-  if (!loginBtn || !logoutBtn || !statusEl) return;
+  // allow pages that don't have admin UI
+  if (loginBtn)  loginBtn.style.display  = isAdmin ? "none" : "inline-block";
+  if (logoutBtn) logoutBtn.style.display = isAdmin ? "inline-block" : "none";
+  if (statusEl)  statusEl.textContent    = isAdmin ? "Admin mode" : "";
+}
 
-  if (isAdmin) {
-    loginBtn.style.display  = "none";
-    logoutBtn.style.display = "inline-block";
-    statusEl.textContent    = "Admin mode";
-  } else {
-    loginBtn.style.display  = "inline-block";
-    logoutBtn.style.display = "none";
-    statusEl.textContent    = "";
+async function computeIsAdmin(user) {
+  if (!user) return false;
+
+  // safest: custom claim
+  try {
+    const token = await user.getIdTokenResult();
+    if (token?.claims?.admin === true) return true;
+  } catch {
+    // ignore
   }
+
+  // fallback: allowlist
+  return ADMIN_EMAILS.has(user.email || "");
 }
 
 onAuthStateChanged(auth, async user => {
-  isAdmin = false;
-
-  if (user) {
-    try {
-      // If you configured custom claims:
-      const token = await user.getIdTokenResult();
-      if (token?.claims?.admin === true) {
-        isAdmin = true;
-      } else if (ADMIN_EMAILS.has(user.email || "")) {
-        // Fallback allowlist (still protect with Firestore rules)
-        isAdmin = true;
-      }
-    } catch (_) {
-      isAdmin = ADMIN_EMAILS.has(user.email || "");
-    }
-  }
-
+  isAdmin = await computeIsAdmin(user);
   setAdminUI();
-  loadComments();
+  loadComments(); // refresh delete buttons / subscription
 });
 
 // ------------------------------------------------------
-// Login/Logout handlers (Google popup; no secrets in JS)
+// Login/Logout handlers (Google popup)
 // ------------------------------------------------------
 
 window.adminLogin = async function () {
@@ -118,7 +128,7 @@ window.adminLogin = async function () {
     const provider = new GoogleAuthProvider();
     await signInWithPopup(auth, provider);
   } catch (err) {
-    alert("Login error: " + err.message);
+    alert("Login error: " + (err?.message || err));
   }
 };
 
@@ -126,9 +136,23 @@ window.adminLogout = async function () {
   try {
     await signOut(auth);
   } catch (err) {
-    alert("Logout error: " + err.message);
+    alert("Logout error: " + (err?.message || err));
   }
 };
+
+// ======================================================
+// UTIL: escape HTML safely without replaceAll dependency
+// ======================================================
+
+function escapeHtml(value) {
+  const s = String(value ?? "");
+  return s
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
 // ======================================================
 // COMMENT SUBMISSION + SIDEBAR INJECTION
@@ -139,8 +163,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const login  = document.getElementById("loginBtn");
   const logout = document.getElementById("logoutBtn");
 
-  if (login)  login.onclick  = () => window.adminLogin();
-  if (logout) logout.onclick = () => window.adminLogout();
+  if (login)  login.addEventListener("click", () => window.adminLogin());
+  if (logout) logout.addEventListener("click", () => window.adminLogout());
 
   if (form) {
     form.addEventListener("submit", async e => {
@@ -149,21 +173,29 @@ document.addEventListener("DOMContentLoaded", () => {
       const nameEl = document.getElementById("name");
       const textEl = document.getElementById("text");
 
-      const name = nameEl ? nameEl.value.trim() : "";
-      const text = textEl ? textEl.value.trim() : "";
+      const name = (nameEl?.value || "").trim();
+      const text = (textEl?.value || "").trim();
 
+      // minimal validation to prevent empty spam
       if (!name || !text) return;
 
-      await addDoc(collection(db, "comments"), {
-        page: pageId,
-        name,
-        text,
-        lang,
-        createdAt: serverTimestamp(), // preferred
-        timestamp: Date.now() // keep for backward compatibility if you already used it
-      });
+      // basic length caps to reduce abuse (UI-level only; rules should enforce)
+      const safeName = name.slice(0, 80);
+      const safeText = text.slice(0, 2000);
 
-      form.reset();
+      try {
+        await addDoc(collection(db, "comments"), {
+          page: pageId,
+          name: safeName,
+          text: safeText,
+          lang,
+          createdAt: serverTimestamp(),
+          timestamp: Date.now()
+        });
+        form.reset();
+      } catch (err) {
+        alert("Comment error: " + (err?.message || err));
+      }
     });
   }
 
@@ -172,72 +204,80 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ======================================================
-// LOAD COMMENTS (REALTIME) — server-side filter by page
+// LOAD COMMENTS (REALTIME) — page-scoped query
+// Notes:
+// - This query may require a composite index: page + timestamp desc
+// - limit() prevents huge lists
 // ======================================================
 
 let unsubscribe = null;
-
-function escapeHtml(s) {
-  return String(s)
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}
 
 function loadComments() {
   const list = document.getElementById("commentsList");
   if (!list) return;
 
-  // Query only the current page's comments
   const q = query(
     collection(db, "comments"),
     where("page", "==", pageId),
-    orderBy("timestamp", "desc")
+    orderBy("timestamp", "desc"),
+    limit(200)
   );
 
   if (unsubscribe) unsubscribe();
 
-  unsubscribe = onSnapshot(q, snapshot => {
-    list.innerHTML = "";
+  unsubscribe = onSnapshot(
+    q,
+    snapshot => {
+      list.innerHTML = "";
 
-    snapshot.forEach(docSnap => {
-      const c = docSnap.data();
+      snapshot.forEach(docSnap => {
+        const c = docSnap.data() || {};
 
-      const nameSafe = escapeHtml(c.name ?? "");
-      const textSafe = escapeHtml(c.text ?? "");
-      const ts = c.timestamp ?? (c.createdAt?.toMillis?.() ?? Date.now());
+        const nameSafe = escapeHtml(c.name);
+        const textSafe = escapeHtml(c.text);
 
-      const item = document.createElement("div");
-      item.className = "comment-item";
+        const ts =
+          typeof c.timestamp === "number"
+            ? c.timestamp
+            : (c.createdAt?.toMillis?.() ?? Date.now());
 
-      item.innerHTML = `
-        <p><strong>${nameSafe}</strong></p>
-        <p>${textSafe}</p>
-        <small>${new Date(ts).toLocaleString()}</small>
-        <button class="delete-comment"
-                data-id="${docSnap.id}"
-                style="${isAdmin ? "" : "display:none;"}">
-          Delete
-        </button>
-        <hr>
-      `;
+        const item = document.createElement("div");
+        item.className = "comment-item";
 
-      list.appendChild(item);
-    });
+        // No user content inserted unescaped
+        item.innerHTML = `
+          <p><strong>${nameSafe}</strong></p>
+          <p>${textSafe}</p>
+          <small>${new Date(ts).toLocaleString()}</small>
+          <button class="delete-comment" data-id="${docSnap.id}" style="${isAdmin ? "" : "display:none;"}">Delete</button>
+          <hr>
+        `;
 
-    list.querySelectorAll(".delete-comment").forEach(btn => {
-      btn.onclick = async () => {
-        if (!isAdmin) return alert("Only admin can delete comments.");
-        await deleteDoc(doc(db, "comments", btn.dataset.id));
-      };
-    });
-  });
+        list.appendChild(item);
+      });
+
+      // bind delete after rendering
+      list.querySelectorAll(".delete-comment").forEach(btn => {
+        btn.addEventListener("click", async () => {
+          if (!isAdmin) return alert("Only admin can delete comments.");
+          try {
+            await deleteDoc(doc(db, "comments", btn.dataset.id));
+          } catch (err) {
+            alert("Delete error: " + (err?.message || err));
+          }
+        });
+      });
+    },
+    err => {
+      // common case: missing index; Firestore returns a descriptive message
+      alert("Realtime error: " + (err?.message || err));
+    }
+  );
 }
 
 // ======================================================
 // SIDEBAR (AUTHORS + ESSAYS) — single source of truth
+// - stable ordering via explicit arrays
 // ======================================================
 
 const SIDEBAR_LABELS = {
@@ -252,13 +292,30 @@ const AUTHORS = {
     fr: { name: "Serhiy Jadan",  url: "/UkrBooks/authors/zhadan/zhadanfr.html" },
     uk: { name: "Сергій Жадан",  url: "/UkrBooks/authors/zhadan/zhadanua.html" }
   },
-
   kuznetsova: {
     en: { name: "Yevheniia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovaen.html" },
     fr: { name: "Ievheniia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovafr.html" },
     uk: { name: "Євгенія Кузнєцова",     url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html" }
+  },
+  amelina: {
+    en: { name: "Victoria Amelina", url: "/UkrBooks/authors/amelina/amelinaen.html" },
+    fr: { name: "Victoria Amelina", url: "/UkrBooks/authors/amelina/amelinafr.html" },
+    uk: { name: "Вікторія Амеліна", url: "/UkrBooks/authors/amelina/amelinaua.html" }
+  },
+  vakulenko: {
+    en: { name: "Volodymyr Vakulenko", url: "/UkrBooks/authors/vakulenko/vakulenkoen.html" },
+    fr: { name: "Volodymyr Vakulenko", url: "/UkrBooks/authors/vakulenko/vakulenkofr.html" },
+    uk: { name: "Володимир Вакуленко", url: "/UkrBooks/authors/vakulenko/vakulenkoua.html" }
+  },
+  maksymchuk: {
+    en: { name: "Oksana Maksymchuk", url: "/UkrBooks/authors/maksymchuk/maksymchuken.html" },
+    fr: { name: "Oksana Maksymchuk", url: "/UkrBooks/authors/maksymchuk/maksymchukfr.html" },
+    uk: { name: "Оксана Максимчук", url: "/UkrBooks/authors/maksymchuk/maksymchukua.html" }
   }
 };
+
+// explicit stable order
+const AUTHORS_ORDER = ["zhadan", "kuznetsova", "amelina", "vakulenko", "maksymchuk"];
 
 const ESSAYS = {
   beyond_empire: {
@@ -266,13 +323,14 @@ const ESSAYS = {
     fr: { title: "Au-delà de l’Empire", url: "/UkrBooks/essays/beyond-empire-fr.html" },
     uk: { title: "Поза імперією", url: "/UkrBooks/essays/beyond-empire.html-ua" }
   },
-
   we_can_do_it_again: {
     en: { title: "“We Can Do It Again”", url: "/UkrBooks/essays/we-can-do-it-again.html" },
     fr: { title: "« On peut recommencer »", url: "/UkrBooks/essays/on-peut-recommencer-fr.html" },
     uk: { title: "«Можемо повторити»", url: "/UkrBooks/essays/mozhemo-povtoryty.html-ua" }
   }
 };
+
+const ESSAYS_ORDER = ["beyond_empire", "we_can_do_it_again"];
 
 function injectSidebarTitles() {
   const labels = SIDEBAR_LABELS[lang] || SIDEBAR_LABELS.en;
@@ -290,8 +348,13 @@ function injectAuthors() {
 
   list.innerHTML = "";
 
-  for (const key in AUTHORS) {
-    const entry = AUTHORS[key][lang] || AUTHORS[key].en;
+  for (const key of AUTHORS_ORDER) {
+    const bundle = AUTHORS[key];
+    if (!bundle) continue;
+
+    const entry = bundle[lang] || bundle.en;
+    if (!entry?.url || !entry?.name) continue;
+
     const li = document.createElement("li");
     li.innerHTML = `<a href="${entry.url}">${escapeHtml(entry.name)}</a>`;
     list.appendChild(li);
@@ -304,8 +367,13 @@ function injectEssays() {
 
   list.innerHTML = "";
 
-  for (const key in ESSAYS) {
-    const entry = ESSAYS[key][lang] || ESSAYS[key].en;
+  for (const key of ESSAYS_ORDER) {
+    const bundle = ESSAYS[key];
+    if (!bundle) continue;
+
+    const entry = bundle[lang] || bundle.en;
+    if (!entry?.url || !entry?.title) continue;
+
     const li = document.createElement("li");
     li.innerHTML = `<a href="${entry.url}">${escapeHtml(entry.title)}</a>`;
     list.appendChild(li);
