@@ -301,7 +301,12 @@ const AUTHORS = {
     en: { name: "Victoria Amelina", url: "/UkrBooks/authors/amelina/amelinaen.html" },
     fr: { name: "Victoria Amelina", url: "/UkrBooks/authors/amelina/amelinafr.html" },
     uk: { name: "Вікторія Амеліна", url: "/UkrBooks/authors/amelina/amelinaua.html" }
-  },
+    },
+  kalytko: {
+    en: { name: "Kateryna Kalytko", url: "/UkrBooks/authors/kalytko/kalytkoen.html" },
+    fr: { name: "Kateryna Kalytko", url: "/UkrBooks/authors/kalytko/kalytkofr.html" },
+    uk: { name: "Катерина Калитко", url: "/UkrBooks/authors/kalytko/kalytkoua.html" }
+      },
   vakulenko: {
     en: { name: "Volodymyr Vakulenko", url: "/UkrBooks/authors/vakulenko/vakulenkoen.html" },
     fr: { name: "Volodymyr Vakulenko", url: "/UkrBooks/authors/vakulenko/vakulenkofr.html" },
