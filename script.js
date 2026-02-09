@@ -1,19 +1,25 @@
 // ======================================================
 // CLEAN UNIVERSAL FIREBASE COMMENTS + SIDEBAR (AUTHORS + ESSAYS)
+// FIXES:
+// 1) removed hardcoded admin password (critical leak)
+// 2) admin check uses custom claim (recommended) or allowlist fallback
+// 3) comments query filters by page in Firestore (less data, faster)
+// 4) basic XSS-safe rendering for user content
 // ======================================================
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
   getFirestore, collection, addDoc, deleteDoc, doc,
-  query, where, orderBy, onSnapshot
+  query, where, orderBy, onSnapshot, serverTimestamp
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 import {
-  getAuth, onAuthStateChanged, signInWithEmailAndPassword, signOut
+  getAuth, onAuthStateChanged, signInWithPopup, GoogleAuthProvider, signOut
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
 // ------------------------------------------------------
-// Firebase configuration
+// Firebase configuration (public identifiers; keep API key restricted in GCP)
 // ------------------------------------------------------
+
 const firebaseConfig = {
   apiKey: "AIzaSyBi3kVG2G0RTXKV2EIhs4fQXEkaJ7X6HXU",
   authDomain: "ucontemporarylit.firebaseapp.com",
@@ -28,126 +34,89 @@ const app  = initializeApp(firebaseConfig);
 const db   = getFirestore(app);
 const auth = getAuth(app);
 
-// ------------------------------------------------------
-// Page ID: prefer stable data-page-id, fallback to pathname
-// ------------------------------------------------------
-function normalizePathname(pathname) {
-  let p = pathname || "/";
-  if (p.length > 1 && p.endsWith("/")) p = p.slice(0, -1);
-  if (p.endsWith("/index.html")) p = p.slice(0, -"/index.html".length) || "/";
-  return p;
-}
+// ======================================================
+// PAGE ID (each HTML page has its own comments)
+// ======================================================
 
-function getStablePageId() {
-  // если на странице есть <main class="content" data-page-id="...">
-  const main = document.querySelector("main.content[data-page-id]");
-  const attr = main?.getAttribute("data-page-id");
-  if (attr && attr.trim()) return attr.trim();
-  // иначе — по пути
-  return normalizePathname(window.location.pathname);
-}
+const pageId = window.location.pathname;
 
-const pageId = getStablePageId();
+// ======================================================
+// LANGUAGE DETECTION
+// ======================================================
 
-// ------------------------------------------------------
-// Language detection (FIXED: stable + sidebar-safe)
-// ------------------------------------------------------
 function detectLanguage() {
-  // 1) if page sets <main data-lang="..."> (recommended), use it
-  const main = document.querySelector("main.content[data-lang]");
-  let forced = (main?.getAttribute("data-lang") || "").toLowerCase().trim();
-  if (forced === "ua") forced = "uk";
-  if (forced === "en" || forced === "fr" || forced === "uk") return forced;
+  let lang = document.documentElement.lang?.toLowerCase() || "";
 
-  // 2) <html lang="...">
-  let l = (document.documentElement.lang || "").toLowerCase().trim();
-  if (l === "ua") l = "uk";
-  if (l === "en" || l === "fr" || l === "uk") return l;
+  if (!lang) {
+    const path = window.location.pathname.toLowerCase();
+    if (path.includes("ua") || path.includes("uk")) return "uk";
+    if (path.includes("fr")) return "fr";
+    return "en";
+  }
 
-  // 3) pathname heuristics
-  const path = window.location.pathname.toLowerCase();
-  const file = (path.split("/").pop() || "").toLowerCase();
-  const segments = path.split("/").filter(Boolean);
-
-  if (/(^|[-_])(ua|uk)\.html$/.test(file) || segments.includes("ua") || segments.includes("uk")) return "uk";
-  if (/(^|[-_])fr\.html$/.test(file) || segments.includes("fr")) return "fr";
-  if (/(^|[-_])en\.html$/.test(file) || segments.includes("en")) return "en";
-
-  return "en";
+  if (lang === "ua") return "uk";
+  return lang;
 }
 
 const lang = detectLanguage();
 
+// ======================================================
+// ADMIN AUTH (NO PASSWORD IN FRONTEND)
+// Option A (recommended): set a custom claim "admin": true on your account
+// Option B (fallback): allowlist by email (still requires secure rules)
+// ======================================================
 
-// ✅ INSERTED ------------------------------------------------------
-// FIX language switch on author pages (prevents /authors/<slug>/<slug>.html)
-// Requires: <nav class="language-switch"><a>UA</a><a>FR</a><a>EN</a></nav>
-// ------------------------------------------------------
-function fixLanguageSwitchLinks() {
-  const nav = document.querySelector("nav.language-switch");
-  if (!nav) return;
-
-  const links = nav.querySelectorAll("a");
-  if (!links.length) return;
-
-  const path = window.location.pathname;
-
-  // Only for author pages: /UkrBooks/authors/<slug>/<file>
-  const m = path.match(/\/UkrBooks\/authors\/([^/]+)\/[^/]+$/i);
-  if (!m) return;
-
-  const slug = m[1];
-
-  // Your real filenames:
-  // /authors/<slug>/<slug>ua.html | <slug>en.html | <slug>fr.html
-  const map = {
-    ua: `/UkrBooks/authors/${slug}/${slug}ua.html`,
-    uk: `/UkrBooks/authors/${slug}/${slug}ua.html`,
-    en: `/UkrBooks/authors/${slug}/${slug}en.html`,
-    fr: `/UkrBooks/authors/${slug}/${slug}fr.html`,
-  };
-
-  links.forEach(a => {
-    const key = (a.textContent || "").trim().toLowerCase();
-    if (map[key]) a.href = map[key];
-  });
-}
-// ✅ INSERTED END --------------------------------------------------
-
-
-// ------------------------------------------------------
-// Admin state
-// ------------------------------------------------------
 let isAdmin = false;
+const ADMIN_EMAILS = new Set(["garmash110@gmail.com"]);
 
-onAuthStateChanged(auth, user => {
-  isAdmin = !!(user && user.email === "garmash110@gmail.com");
-
+function setAdminUI() {
   const loginBtn  = document.getElementById("loginBtn");
   const logoutBtn = document.getElementById("logoutBtn");
   const statusEl  = document.getElementById("adminStatus");
 
-  if (loginBtn && logoutBtn && statusEl) {
-    if (isAdmin) {
-      loginBtn.style.display  = "none";
-      logoutBtn.style.display = "inline-block";
-      statusEl.textContent    = "Admin mode";
-    } else {
-      loginBtn.style.display  = "inline-block";
-      logoutBtn.style.display = "none";
-      statusEl.textContent    = "";
+  if (!loginBtn || !logoutBtn || !statusEl) return;
+
+  if (isAdmin) {
+    loginBtn.style.display  = "none";
+    logoutBtn.style.display = "inline-block";
+    statusEl.textContent    = "Admin mode";
+  } else {
+    loginBtn.style.display  = "inline-block";
+    logoutBtn.style.display = "none";
+    statusEl.textContent    = "";
+  }
+}
+
+onAuthStateChanged(auth, async user => {
+  isAdmin = false;
+
+  if (user) {
+    try {
+      // If you configured custom claims:
+      const token = await user.getIdTokenResult();
+      if (token?.claims?.admin === true) {
+        isAdmin = true;
+      } else if (ADMIN_EMAILS.has(user.email || "")) {
+        // Fallback allowlist (still protect with Firestore rules)
+        isAdmin = true;
+      }
+    } catch (_) {
+      isAdmin = ADMIN_EMAILS.has(user.email || "");
     }
   }
 
-  // при смене статуса админа перерисуем комментарии (кнопки delete)
+  setAdminUI();
   loadComments();
 });
 
+// ------------------------------------------------------
+// Login/Logout handlers (Google popup; no secrets in JS)
+// ------------------------------------------------------
+
 window.adminLogin = async function () {
   try {
-    const pwd = prompt("Admin password:");
-    if (!pwd) return;
-    await signInWithEmailAndPassword(auth, "garmash110@gmail.com", pwd);
+    const provider = new GoogleAuthProvider();
+    await signInWithPopup(auth, provider);
   } catch (err) {
     alert("Login error: " + err.message);
   }
@@ -161,96 +130,10 @@ window.adminLogout = async function () {
   }
 };
 
-// ------------------------------------------------------
-// Labels
-// ------------------------------------------------------
-const UI_LABELS = {
-  en: { del: "Delete", onlyAdmin: "Only admin can delete comments." },
-  fr: { del: "Supprimer", onlyAdmin: "Seul l’admin peut supprimer les commentaires." },
-  uk: { del: "Видалити", onlyAdmin: "Лише адміністратор може видаляти коментарі." }
-};
+// ======================================================
+// COMMENT SUBMISSION + SIDEBAR INJECTION
+// ======================================================
 
-const SIDEBAR_LABELS = {
-  en: { authors: "Authors", essays: "Essays" },
-  fr: { authors: "Auteurs", essays: "Essais" },
-  uk: { authors: "Автори",  essays: "Есеї" }
-};
-
-// ------------------------------------------------------
-// Comments (SAFE render + query by page only)
-// ------------------------------------------------------
-let unsubscribe = null;
-
-function renderComment(listEl, c, docId) {
-  const labels = UI_LABELS[lang] || UI_LABELS.en;
-
-  const item = document.createElement("div");
-  item.className = "comment-item";
-
-  const pName = document.createElement("p");
-  const strong = document.createElement("strong");
-  strong.textContent = c.name || "";
-  pName.appendChild(strong);
-
-  const pText = document.createElement("p");
-  pText.textContent = c.text || "";
-
-  const small = document.createElement("small");
-  const ts = typeof c.timestamp === "number" ? c.timestamp : Date.now();
-  small.textContent = new Date(ts).toLocaleString();
-
-  const btn = document.createElement("button");
-  btn.className = "delete-comment";
-  btn.dataset.id = docId;
-  btn.textContent = labels.del;
-
-  // show/hide
-  btn.style.display = isAdmin ? "inline-block" : "none";
-
-  btn.onclick = async () => {
-    const labels2 = UI_LABELS[lang] || UI_LABELS.en;
-    if (!isAdmin) return alert(labels2.onlyAdmin);
-    await deleteDoc(doc(db, "comments", docId));
-  };
-
-  const hr = document.createElement("hr");
-
-  item.appendChild(pName);
-  item.appendChild(pText);
-  item.appendChild(small);
-  item.appendChild(btn);
-  item.appendChild(hr);
-
-  listEl.appendChild(item);
-}
-
-function loadComments() {
-  const list = document.getElementById("commentsList");
-  if (!list) return;
-
-  // остановить предыдущую подписку
-  if (unsubscribe) unsubscribe();
-
-  // ВАЖНО: грузим только нужную страницу
-  const q = query(
-    collection(db, "comments"),
-    where("page", "==", pageId),
-    orderBy("timestamp", "desc")
-  );
-
-  unsubscribe = onSnapshot(q, snapshot => {
-    list.innerHTML = "";
-
-    snapshot.forEach(docSnap => {
-      const c = docSnap.data();
-      renderComment(list, c, docSnap.id);
-    });
-  });
-}
-
-// ------------------------------------------------------
-// Submit comment
-// ------------------------------------------------------
 document.addEventListener("DOMContentLoaded", () => {
   const form   = document.getElementById("commentForm");
   const login  = document.getElementById("loginBtn");
@@ -272,86 +155,125 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!name || !text) return;
 
       await addDoc(collection(db, "comments"), {
-        page: pageId,      // теперь стабильно
+        page: pageId,
         name,
         text,
         lang,
-        timestamp: Date.now()
+        createdAt: serverTimestamp(), // preferred
+        timestamp: Date.now() // keep for backward compatibility if you already used it
       });
 
       form.reset();
     });
   }
 
-  // ✅ INSERTED: fix language links BEFORE rendering sidebars
-  fixLanguageSwitchLinks();
-
   injectSidebars();
   loadComments();
 });
 
-// ------------------------------------------------------
-// Sidebar data
-// ------------------------------------------------------
+// ======================================================
+// LOAD COMMENTS (REALTIME) — server-side filter by page
+// ======================================================
+
+let unsubscribe = null;
+
+function escapeHtml(s) {
+  return String(s)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function loadComments() {
+  const list = document.getElementById("commentsList");
+  if (!list) return;
+
+  // Query only the current page's comments
+  const q = query(
+    collection(db, "comments"),
+    where("page", "==", pageId),
+    orderBy("timestamp", "desc")
+  );
+
+  if (unsubscribe) unsubscribe();
+
+  unsubscribe = onSnapshot(q, snapshot => {
+    list.innerHTML = "";
+
+    snapshot.forEach(docSnap => {
+      const c = docSnap.data();
+
+      const nameSafe = escapeHtml(c.name ?? "");
+      const textSafe = escapeHtml(c.text ?? "");
+      const ts = c.timestamp ?? (c.createdAt?.toMillis?.() ?? Date.now());
+
+      const item = document.createElement("div");
+      item.className = "comment-item";
+
+      item.innerHTML = `
+        <p><strong>${nameSafe}</strong></p>
+        <p>${textSafe}</p>
+        <small>${new Date(ts).toLocaleString()}</small>
+        <button class="delete-comment"
+                data-id="${docSnap.id}"
+                style="${isAdmin ? "" : "display:none;"}">
+          Delete
+        </button>
+        <hr>
+      `;
+
+      list.appendChild(item);
+    });
+
+    list.querySelectorAll(".delete-comment").forEach(btn => {
+      btn.onclick = async () => {
+        if (!isAdmin) return alert("Only admin can delete comments.");
+        await deleteDoc(doc(db, "comments", btn.dataset.id));
+      };
+    });
+  });
+}
+
+// ======================================================
+// SIDEBAR (AUTHORS + ESSAYS) — single source of truth
+// ======================================================
+
+const SIDEBAR_LABELS = {
+  en: { authors: "Authors", essays: "Essays" },
+  fr: { authors: "Auteurs", essays: "Essais" },
+  uk: { authors: "Автори",  essays: "Есеї" }
+};
+
 const AUTHORS = {
   zhadan: {
-    order: 10,
     en: { name: "Serhiy Zhadan", url: "/UkrBooks/authors/zhadan/zhadanen.html" },
     fr: { name: "Serhiy Jadan",  url: "/UkrBooks/authors/zhadan/zhadanfr.html" },
     uk: { name: "Сергій Жадан",  url: "/UkrBooks/authors/zhadan/zhadanua.html" }
   },
+
   kuznetsova: {
-    order: 20,
     en: { name: "Yevheniia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovaen.html" },
     fr: { name: "Ievheniia Kuznietsova", url: "/UkrBooks/authors/kuznetsova/kuznetsovafr.html" },
     uk: { name: "Євгенія Кузнєцова",     url: "/UkrBooks/authors/kuznetsova/kuznetsovaua.html" }
-  },
-  vakulenko: {
-    order: 30,
-    en: { name: "Volodymyr Vakulenko",  url: "/UkrBooks/authors/vakulenko/vakulenkoen.html" },
-    fr: { name: "Volodymyr Vakoulenko", url: "/UkrBooks/authors/vakulenko/vakulenkofr.html" },
-    uk: { name: "Володимир Вакуленко",  url: "/UkrBooks/authors/vakulenko/vakulenkoua.html" }
-  },
-  maksymchuk: {
-    order: 35,
-    en: { name: "Oksana Maksymchuk", url: "/UkrBooks/authors/maksymchuk/maksymchuken.html" },
-    fr: { name: "Oksana Maksymchuk", url: "/UkrBooks/authors/maksymchuk/maksymchukfr.html" },
-    uk: { name: "Оксана Максимчук",  url: "/UkrBooks/authors/maksymchuk/maksymchukua.html" }
-  },
-  amelina: {
-    order: 40,
-    en: { name: "Victoria Amelina", url: "/UkrBooks/authors/amelina/amelinaen.html" },
-    fr: { name: "Viktoria Amelina", url: "/UkrBooks/authors/amelina/amelinafr.html" },
-    uk: { name: "Вікторія Амеліна", url: "/UkrBooks/authors/amelina/amelinaua.html" }
   }
 };
 
 const ESSAYS = {
   beyond_empire: {
-    order: 10,
     en: { title: "Beyond Empire", url: "/UkrBooks/essays/beyond-empire.html" },
     fr: { title: "Au-delà de l’Empire", url: "/UkrBooks/essays/beyond-empire-fr.html" },
-    uk: { title: "Поза імперією", url: "/UkrBooks/essays/beyond-empire-ua.html" }
-  },
-  we_can_do_it_again: {
-    order: 20,
-    en: { title: "“We Can Do It Again”", url: "/UkrBooks/essays/can_repeat_en.html" },
-    fr: { title: "« On peut recommencer »", url: "/UkrBooks/essays/can_repeat_fr.html" },
-    uk: { title: "«Можемо повторити»", url: "/UkrBooks/essays/can_repeat_ua.html" }
+    uk: { title: "Поза імперією", url: "/UkrBooks/essays/beyond-empire.html-ua" }
   },
 
-  // ✅ ДОБАВЛЕНО: After the Center / Після центру / Après le Centre
-  deconstruction_identity: {
-    order: 30,
-    en: { title: "After the Center: Deconstruction of Identity", url: "/UkrBooks/essays/deconstruction-identity-en.html" },
-    uk: { title: "Після центру: Деконструкція ідентичності", url: "/UkrBooks/essays/deconstruction-identity-ua.html" },
-    fr: { title: "Après le Centre : Déconstruction de l'identité", url: "/UkrBooks/essays/deconstruction-identity-fr.html" }
+  we_can_do_it_again: {
+    en: { title: "“We Can Do It Again”", url: "/UkrBooks/essays/we-can-do-it-again.html" },
+    fr: { title: "« On peut recommencer »", url: "/UkrBooks/essays/on-peut-recommencer-fr.html" },
+    uk: { title: "«Можемо повторити»", url: "/UkrBooks/essays/mozhemo-povtoryty.html-ua" }
   }
 };
 
-// ------------------------------------------------------
-// Sidebar injectors
-// ------------------------------------------------------
 function injectSidebarTitles() {
   const labels = SIDEBAR_LABELS[lang] || SIDEBAR_LABELS.en;
 
@@ -368,19 +290,10 @@ function injectAuthors() {
 
   list.innerHTML = "";
 
-  const keys = Object.keys(AUTHORS).sort(
-    (a, b) => (AUTHORS[a].order ?? 9999) - (AUTHORS[b].order ?? 9999)
-  );
-
-  for (const key of keys) {
-    // FIX: fallback lang -> uk -> en (prevents accidental EN on UA pages)
-    const entry = AUTHORS[key][lang] || AUTHORS[key].uk || AUTHORS[key].en;
-
+  for (const key in AUTHORS) {
+    const entry = AUTHORS[key][lang] || AUTHORS[key].en;
     const li = document.createElement("li");
-    const a = document.createElement("a");
-    a.href = entry.url;
-    a.textContent = entry.name;
-    li.appendChild(a);
+    li.innerHTML = `<a href="${entry.url}">${escapeHtml(entry.name)}</a>`;
     list.appendChild(li);
   }
 }
@@ -391,19 +304,10 @@ function injectEssays() {
 
   list.innerHTML = "";
 
-  const keys = Object.keys(ESSAYS).sort(
-    (a, b) => (ESSAYS[a].order ?? 9999) - (ESSAYS[b].order ?? 9999)
-  );
-
-  for (const key of keys) {
-    // FIX: fallback lang -> uk -> en
-    const entry = ESSAYS[key][lang] || ESSAYS[key].uk || ESSAYS[key].en;
-
+  for (const key in ESSAYS) {
+    const entry = ESSAYS[key][lang] || ESSAYS[key].en;
     const li = document.createElement("li");
-    const a = document.createElement("a");
-    a.href = entry.url;
-    a.textContent = entry.title;
-    li.appendChild(a);
+    li.innerHTML = `<a href="${entry.url}">${escapeHtml(entry.title)}</a>`;
     list.appendChild(li);
   }
 }
