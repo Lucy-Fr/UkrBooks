@@ -320,7 +320,7 @@ const AUTHORS = {
 };
 
 // explicit stable order
-const AUTHORS_ORDER = ["zhadan", "kuznetsova", "amelina", "vakulenko", "maksymchuk"];
+const AUTHORS_ORDER = ["zhadan", "kuznetsova", "amelina", "vakulenko", "maksymchuk", "kalytko"];
 
 const ESSAYS = {
   beyond_empire: {
